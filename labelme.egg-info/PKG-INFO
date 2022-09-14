@@ -6,7 +6,37 @@ Home-page: https://github.com/wkentaro/labelme
 Author: Kentaro Wada
 Author-email: www.kentaro.wada@gmail.com
 License: GPLv3
+Description: # Guide Labelme 
+        ## 1. Setting
+        The python must to install on system.  python  >= v 3.x 
+        
+        The python can download in <a href="https://www.python.org/downloads/">here</a> .
+        
+        ## 2 For development
+        ### install pip 
+        
+        python -m pip install --upgrade pip
+        
+        or
+        
+        python -m pip install --upgrade --force-reinstall pip
+        
+        ### install pyinstaller
+        pip install pyinstaller
+        
+        ### install all package 
+        
+        python setup.py install
+        
+        ## 3 How to build an independent app that runs in Wondow
+        
+        pyinstaller labelme.spec
+        
+        ### Build path
+        dist/labelme.exe
+        
 Keywords: Image Annotation,Machine Learning
+Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Intended Audience :: Developers
 Classifier: Intended Audience :: Science/Research
@@ -20,25 +50,3 @@ Classifier: Programming Language :: Python :: 3.8
 Classifier: Programming Language :: Python :: 3.9
 Classifier: Programming Language :: Python :: 3 :: Only
 Description-Content-Type: text/markdown
-
-# Guide Labelme 
-## 1. Setting
-The python must to install on system
-
-The python can download in <a href="https://www.python.org/downloads/">here</a> .
-
-## 2 For development
-### install pip 
-
-python -m pip install --upgrade pip
-
-or
-
-python -m pip install --upgrade --force-reinstall pip
-
-### install pyinstaller
-pip install pyinstaller
-
-### install all package 
-
-python setup.py install

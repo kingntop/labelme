@@ -8,14 +8,18 @@ from qtpy import QtCore
 from qtpy import QtGui
 from qtpy import QtWidgets
 from qtpy.QtGui import QFontDatabase
-
+from requests import RequestException
+from urllib3 import Timeout
+from urllib3.exceptions import ProxyError
 
 here = osp.dirname(osp.abspath(__file__))
 font_dir = osp.join(here, "../font")
 
+
 def newLang(lang: str):
     trans_dir = osp.join(here, "../translate")
     return osp.join(":/", trans_dir, "%s.qm" % lang)
+
 
 def appFont(fontname: str = None):
     if fontname is not None:
@@ -130,26 +134,30 @@ def LogPrint(error: str):
 
 
 def httpReq(url, method, headers=None, data=None, param=None):
-    if method == "get":
-        if headers is not None and data is None:  # 1 0
-            respone = requests.get(url, headers=headers)
-        elif headers is not None and data is not None:  # 1 1
-            respone = requests.get(url, headers=headers, json=data)
-        elif headers is None and data is not None:  # 0 1
-            respone = requests.get(url, json=data)
+    try:
+        if method == "get":
+            if headers is not None and data is None:  # 1 0
+                respone = requests.get(url, headers=headers)
+            elif headers is not None and data is not None:  # 1 1
+                respone = requests.get(url, headers=headers, json=data)
+            elif headers is None and data is not None:  # 0 1
+                respone = requests.get(url, json=data)
+            else:
+                respone = requests.get(url)  # 0 0
         else:
-            respone = requests.get(url)  # 0 0
-    else:
-        if headers is not None and data is None:  # 1 0
-            respone = requests.post(url, headers=headers)
-        elif headers is not None and data is not None:  # 1 1
-            respone = requests.post(url, headers=headers, json=data)
-        elif headers is None and data is not None:  # 0 1
-            respone = requests.post(url, json=data)
-        else:
-            respone = requests.post(url)  # 0 0
+            if headers is not None and data is None:  # 1 0
+                respone = requests.post(url, headers=headers)
+            elif headers is not None and data is not None:  # 1 1
+                respone = requests.post(url, headers=headers, json=data)
+            elif headers is None and data is not None:  # 0 1
+                respone = requests.post(url, json=data)
+            else:
+                respone = requests.post(url)  # 0 0
+        jsstr = respone.json()
+        return jsstr
+    # except ProxyError as e:
+    #     jsstr = 'ProxyError when try to get %s' % e.args
+    except Exception as e:
+        jsstr = 'Exception when try to get %s' % e.args
 
-    jsstr = respone.json()
-    return jsstr
-
-
+    return {"message": jsstr}

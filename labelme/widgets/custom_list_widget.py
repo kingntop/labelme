@@ -272,7 +272,7 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
         self.selectionModel().selectionChanged.connect(
             self.itemSelectionChangedEvent
         )
-
+    """
     def addShapes(self, shapes):
         if len(shapes) < 1:
             return
@@ -287,6 +287,7 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
             polyT = "다각형 레이블 (총 %s)"
         if self._app.shape_dock:
             self._app.shape_dock.titleBarWidget().titleLabel.setText(polyT % len(self._itemList))
+    """
 
     def itemSelectionChangedEvent(self, selected, deselected):
         selected = [self.itemFromIndex(i) for i in selected.indexes()]
@@ -301,7 +302,17 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
             row = MyCustomWidget(shape, self)
             listitem.setSizeHint(row.minimumSizeHint())
             self.setItemWidget(listitem, row)
-            #self._itemList.append(row)
+
+            fnd = False
+            for i in range(len(self._itemList)):
+                itm = self._itemList[i]
+                if isinstance(itm, MyCustomWidget):
+                    if row._shape == itm._shape:
+                        fnd = True
+                        break
+
+            if fnd is False:
+                self._itemList.append(row)
 
     def findItemByShape(self, shape):
         for i in range(self.count()):
@@ -355,7 +366,14 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
         wg, index = self.findWidgetItemByItem(item)
         #index = self.indexFromItem(item)
         self.takeItem(index)
-        #self.removeItemWidget(wg)
+        for i in range(len(self._itemList)):
+            itm = self._itemList[i]
+            if isinstance(itm, MyCustomWidget):
+                if item._shape == itm._shape:
+                    del self._itemList[i]
+                    break
+
+
 
     def reSort(self):
         for i in range(self.count()):
@@ -373,6 +391,14 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
                 item = self.itemWidget(widgetitem)
                 if item and item._shape:
                     s_items.append(item)
+        return s_items
+
+    def getListWidgetItems(self):
+        s_items = []
+        for i in range(self.count()):
+            widgetitem = self.item(i)
+            if isinstance(widgetitem, QListWidgetItem):
+                s_items.append(widgetitem)
         return s_items
 
 
@@ -531,4 +557,3 @@ class topToolWidget(QtWidgets.QWidget):
             self.circle.setEnabled(True)
             self.line.setEnabled(True)
             self.arrow.setEnabled(True)
-

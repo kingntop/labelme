@@ -103,7 +103,11 @@ class DockInPutTitleBar(QtWidgets.QWidget):
         dockWidget.installEventFilter(self)
 
     def eventFilter(self, source, event):
-        if event.type() == QEvent.WindowTitleChange:
+        try:
+            if event.type() == QEvent.WindowTitleChange:
+                pass
+            return super(DockInPutTitleBar, self).eventFilter(source, event)
+        except Exception as e:
             pass
             #self.setTitle(source.windowTitle())
         return super(DockInPutTitleBar, self).eventFilter(source, event)

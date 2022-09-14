@@ -6,7 +6,7 @@ import sys
 from qtpy import QT_VERSION
 
 
-__appname__ = "대한제강 labelme"
+__appname__ = "RAIID-Label Studio(Daehan Steel)"  #"대한제강 labelme"
 
 # Semantic Versioning 2.0.0: https://semver.org/
 # 1. MAJOR version when you make incompatible API changes;

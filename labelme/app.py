@@ -92,14 +92,12 @@ class MainWindow(QtWidgets.QMainWindow):
         if config is None:
             config = get_config()
         self._config = config
-        self._polyonList = []
-        temp = [{
+        self._polyonList = [{
             "label_display": "미정-미정",
             "label": "미정",
             "grade": "미정",
             "color": "#ff0000"
         }]
-        self._polyonList = temp
 
         # set default shape colors
         Shape.line_color = QtGui.QColor(*self._config["shape"]["line_color"])
@@ -171,23 +169,32 @@ class MainWindow(QtWidgets.QMainWindow):
             self.productsSelectionChanged
         )
 
+        self.polygonSearch = QtWidgets.QLineEdit()
+        self.polygonSearch.setPlaceholderText(self.tr("Search label name"))
+        self.polygonSearch.textChanged.connect(self.polygonSearchChanged)
+
         self.labelList = CustomLabelListWidget(self)
         self.lastOpenDir = None
         self.labelList.itemSelectionChanged.connect(self.labelSelectionChanged)
 
+        polygonListLayout = QtWidgets.QVBoxLayout()
+        polygonListLayout.setContentsMargins(0, 0, 0, 0)
+        polygonListLayout.setSpacing(0)
+        polygonListLayout.addWidget(self.polygonSearch)
+        polygonListLayout.addWidget(self.labelList)
         #self.labelList.itemChanged.connect(self.labelItemChanged)
         #self.labelList.itemDoubleClicked.connect(self.editLabel)
         #self.labelList.itemDropped.connect(self.labelOrderChanged)
-
         self.shape_dock = QtWidgets.QDockWidget(
             self.tr("Polygon Labels"), self
 
         )
-
         self.shape_dock.setObjectName("Labels")
         self.customLabelTitleBar = DockCheckBoxTitleBar(self, self.shape_dock)
         self.shape_dock.setTitleBarWidget(self.customLabelTitleBar)
-        self.shape_dock.setWidget(self.labelList)
+        polygonListWidget = QtWidgets.QWidget()
+        polygonListWidget.setLayout(polygonListLayout)
+        self.shape_dock.setWidget(polygonListWidget)
 
         # top Tool area
         self.selected_shapType = None
@@ -1342,6 +1349,23 @@ class MainWindow(QtWidgets.QMainWindow):
             load=False,
         )
 
+    def polygonSearchChanged(self):
+        pattern = self.polygonSearch.text()
+        #polygonitems = self.labelList.getShapeItems()
+        polygonitems = self.labelList._itemList
+        grade = None
+        label = None
+        self.labelList.clear()
+        for item in polygonitems:
+            if isinstance(item, MyCustomWidget):
+                if item and item._shape:
+                    grade = item._shape.grade
+                    label = item._shape.label
+            if pattern and pattern not in grade and pattern not in label:
+                continue
+
+            self.labelList.addShape(item._shape)
+
     # no using
     def productsSelectionChanged(self):
         items = self.products_widget.selectedItems()
@@ -1809,7 +1833,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def togglePolygons(self, value):
         self.labelList.checkStatus(1 if value else 0)
 
-    def loadFile_new(self, filename=None):
+    def loadFile(self, filename=None):
         """Load the specified file, or the last opened file if None."""
         # changing fileListWidget loads file
         if filename in self.imageList and (
@@ -1839,7 +1863,7 @@ class MainWindow(QtWidgets.QMainWindow):
         coco_file = "{}_coco.{}".format(osp.splitext(filename)[0], "json")
         if self.output_dir:
             coco_file_without_path = osp.basename(coco_file)
-            cocofp = osp.join(self.output_dir, coco_file_without_path)
+            coco_file = osp.join(self.output_dir, coco_file_without_path)
 
         if QtCore.QFile.exists(coco_file) and ConvertCoCOLabel.is_coco_file(
             coco_file
@@ -2010,7 +2034,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return True
 
-    def loadFile(self, filename=None):
+    def loadFile_(self, filename=None):
         """Load the specified file, or the last opened file if None."""
         # changing fileListWidget loads file
         if filename in self.imageList and (
@@ -2727,13 +2751,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def receiveProductsFromServerByGrade(self):
         if self.selected_grade:
-            #print(self.selected_grade)
+            # print(self.selected_grade)
             url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/products?grade=' + self.selected_grade
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             jsstr = httpReq(url, "get", headers)
             if jsstr['message'] == 'success':
                 items = jsstr['items']
-                #print("products is ", items)
+                # print("products is ", items)
                 if items and len(items) > 0:
                     self.loadProducts(items)
                 else:
@@ -2747,7 +2771,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def receiveLabelsFromServerByGrade(self):
         if self.selected_grade:
-            #print(self.selected_grade)
+            # print(self.selected_grade)
             url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/labels?grade=' + self.selected_grade
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             jsstr = httpReq(url, "get", headers)

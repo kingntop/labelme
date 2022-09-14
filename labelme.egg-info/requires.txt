@@ -6,4 +6,5 @@ Pillow>=2.8
 PyYAML
 qtpy!=1.11.2
 termcolor
+PyQt5!=5.15.3,!=5.15.4
 colorama
