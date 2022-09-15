@@ -175,22 +175,6 @@ def main():
             output_dir = output
 
     local_lang = config["local_lang"] if config["local_lang"] is not None else QtCore.QLocale.system().name()
-    # start get lang of UI
-    """
-    labele_ini = os.getcwd() + '/labelme.ini'
-    iniCls = ProcessINI(labele_ini, "sec_lang", "local_lang")
-    if iniCls.hasINIFile() is True:
-        iniCls.loadSectionKeys()
-        LogPrint(str("exist labelme ini"))
-    else:
-        iniCls.createConfigFile()
-        LogPrint(str("labelme ini created that is not exist"))
-
-    lang = iniCls.getValue()
-    if lang and lang != 'null':
-        local_lang = str(lang).replace('.qm', '')
-    """
-    # end get lang of UI
 
     config["local_lang"] = local_lang
     log_translator = QtCore.QTranslator()

@@ -224,7 +224,7 @@ def run_loginWin(config, default_config_file, filename, output_file, output_dir,
     login_win.show()
     ret = login_app.exec_()
     #print(ret)
-    if ret == 0 and config["login_state"] is True:
+    if config["login_state"] is True:
         run_mainApp(config, default_config_file, filename, output_file, output_dir, reset_config)
     elif config["login_state"] == 'tochangepwd':
         run_pwdWin(config, default_config_file, filename, output_file, output_dir, reset_config)

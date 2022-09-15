@@ -7,6 +7,7 @@ from qtpy.QtCore import Qt
 from labelme.utils.qt import httpReq
 from labelme.utils import newIcon
 from labelme.utils import appFont
+from labelme.utils.qt import LogPrint
 
 
 class LoginDLG(QWidget):
@@ -152,12 +153,11 @@ class LoginDLG(QWidget):
         # jsstr = respone.json()
         jsstr = httpReq(url, "post", headers, data)
         # print(json.dumps(jsstr))
-        # jsstr['message'] = 'tochangepwd'
         if jsstr['message'] != 'success':
-            # LogPrint(str("for login call server error").encode('utf-8'))
-            if jsstr['message'] == 'tochangepwd':
-                self._config["login_state"] = jsstr['message']
-                self.close()
+            if jsstr['code'].upper() == 'C001':
+                self._config["login_state"] = 'tochangepwd'
+                self._lb_alram.setText(jsstr['message'])
+                threading.Timer(3, self.showAlarmtext).start()
             else:
                 # self._lb_alram.setText(self.tr("Invalid ID or PWD"))
                 # threading.Timer(2, self.showErrorText).start()
@@ -166,14 +166,28 @@ class LoginDLG(QWidget):
                 )
         else:   # success
             if self._config is not None:
-                self._config["grade_yn"] = "Y" if jsstr['grade_yn'].upper() == "Y" else "N"
-                self._config["product_yn"] = "Y" if jsstr['product_yn'].upper() == "Y" else "N"
-                self._config["label_yn"] = "Y" if jsstr['label_yn'].upper() == "Y" else "N"
+                self._config["grade_yn"] = jsstr['grade_yn'].upper() if jsstr['grade_yn'].upper() == "Y" else "N"
+                self._config["product_yn"] = jsstr['product_yn'].upper() if jsstr['product_yn'].upper() == "Y" else "N"
+                self._config["label_yn"] = jsstr['label_yn'].upper() if jsstr['label_yn'].upper() == "Y" else "N"
                 self._config["user_id"] = uid
                 self._config["net"] = jsstr['net'] if jsstr['net'] else ""
+                if self._config["net"] != "":
+                    import subprocess
+                    try:
+                        #nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
+                        nd = r'{}'.format(self._config['net'])
+                        subprocess.call(nd, shell=True)
+                    except subprocess.CalledProcessError as e:
+                        LogPrint("Error subprocess : %s" % e)
+                        pass
+
             self._lb_alram.setText(self.tr("Sucess Log in"))
             self._config["login_state"] = True
-            self.close()
+            threading.Timer(0.05, self.showAlarmtext).start()
 
     def showErrorText(self):
         self._lb_alram.setText("")
+
+    def showAlarmtext(self):
+        self._lb_alram.setText("")
+        self.close()

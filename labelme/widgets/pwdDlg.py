@@ -335,14 +335,15 @@ class PwdDlgWin(QWidget):
 
 
     def cancelAction(self):
-        self._config["login_state"] = "endLogin"
+        self._config["login_state"] = "tochangepwd"
         self.close()
 
     def closeEvent(self, event):
-        self._config["login_state"] = "endLogin"
+        self._config["login_state"] = "tochangepwd"
         #super().closeEvent(event)
 
     def changeSuccess(self):
+        config["login_state"] = 'endLogin'
         self._lb_alram.setText("")
         self.close()
 

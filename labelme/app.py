@@ -266,7 +266,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 getattr(self, dock).setVisible(False)
 
 
-        self._pwdDlg = PwdDlg(self._config, self)
+        #self._pwdDlg = PwdDlg(self._config, self)
 
         self.addDockWidget(Qt.TopDockWidgetArea, self.topToolbar_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.grades_dock)
@@ -521,12 +521,12 @@ class MainWindow(QtWidgets.QMainWindow):
             icon="help",
             tip=self.tr("Show GitHub page"),
         )
-        changepwd = action(
-            self.tr("&Change Password"),
-            self.changePasswordAction,
-            icon="chg_pwd",
-            tip=self.tr("To change self password")
-        )
+        # changepwd = action(
+        #     self.tr("&Change Password"),
+        #     self.changePasswordAction,
+        #     icon="chg_pwd",
+        #     tip=self.tr("To change self password")
+        # )
 
         zoom = QtWidgets.QWidgetAction(self)
         zoom.setDefaultWidget(self.zoomWidget)
@@ -766,7 +766,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 quit,
             ),
         )
-        utils.addActions(self.menus.help, (help, None, changepwd))
+        #utils.addActions(self.menus.help, (help, None, changepwd))
+        utils.addActions(self.menus.help, (help, ))
 
         utils.addActions(
             self.menus.view,
@@ -1093,8 +1094,9 @@ class MainWindow(QtWidgets.QMainWindow):
         webbrowser.open(url)
 
     def changePasswordAction(self):
-        status = self._pwdDlg.popUpDlg()
-        print("status of change pwd is %s" % status)
+        #status = self._pwdDlg.popUpDlg()
+        #print("status of change pwd is %s" % status)
+         pass
 
 
     def toggleDrawingSensitive(self, drawing=True):
