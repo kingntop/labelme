@@ -152,16 +152,25 @@ class LoginDLG(QWidget):
         # jsstr = respone.json()
         jsstr = httpReq(url, "post", headers, data)
         # print(json.dumps(jsstr))
+        jsstr['message'] = 'tochangepwd'
         if jsstr['message'] != 'success':
             # LogPrint(str("for login call server error").encode('utf-8'))
-            self._lb_alram.setText(self.tr("Invalid ID or PWD"))
-            threading.Timer(2, self.showErrorText).start()
+            if jsstr['message'] == 'tochangepwd':
+                self._config["login_state"] = jsstr['message']
+                self.close()
+            else:
+                # self._lb_alram.setText(self.tr("Invalid ID or PWD"))
+                # threading.Timer(2, self.showErrorText).start()
+                return QtWidgets.QMessageBox.critical(
+                    self, "Message", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
+                )
         else:   # success
             if self._config is not None:
                 self._config["grade_yn"] = "Y" if jsstr['grade_yn'].upper() == "Y" else "N"
                 self._config["product_yn"] = "Y" if jsstr['product_yn'].upper() == "Y" else "N"
                 self._config["label_yn"] = "Y" if jsstr['label_yn'].upper() == "Y" else "N"
                 self._config["user_id"] = uid
+                self._config["net"] = jsstr['net'] if jsstr['net'] else ""
             self._lb_alram.setText(self.tr("Sucess Log in"))
             self._config["login_state"] = True
             self.close()

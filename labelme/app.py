@@ -51,7 +51,7 @@ from labelme.widgets import CustomListWidget
 from labelme.widgets import MyCustomWidget
 from labelme.widgets import CustomLabelListWidget
 from labelme.widgets import topToolWidget
-from labelme.widgets.pwdDlg import PwdDLG
+from labelme.widgets.pwdDlg import PwdDlg
 from labelme.widgets import labelme2coco
 from labelme.utils import appFont
 from labelme.convert_coco_label import ConvertCoCOLabel
@@ -266,7 +266,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 getattr(self, dock).setVisible(False)
 
 
-        self._pwdDlg = PwdDLG(self._config, self)
+        self._pwdDlg = PwdDlg(self._config, self)
 
         self.addDockWidget(Qt.TopDockWidgetArea, self.topToolbar_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.grades_dock)

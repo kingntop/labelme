@@ -45,4 +45,6 @@ from .processini import ProcessINI
 
 from .loginDlg import LoginDLG
 
-from .pwdDlg import PwdDLG
+from .pwdDlg import PwdDlg
+
+from .pwdDlg import PwdDlgWin
