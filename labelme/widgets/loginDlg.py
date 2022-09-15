@@ -145,7 +145,7 @@ class LoginDLG(QWidget):
             self._lb_pwd_edit.setFocus()
             return
 
-        url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/login'
+        url = self._config["api_url"] + 'ords/lm/v1/labelme/login'
         headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
         data = {'user_id': uid, 'password': pwd}
         # respone = requests.post(url, headers=headers, json=data)

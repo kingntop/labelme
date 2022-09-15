@@ -138,7 +138,7 @@ class PwdDlg(QtWidgets.QDialog):
 
     # noinspection PyUnresolvedReferences
     def changeAction_test(self):
-        url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/accounts/demo'
+        url = self._config["api_url"] + 'ords/lm/v1/labelme/accounts/demo'
         headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
         data = {
                 "user_id": "demo",
@@ -167,7 +167,7 @@ class PwdDlg(QtWidgets.QDialog):
             self._lb_alram.setText(self.tr("The password is not correct."))
             threading.Timer(3, self.showErrorText).start()
         else:
-            url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/accounts/%s' % name
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/accounts/%s' % name
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             data = {
                     "user_id": name,
@@ -310,7 +310,7 @@ class PwdDlgWin(QWidget):
             self._lb_alram.setText(self.tr("The password is not correct."))
             threading.Timer(3, self.showErrorText).start()
         else:
-            url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/accounts/%s' % name
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/accounts/%s' % name
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             data = {
                     "user_id": name,

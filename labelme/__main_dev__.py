@@ -155,6 +155,26 @@ def main():
     config_file_or_yaml = config_from_args.pop("config")
     config = get_config(config_file_or_yaml, config_from_args)
 
+    config['api_url'] = ''
+    config_def = {"api_url": ""}
+    config_ini = ProcessINI("config.ini", "server", "api_url")
+    if config_ini.hasINIFile():
+        config_ini.loadConfig(config_def)
+        lnlen = len(config_def['api_url'])
+        if lnlen < 8:
+            config_def = {"api_url": "https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/"}
+            config_ini.setConfigDef(config_def)
+            config_ini.saveConfig()
+            config['api_url'] = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/'
+        else:
+            config['api_url'] = config_def['api_url']
+    else:
+        config_ini.createConfigFile()
+        config_def = {"api_url": "https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/"}
+        config['api_url'] = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/'
+        config_ini.setConfigDef(config_def)
+        config_ini.saveConfig()
+
     if not config["labels"] and config["validate_label"]:
         logger.error(
             "--labels must be specified with --validatelabel or "

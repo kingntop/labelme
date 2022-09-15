@@ -2725,7 +2725,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # send new grade
     def sendGradeToServer(self, item, items, callback):
-        url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/grades'
+        url = self._config['api_url'] + 'ords/lm/v1/labelme/codes/grades'
         headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
         data = {'user_id': self._config['user_id'], 'grade': item}
         jsstr = httpReq(url, "post", headers, data)
@@ -2738,7 +2738,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # send new product
     def sendProductToServer(self, pstr, callback):
-        url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/products'
+        url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/products'
         headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
         data = {'user_id': self._config['user_id'], 'grade': self.selected_grade, 'product': pstr}
         jsstr = httpReq(url, "post", headers, data)
@@ -2752,7 +2752,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def receiveProductsFromServerByGrade(self):
         if self.selected_grade:
             # print(self.selected_grade)
-            url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/products?grade=' + self.selected_grade
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/products?grade=' + self.selected_grade
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             jsstr = httpReq(url, "get", headers)
             if jsstr['message'] == 'success':
@@ -2772,7 +2772,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def receiveLabelsFromServerByGrade(self):
         if self.selected_grade:
             # print(self.selected_grade)
-            url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/labels?grade=' + self.selected_grade
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/labels?grade=' + self.selected_grade
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             jsstr = httpReq(url, "get", headers)
             if jsstr['message'] == 'success':
@@ -2801,7 +2801,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 )
 
     def receiveGradesFromServer(self):
-        url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/grades'
+        url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/grades'
         headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
         jsstr = httpReq(url, "get", headers)
         if jsstr['message'] == 'success':
@@ -2813,7 +2813,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     # This function be not used now
     def receiveProductsFromServer(self):
-        url = 'https://gb9fb258fe17506-apexdb.adb.ap-seoul-1.oraclecloudapps.com/ords/lm/v1/labelme/codes/products'
+        url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/products'
         headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
         jsstr = httpReq(url, "get", headers)
         if jsstr['message'] == 'success':

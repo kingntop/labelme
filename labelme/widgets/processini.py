@@ -24,6 +24,9 @@ class ProcessINI(object):
             return True
         return False
 
+    def setConfigDef(self, dfile):
+        self.configDef = dfile
+
     # setting section
     def setSection(self, section):
         self.SECTION = section
@@ -171,6 +174,9 @@ class ProcessINI(object):
                 print("%s = %s[str]" % (key, self.configDef[key]))
 
 
+"""
+ The class is class to save data in .labelmerc into path /user/xxx/
+"""
 class AppInfoFile(object):
     def __init__(self, pFileName=None, pKey=None, pVal=None):
         # Load setting in the main thread
