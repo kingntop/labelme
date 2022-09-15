@@ -178,9 +178,9 @@ def main():
     local_lang = config["local_lang"] if config["local_lang"] is not None else QtCore.QLocale.system().name()
     # start get lang of UI
     config["local_lang"] = local_lang
-    run_loginWin(config, default_config_file, filename, output_file, output_dir)
+    run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config)
 
-def run_loginWin(config, default_config_file, filename, output_file, output_dir):
+def run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config):
     log_translator = QtCore.QTranslator()
     lang = newLang(config["local_lang"])
     log_translator.load(lang)
@@ -204,40 +204,42 @@ def run_loginWin(config, default_config_file, filename, output_file, output_dir)
     ret = login_app.exec_()
     #print(ret)
     if ret == 0 and config["login_state"] is True:
-        run_mainApp(config, default_config_file, filename, output_file, output_dir)
+        run_mainApp(config, default_config_file, filename, output_file, output_dir, reset_config)
     elif config["login_state"] == 'tochangepwd':
-        run_pwdWin(config, default_config_file)
+        run_pwdWin(config, default_config_file, filename, output_file, output_dir, reset_config)
     else:
         sys.exit(0)
 
 
-def run_pwdWin(config, default_config_file):
+def run_pwdWin(config, default_config_file, filename, output_file, output_dir, reset_config):
     lang = config["local_lang"]
     lang = str(lang).replace('.qm', '')
 
     appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
     appinfo_file.saveValue()
 
-    mlang = newLang(lang)
     pwd_translator = QtCore.QTranslator()
+    mlang = newLang(lang)
     pwd_translator.load(mlang)
 
     pwd_app = QtWidgets.QApplication([])
     pwd_app.setApplicationName(__appname__)
     pwd_app.setWindowIcon(newIcon("icon"))
     pwd_app.installTranslator(pwd_translator)
+
     pwd_win = PwdDlgWin(config)
     pwd_win.show()
+
     ret = pwd_app.exec_()
 
     if config["login_state"] == 'tochangepwd':
         config["login_state"] = False
-        run_loginWin(config, default_config_file)
+        run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config)
     elif config["login_state"] == 'endLogin':
         config["login_state"] = False
         sys.exit(0)
 
-def run_mainApp(config, default_config_file, filename, output_file, output_dir):
+def run_mainApp(config, default_config_file, filename, output_file, output_dir, reset_config):
     lang = config["local_lang"]
     lang = str(lang).replace('.qm', '')
 

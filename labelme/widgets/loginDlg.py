@@ -20,6 +20,7 @@ class LoginDLG(QWidget):
         self.initUI()
 
     def initUI(self):
+        self.setFont(appFont())
         v_mainlayout = QtWidgets.QVBoxLayout()
         v_mainlayout.setContentsMargins(40, 15, 40, 30)
         v_mainlayout.setSpacing(10)
@@ -27,7 +28,6 @@ class LoginDLG(QWidget):
         self.setWindowTitle(self.tr('User Login'))
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
 
-        self.setFont(appFont())
         # self.setGeometry(300, 300, 200, 150)
         #self.resize(400, 300)
         self.setFixedSize(400, 300)

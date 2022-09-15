@@ -206,7 +206,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
         self.fileSearch = QtWidgets.QLineEdit()
-        self.fileSearch.setPlaceholderText(self.tr("Search Filename"))
+        self.fileSearch.setPlaceholderText(self.tr("Search File name"))
         self.fileSearch.textChanged.connect(self.fileSearchChanged)
         self.fileListWidget = QtWidgets.QListWidget()
         self.fileListWidget.itemSelectionChanged.connect(

@@ -9,7 +9,7 @@ from labelme.utils import newIcon
 from labelme.utils import appFont
 
 
-class PwdDlg(QtWidgets.QDialog):# QtWidgets.QDialgo
+class PwdDlg(QtWidgets.QDialog):
 
     def __init__(
             self,
@@ -54,7 +54,6 @@ class PwdDlg(QtWidgets.QDialog):# QtWidgets.QDialgo
         v_mainlayout.addLayout(btn_layout)
 
         lb_name = QtWidgets.QLabel(self.tr('Name'))
-
         self._name_edit = QtWidgets.QLineEdit()
 
         self._name_edit.setFixedWidth(200)
@@ -65,7 +64,6 @@ class PwdDlg(QtWidgets.QDialog):# QtWidgets.QDialgo
         #id_layout.setSpacing(10)
 
         lb_pwd = QtWidgets.QLabel(self.tr('Current pasword'))
-
         self._lb_pwd_edit = QtWidgets.QLineEdit()
 
         self._lb_pwd_edit.setEchoMode(QtWidgets.QLineEdit.Password)
@@ -77,7 +75,6 @@ class PwdDlg(QtWidgets.QDialog):# QtWidgets.QDialgo
         pwd_layout.setContentsMargins(0, 5, 0, 0)
 
         lb_newpwd = QtWidgets.QLabel(self.tr('New pasword'))
-
         self._newpwd_edit = QtWidgets.QLineEdit()
 
         self._newpwd_edit.setEchoMode(QtWidgets.QLineEdit.Password)
@@ -89,7 +86,6 @@ class PwdDlg(QtWidgets.QDialog):# QtWidgets.QDialgo
         new_layout.setContentsMargins(0, 5, 0, 0)
 
         lb_verify = QtWidgets.QLabel(self.tr('verify pasword'))
-
         self._verify_edit = QtWidgets.QLineEdit()
 
         self._verify_edit.setEchoMode(QtWidgets.QLineEdit.Password)
@@ -107,14 +103,12 @@ class PwdDlg(QtWidgets.QDialog):# QtWidgets.QDialgo
         alram_layout.addWidget(self._lb_alram)
 
         btn_change = QtWidgets.QPushButton(self.tr('Change'))
-
         btn_change.setFixedWidth(150)
         btn_change.setFixedHeight(30)
         btn_change.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 5px; padding: 2px 3px; color:white;background-color: #043966; font-size: 13px}")
         btn_change.clicked.connect(self.changeAction)
 
         btn_cancle = QtWidgets.QPushButton(self.tr('Cancel'))
-
         btn_cancle.setFixedWidth(150)
         btn_cancle.setFixedHeight(30)
         btn_cancle.setStyleSheet(
@@ -163,7 +157,7 @@ class PwdDlg(QtWidgets.QDialog):# QtWidgets.QDialgo
         self._lb_alram.setStyleSheet("QLabel { color : red; }")
         user_id = self._config["user_id"]
         name = self._name_edit.text().strip()
-        if user_id != name:
+        if user_id != name and name == '':
             self._lb_alram.setText(self.tr("The user name is not correct."))
             threading.Timer(3, self.showErrorText).start()
         elif self._lb_pwd_edit.text().strip() == "":
@@ -201,16 +195,16 @@ class PwdDlgWin(QWidget):
     ):
         super().__init__()
         self._config = config
-        self.setFont(appFont())
         self.initUI()
 
     def initUI(self):
+        self.setFont(appFont())
         v_mainlayout = QtWidgets.QVBoxLayout()
         v_mainlayout.setContentsMargins(40, 20, 40, 20)
         v_mainlayout.setSpacing(10)
         self.setLayout(v_mainlayout)
-        self.setWindowTitle(self.tr('Change Password'))
         self.setWindowIcon(newIcon("chg_pwd"))
+        self.setWindowTitle(self.tr('Change Password'))
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         # self.setWindowFlag(QtCore.Qt.WindowType.WindowContextHelpButtonHint | QtCore.Qt.WindowType.WindowCloseButtonHint)
         self.setFixedSize(400, 300)
@@ -232,9 +226,7 @@ class PwdDlgWin(QWidget):
         v_mainlayout.addLayout(verify_layout)
         v_mainlayout.addLayout(alram_layout)
         v_mainlayout.addLayout(btn_layout)
-
         lb_name = QtWidgets.QLabel(self.tr('Name'))
-
         self._name_edit = QtWidgets.QLineEdit()
 
         self._name_edit.setFixedWidth(200)
@@ -243,7 +235,6 @@ class PwdDlgWin(QWidget):
         name_layout.addWidget(lb_name)
         name_layout.addWidget(self._name_edit)
         #id_layout.setSpacing(10)
-
         lb_pwd = QtWidgets.QLabel(self.tr('Current pasword'))
 
         self._lb_pwd_edit = QtWidgets.QLineEdit()
@@ -257,7 +248,6 @@ class PwdDlgWin(QWidget):
         pwd_layout.setContentsMargins(0, 5, 0, 0)
 
         lb_newpwd = QtWidgets.QLabel(self.tr('New pasword'))
-
         self._newpwd_edit = QtWidgets.QLineEdit()
 
         self._newpwd_edit.setEchoMode(QtWidgets.QLineEdit.Password)
@@ -269,7 +259,6 @@ class PwdDlgWin(QWidget):
         new_layout.setContentsMargins(0, 5, 0, 0)
 
         lb_verify = QtWidgets.QLabel(self.tr('verify pasword'))
-
         self._verify_edit = QtWidgets.QLineEdit()
 
         self._verify_edit.setEchoMode(QtWidgets.QLineEdit.Password)
@@ -281,20 +270,17 @@ class PwdDlgWin(QWidget):
         verify_layout.setContentsMargins(0, 5, 0, 0)
 
         self._lb_alram = QtWidgets.QLabel('')
-
         self._lb_alram.setStyleSheet("QLabel { color : red; }")
         self._lb_alram.setFixedHeight(18)
         alram_layout.addWidget(self._lb_alram)
 
         btn_change = QtWidgets.QPushButton(self.tr('Change'))
-
         btn_change.setFixedWidth(150)
         btn_change.setFixedHeight(30)
         btn_change.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 5px; padding: 2px 3px; color:white;background-color: #043966; font-size: 13px}")
         btn_change.clicked.connect(self.changeAction)
 
         btn_cancle = QtWidgets.QPushButton(self.tr('Cancel'))
-
         btn_cancle.setFixedWidth(150)
         btn_cancle.setFixedHeight(30)
         btn_cancle.setStyleSheet(
@@ -311,7 +297,10 @@ class PwdDlgWin(QWidget):
         self._lb_alram.setStyleSheet("QLabel { color : red; }")
         user_id = self._config["user_id"]
         name = self._name_edit.text().strip()
-        if user_id != name:
+        if name == '':
+            self._lb_alram.setText(self.tr("The user name is not correct."))
+            threading.Timer(3, self.showErrorText).start()
+        elif user_id != name:
             self._lb_alram.setText(self.tr("The user name is not correct."))
             threading.Timer(3, self.showErrorText).start()
         elif self._lb_pwd_edit.text().strip() == "":
@@ -330,7 +319,8 @@ class PwdDlgWin(QWidget):
                    }
             jsstr = httpReq(url, "post", headers=headers, data=data)
             if jsstr['message'] == 'success':
-                self.close()
+                self._lb_alram.setText(self.tr("The password be changed successfully."))
+                threading.Timer(3, self.changeSuccess).start()
                 # self._sms = True
                 # self._lb_alram.setStyleSheet("QLabel { color : #03ef62; }")
                 # self._lb_alram.setText(self.tr("The password be changed successfully."))
@@ -346,6 +336,14 @@ class PwdDlgWin(QWidget):
 
     def cancelAction(self):
         self._config["login_state"] = "endLogin"
+        self.close()
+
+    def closeEvent(self, event):
+        self._config["login_state"] = "endLogin"
+        #super().closeEvent(event)
+
+    def changeSuccess(self):
+        self._lb_alram.setText("")
         self.close()
 
     def showErrorText(self):
