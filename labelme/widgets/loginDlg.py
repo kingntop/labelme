@@ -152,7 +152,7 @@ class LoginDLG(QWidget):
         # jsstr = respone.json()
         jsstr = httpReq(url, "post", headers, data)
         # print(json.dumps(jsstr))
-        jsstr['message'] = 'tochangepwd'
+        # jsstr['message'] = 'tochangepwd'
         if jsstr['message'] != 'success':
             # LogPrint(str("for login call server error").encode('utf-8'))
             if jsstr['message'] == 'tochangepwd':
