@@ -40,6 +40,14 @@ def get_default_config():
 
     return config
 
+def get_app_version():
+    config_file = osp.join(here, "default_config.yaml")
+    appv = '20220913'
+    with open(config_file) as f:
+        config = yaml.safe_load(f)
+        if 'app_version' in config:
+            appv = config['app_version']
+    return appv
 
 def validate_config_item(key, value):
     if key == "validate_label" and value not in [None, "exact"]:

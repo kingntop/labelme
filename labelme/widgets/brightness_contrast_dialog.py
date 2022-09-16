@@ -1,5 +1,6 @@
 import PIL.Image
 import PIL.ImageEnhance
+import threading
 from qtpy.QtCore import Qt
 from qtpy import QtGui
 from qtpy import QtWidgets
@@ -26,16 +27,19 @@ class BrightnessContrastDialog(QtWidgets.QDialog):
         self.callback = callback
 
     def onNewValue(self, value):
-        brightness = self.slider_brightness.value() / 50.0
-        contrast = self.slider_contrast.value() / 50.0
+        brightness = value / 50.0
+        contrast = value / 50.0
+        # brightness = self.slider_brightness.value() / 50.0
+        # contrast = self.slider_contrast.value() / 50.0
 
         img = self.img
         img = PIL.ImageEnhance.Brightness(img).enhance(brightness)
         img = PIL.ImageEnhance.Contrast(img).enhance(contrast)
 
-        img_data = utils.img_pil_to_data(img)
-        qimage = QtGui.QImage.fromData(img_data)
-        self.callback(qimage)
+        threading.Timer(0.001, self.startShapeBright, [img]).start()  # add ckd
+        # img_data = utils.img_pil_to_data(img)
+        # qimage = QtGui.QImage.fromData(img_data)
+        # self.callback(qimage)
 
     def _create_slider(self):
         slider = QtWidgets.QSlider(Qt.Horizontal)
@@ -43,3 +47,9 @@ class BrightnessContrastDialog(QtWidgets.QDialog):
         slider.setValue(50)
         slider.valueChanged.connect(self.onNewValue)
         return slider
+
+    def startShapeBright(self, *args):
+        img = args[0]
+        img_data = utils.img_pil_to_data(img)
+        qimage = QtGui.QImage.fromData(img_data)
+        self.callback(qimage)

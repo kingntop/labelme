@@ -1,5 +1,6 @@
 import os
 import configparser
+import copy
 
 
 class ProcessINI(object):
@@ -178,8 +179,9 @@ class ProcessINI(object):
  The class is class to save data in .labelmerc into path /user/xxx/
 """
 class AppInfoFile(object):
-    def __init__(self, pFileName=None, pKey=None, pVal=None):
+    def __init__(self, pFileName=None, pKey=None, pVal=None, defaultyml=None):
         # Load setting in the main thread
+        self._defaultyml = defaultyml
         self._file = pFileName
         self._key = pKey
         self._val = pVal
@@ -207,3 +209,69 @@ class AppInfoFile(object):
 
         with open(self._file, "w", encoding="utf-8") as fp:
             fp.write(line_content)
+
+    def saveNewKeyAndValue(self):
+        if not self._file:
+            return
+        if os.path.exists(self._file) is not True:
+            return
+
+        hv = False
+        with open(self._file, "r", encoding="utf-8") as fp:
+            lines = fp.readlines()
+            for i, le in enumerate(lines):
+                if le:
+                    if le.find(self._key) == 0:
+                        hv = True
+
+        if hv is False:
+            line_content = ""
+            with open(self._file, "r", encoding="utf-8") as fp:
+                lines = fp.readlines()
+                for i, le in enumerate(lines):
+                    if le:
+                        line_content += le
+                    else:
+                        line_content += '\n'
+
+            line_content += "\n{}: {}\n".format(self._key, self._val)
+            with open(self._file, "w", encoding="utf-8") as fp:
+                fp.write(line_content)
+
+    def hasKey(self, key=None):
+        if not self._file:
+            return False
+        if os.path.exists(self._file) is not True:
+            return False
+
+        hv = False
+        akey = key if key is not None else self._key
+        if akey:
+            hv = False
+            with open(self._file, "r", encoding="utf-8") as fp:
+                lines = fp.readlines()
+                for i, le in enumerate(lines):
+                    if le:
+                        if le.find(akey) == 0:
+                            hv = True
+
+        return hv
+
+
+    def getValueByKey(self):
+        if not self._file:
+            return
+        if os.path.exists(self._file) is not True:
+            return
+        val = ''
+        with open(self._file, "r", encoding="utf-8") as fp:
+            lines = fp.readlines()
+            for i, le in enumerate(lines):
+                line = copy.copy(le)
+                line = line.rstrip()
+                if line:
+                    if line.find(self._key) == 0:
+                        line = line.strip('\n')
+                        line = line.strip('\t')
+                        val = line.split(':')[1].strip()
+        return val

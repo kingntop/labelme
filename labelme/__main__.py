@@ -9,6 +9,7 @@ from qtpy import QtCore, QtWidgets
 from labelme import __appname__, __version__
 from labelme.app import MainWindow
 from labelme.config import get_config
+from labelme.config import get_app_version
 from labelme.logger import logger
 from labelme.utils import newIcon
 
@@ -159,6 +160,7 @@ def main():
     config_file_or_yaml = config_from_args.pop("config")
     config = get_config(config_file_or_yaml, config_from_args)
 
+
     config['api_url'] = ''
     config_def = {"api_url": ""}
     config_ini = ProcessINI("config.ini", "server", "api_url")
@@ -195,6 +197,9 @@ def main():
             output_file = output
         else:
             output_dir = output
+
+
+    config['app_version'] = get_app_version()
 
     local_lang = config["local_lang"] if config["local_lang"] is not None else QtCore.QLocale.system().name()
     # start get lang of UI

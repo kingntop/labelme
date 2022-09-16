@@ -120,3 +120,4 @@ shortcuts:
   toggle_keep_prev_mode: Ctrl+P
   remove_selected_point: [Meta+H, Backspace]
 
+app_version: 20220913

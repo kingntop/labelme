@@ -1,3 +1,5 @@
+import os
+import requests
 import threading
 
 from PyQt5.QtWidgets import QDesktopWidget, QWidget
@@ -10,6 +12,7 @@ from labelme.utils import appFont
 from labelme.utils.qt import LogPrint
 
 
+
 class LoginDLG(QWidget):
 
     def __init__(
@@ -18,6 +21,7 @@ class LoginDLG(QWidget):
     ):
         super().__init__()
         self._config = config
+        self._downstate = False
         self.initUI()
 
     def initUI(self):
@@ -154,7 +158,7 @@ class LoginDLG(QWidget):
         jsstr = httpReq(url, "post", headers, data)
         # print(json.dumps(jsstr))
         if jsstr['message'] != 'success':
-            if jsstr['code'].upper() == 'C001':
+            if 'code' in jsstr and jsstr['code'].upper() == 'C001':
                 self._config["login_state"] = 'tochangepwd'
                 self._lb_alram.setText(jsstr['message'])
                 threading.Timer(3, self.showAlarmtext).start()
@@ -171,19 +175,61 @@ class LoginDLG(QWidget):
                 self._config["label_yn"] = jsstr['label_yn'].upper() if jsstr['label_yn'].upper() == "Y" else "N"
                 self._config["user_id"] = uid
                 self._config["net"] = jsstr['net'] if jsstr['net'] else ""
-                if self._config["net"] != "":
-                    import subprocess
-                    try:
-                        #nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
-                        nd = r'{}'.format(self._config['net'])
-                        subprocess.call(nd, shell=True)
-                    except subprocess.CalledProcessError as e:
-                        LogPrint("Error subprocess : %s" % e)
-                        pass
 
-            self._lb_alram.setText(self.tr("Sucess Log in"))
-            self._config["login_state"] = True
-            threading.Timer(0.05, self.showAlarmtext).start()
+            self._config["login_state"] = False
+            # self._lb_alram.setText(self.tr("Sucess Log in"))
+            # threading.Timer(0.05, self.showAlarmtext).start()
+            self.CheckAppVersion()
+
+    def CheckAppVersion(self):
+        url = self._config["api_url"] + 'ords/lm/v1/labelme/versions'
+        headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
+        jsstr = httpReq(url, "get", headers)
+        if jsstr['message'] != 'success':
+            return QtWidgets.QMessageBox.critical(
+                self, "Message", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
+            )
+        else:  # success
+            items = jsstr['items'][0]
+            ser_vsion = items['version']
+            durl = items['url']
+            file_name = durl.split('/')[-1]
+            local_vsion = self._config['app_version']
+            if local_vsion != ser_vsion and int(ser_vsion) > int(local_vsion):
+                filters = self.tr("save file (*%s)") % 'exe'
+                dlg = QtWidgets.QFileDialog(
+                    self, 'save', os.path.dirname(str(".")), filters
+                )
+                dlg.setDefaultSuffix('exe')
+                dlg.setAcceptMode(QtWidgets.QFileDialog.AcceptSave)
+                dlg.setOption(QtWidgets.QFileDialog.DontConfirmOverwrite, False)
+                dlg.setOption(QtWidgets.QFileDialog.DontUseNativeDialog, False)
+                basename = os.path.basename(os.path.splitext(file_name)[0])
+                default_labelfile_name = os.path.join(
+                    '.', basename + '.exe'
+                )
+                sfilename = dlg.getSaveFileName(
+                    self,
+                    self.tr("Choose File"),
+                    default_labelfile_name,
+                    self.tr("Label files (*%s)") % '.exe',
+                )
+                if isinstance(sfilename, tuple):
+                    sfilename, _ = sfilename
+                #print(sfilename)
+                file = requests.get(durl, stream=True)
+                if sfilename and sfilename != '':
+                    self._lb_alram.setText(self.tr("File is being downloaded. Please wait for a moment."))
+                    self.setEnabled(False)
+                    self._downstate = True
+                    threading.Timer(0.5, self.downloadApp, [sfilename, file]).start()
+                else:
+                    self._lb_alram.setText('')
+                    self._config["login_state"] = False
+            else:
+                self._config["login_state"] = True
+                self.close()
+
 
     def showErrorText(self):
         self._lb_alram.setText("")
@@ -191,3 +237,23 @@ class LoginDLG(QWidget):
     def showAlarmtext(self):
         self._lb_alram.setText("")
         self.close()
+
+    def closeEvent(self, event):
+        if self._downstate is True:
+            event.ignore()
+
+    def downloadApp(self, *args):
+        filename = args[0]
+        file = args[1]
+        with open(filename, "wb") as fb:
+            for chunk in file.iter_content(chunk_size=1024):
+                if chunk:
+                    fb.write(chunk)
+        self._config["login_state"] = False
+        try:
+            self.setEnabled(True)
+            self._lb_alram.setText("")
+            self._downstate = False
+            self.close()
+        except Exception as e:
+            raise

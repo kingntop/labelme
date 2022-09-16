@@ -10,6 +10,7 @@ import webbrowser
 import threading
 import copy
 # import ctypes
+import subprocess
 
 import imgviz
 import natsort
@@ -909,6 +910,18 @@ class MainWindow(QtWidgets.QMainWindow):
     # if self.firstStart:
     #    QWhatsThis.enterWhatsThisMode()
 
+        if self._config["net"] != "":
+            try:
+                #nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
+                cmd = r'{}'.format(self._config['net'])
+                subproc = subprocess.run(cmd, shell=True)
+                # arg = self.subprocess.args
+                print(subproc)
+            except subprocess.CalledProcessError as e:
+                LogPrint("Error subprocess : %s" % e)
+            except Exception as e:
+                LogPrint("Error subprocess : %s" % e)
+
     # add recent files
     def addRecentFilesToList(self):
         self.fileListWidget.clear()
@@ -1776,6 +1789,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.loadPixmap(
             QtGui.QPixmap.fromImage(qimage), clear_shapes=False
         )
+        #print("ending...Brightness")
 
     def brightnessContrast(self, value):
         dialog = BrightnessContrastDialog(
@@ -2231,8 +2245,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.settings.setValue("recentFiles", self.recentFiles)
         # ask the use for where to save the labels
         # self.settings.setValue('window/geometry', self.saveGeometry())
+
+        #self.labelList._selected_item.clear()
+        #self.labelList._itemList.clear()
         self.labelList.clear()
         self._polyonList.clear()
+        if self._config["net"] != "":
+            try:
+                # nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
+                cmd = r'net use * /delete'
+                subproc = subprocess.run(cmd, shell=True)
+                print(subproc)
+            except subprocess.CalledProcessError as e:
+                LogPrint("Error subprocess : %s" % e)
+            except Exception as e:
+                LogPrint("Error subprocess : %s" % e)
+
 
     def dragEnterEvent(self, event):
         extensions = [
