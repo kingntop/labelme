@@ -182,8 +182,11 @@ class PwdDlg(QtWidgets.QDialog):
                 threading.Timer(3, self.showErrorText).start()
                 self.accept()
             else:
-                self._lb_alram.setText("%s" % jsstr['message'])
-                threading.Timer(5, self.showErrorText).start()
+                # self._lb_alram.setText("%s" % jsstr['message'])
+                # threading.Timer(5, self.showErrorText).start()
+                return QtWidgets.QMessageBox.critical(
+                    self, 'Message', "<p><b>%s</b></p>%s" % ('Error', jsstr['message'])
+                )
 
     def showErrorText(self):
         self._lb_alram.setText("")

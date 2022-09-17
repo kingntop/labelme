@@ -90,11 +90,12 @@ shortcuts:
   quit: Ctrl+Q
   save: Ctrl+S
   save_as: Ctrl+Shift+S
-  save_to: null
+  saveAuto: Ctrl+A
+  save_to: Ctrl+Shift+C
   delete_file: Ctrl+Delete
 
-  open_next: [D, Ctrl+Shift+D]
-  open_prev: [A, Ctrl+Shift+A]
+  open_next: Ctrl+N
+  open_prev: Ctrl+P
 
   zoom_in: [Ctrl++, Ctrl+=]
   zoom_out: Ctrl+-
@@ -102,11 +103,11 @@ shortcuts:
   fit_window: Ctrl+F
   fit_width: Ctrl+Shift+F
 
-  create_polygon: Ctrl+N
-  create_rectangle: Ctrl+R
-  create_circle: null
-  create_line: null
-  create_point: null
+  create_polygon: Ctrl+1
+  create_rectangle: Ctrl+2
+  create_circle: Ctrl+3
+  create_line: Ctrl+4
+  create_point: Ctrl+5
   create_linestrip: null
   edit_polygon: Ctrl+J
   delete_polygon: Delete
@@ -114,10 +115,16 @@ shortcuts:
   copy_polygon: Ctrl+C
   paste_polygon: Ctrl+V
   undo: Ctrl+Z
-  undo_last_point: Ctrl+Z
+  undo_last_point: Ctrl+Y
   add_point_to_edge: Ctrl+Shift+P
   edit_label: Ctrl+E
   toggle_keep_prev_mode: Ctrl+P
   remove_selected_point: [Meta+H, Backspace]
+  tutorial: Alt+H
+  changepwd: Alt+C
+  hideAll: Alt+9
+  showAll: Alt+0
+  brightness_contrast: Ctrl+B
+  trans: Ctrl+X
 
 app_version: 20220913

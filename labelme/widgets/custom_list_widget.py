@@ -1,10 +1,11 @@
 import threading
+import functools
 from qtpy import QtCore, QtWidgets, QtGui
 from qtpy.QtGui import QColor, QColorConstants
 from qtpy.QtCore import Qt
 
 from qtpy.QtWidgets import QLayout, QHBoxLayout, QVBoxLayout, \
-    QLabel, QLineEdit, QToolButton, QScrollArea, QStyle, QListWidgetItem
+    QLabel, QLineEdit, QToolButton, QScrollArea, QStyle, QListWidgetItem, QAction
 from PyQt5.QtCore import pyqtSlot, QTimer
 from .. import utils
 from labelme.widgets.custom_qlabel import CQLabel
@@ -417,7 +418,9 @@ class topToolWidget(QtWidgets.QWidget):
         # setting UI
         self.initUI()
 
-    def initUI(self):
+    def initUI_(self):
+        shortcuts = self._app._config["shortcuts"]
+
         hbox_layout = QHBoxLayout()
         hbox_layout.setSpacing(0)
         hbox_layout.setContentsMargins(5, 5, 0, 0)
@@ -428,6 +431,103 @@ class topToolWidget(QtWidgets.QWidget):
         self.polygon.clicked.connect(self.polygonClick)
         self.polygon.setEnabled(False)
         #self.polygon.setFixedSize(150, 150)
+        self.polygon.setShortcut(shortcuts['create_polygon'])
+
+
+        self.rect = QToolButton()
+        self.rect.setIcon(utils.newIcon("rect"))
+        self.rect.setIconSize(QtCore.QSize(20, 20))
+        self.rect.clicked.connect(self.rectClick)
+        self.rect.setEnabled(False)
+        self.rect.setShortcut(shortcuts['create_rectangle'])
+
+        self.circle = QToolButton()
+        self.circle.setIcon(utils.newIcon("circle"))
+        self.circle.setIconSize(QtCore.QSize(20, 20))
+        self.circle.clicked.connect(self.circleClick)
+        self.circle.setEnabled(False)
+
+        self.line = QToolButton()
+        self.line.setIcon(utils.newIcon("line"))
+        self.line.setIconSize(QtCore.QSize(20, 20))
+        self.line.clicked.connect(self.lineClick)
+        self.line.setEnabled(False)
+
+        self.arrow = QToolButton()
+        self.arrow.setIcon(utils.newIcon("CursorArrow"))
+        self.arrow.setIconSize(QtCore.QSize(20, 20))
+        self.arrow.clicked.connect(self.arrowClick)
+        self.arrow.setEnabled(False)
+
+        self.trans = QToolButton()
+        self.trans.setIcon(utils.newIcon("ftrans"))
+        self.trans.setIconSize(QtCore.QSize(20, 20))
+        self.trans.clicked.connect(self.transClick)
+        self.trans.setEnabled(False)
+
+        hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.polygon, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.rect, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.circle, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.line, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.arrow, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.trans, 0, QtCore.Qt.AlignLeft)
+
+        hbox_layout.addStretch()
+
+        self.setLayout(hbox_layout)
+
+    def initUI(self):
+        shortcuts = self._app._config["shortcuts"]
+        # top_create_polygon = action(
+        #     self.tr("Create Polygons"),
+        #     self.temp_top_create_rectangle,
+        #     shortcuts["create_polygon"],
+        #     icon="poly",
+        #     tip=self.tr("Start drawing polygons"),
+        # )
+        # top_create_rectangle = action(
+        #     self.tr("Create Rectangle"),
+        #     self.temp_top_create_rectangle,
+        #     shortcuts["create_rectangle"],
+        #     icon="rect",
+        #     tip=self.tr("Start drawing rectangles"),
+        # )
+        # top_create_circle = action(
+        #     self.tr("Create Circle"),
+        #     self.temp_top_create_rectangle,
+        #     shortcuts["create_circle"],
+        #     icon="circle",
+        #     tip=self.tr("Start drawing circles"),
+        # )
+        # top_create_line = action(
+        #     self.tr("Create Line"),
+        #     self.temp_top_create_rectangle,
+        #     shortcuts["create_line"],
+        #     icon="line",
+        #     tip=self.tr("Start drawing lines"),
+        # )
+        # self.actions.topToolbar_dock = (
+        #     top_create_polygon,
+        #     top_create_rectangle,
+        #     top_create_circle,
+        #     top_create_line,
+        # )
+
+        hbox_layout = QHBoxLayout()
+        hbox_layout.setSpacing(0)
+        hbox_layout.setContentsMargins(5, 5, 0, 0)
+
+        self.polygon = QToolButton()
+        self.polygon.setIcon(utils.newIcon("poly"))
+        self.polygon.setIconSize(QtCore.QSize(20, 20))
+        self.polygon.clicked.connect(self.polygonClick)
+        self.polygon.setEnabled(False)
 
         self.rect = QToolButton()
         self.rect.setIcon(utils.newIcon("rect"))
@@ -458,6 +558,7 @@ class topToolWidget(QtWidgets.QWidget):
         self.trans.setIconSize(QtCore.QSize(20, 20))
         self.trans.clicked.connect(self.transClick)
         self.trans.setEnabled(False)
+        self.trans.setShortcut(shortcuts["trans"])
 
         hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.polygon, 0, QtCore.Qt.AlignLeft)
@@ -513,9 +614,14 @@ class topToolWidget(QtWidgets.QWidget):
             self._app.toggleDrawMode(False, createMode="line")
 
     def arrowClick(self):
-        self._app.toggleDrawMode(True)
+        if self._app.canvas.current:
+            self._app.canvas.current = None
+            self._app.canvas.drawingPolygon.emit(False)
+            self._app.canvas.update()
+
+        #self._app.toggleDrawMode(True)
         #self._app.canvas.setEnabled(False)
-        self._app.canvas.overrideCursor(QtCore.Qt.ArrowCursor)
+        #self._app.canvas.overrideCursor(QtCore.Qt.ArrowCursor)
 
     def transClick(self):
         self.trans.setEnabled(False)

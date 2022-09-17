@@ -267,7 +267,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 getattr(self, dock).setVisible(False)
 
 
-        #self._pwdDlg = PwdDlg(self._config, self)
+        self._pwdDlg = PwdDlg(self._config, self)
+
 
         self.addDockWidget(Qt.TopDockWidgetArea, self.topToolbar_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.grades_dock)
@@ -350,11 +351,21 @@ class MainWindow(QtWidgets.QMainWindow):
             tip=self.tr("Change where annotations are loaded/saved"),
         )
 
+        # saveAuto = action(
+        #     text=self.tr("Save &Automatically"),
+        #     slot=lambda x: self.actions.saveAuto.setChecked(x),
+        #     shortcut=shortcuts["saveAuto"],
+        #     icon="save",
+        #     tip=self.tr("Save automatically"),
+        #     checkable=True,
+        #     enabled=True,
+        # )
         saveAuto = action(
-            text=self.tr("Save &Automatically"),
-            slot=lambda x: self.actions.saveAuto.setChecked(x),
+            text=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
+            slot=self.saveAutoAction,
+            shortcut=shortcuts["saveAuto"],
             icon="save",
-            tip=self.tr("Save automatically"),
+            tip=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
             checkable=True,
             enabled=True,
         )
@@ -376,15 +387,15 @@ class MainWindow(QtWidgets.QMainWindow):
             "Close current file",
         )
 
-        toggle_keep_prev_mode = action(
-            self.tr("Keep Previous Annotation"),
-            self.toggleKeepPrevMode,
-            shortcuts["toggle_keep_prev_mode"],
-            None,
-            self.tr('Toggle "keep pevious annotation" mode'),
-            checkable=True,
-        )
-        toggle_keep_prev_mode.setChecked(self._config["keep_prev"])
+        # toggle_keep_prev_mode = action(
+        #     self.tr("Keep Previous Annotation"),
+        #     self.toggleKeepPrevMode,
+        #     shortcuts["toggle_keep_prev_mode"],
+        #     None,
+        #     self.tr('Toggle "keep pevious annotation" mode'),
+        #     checkable=True,
+        # )
+        # toggle_keep_prev_mode.setChecked(self._config["keep_prev"])
 
         createMode = action(
             self.tr("Create Polygons"),
@@ -426,14 +437,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tr("Start drawing points"),
             enabled=False,
         )
-        createLineStripMode = action(
-            self.tr("Create LineStrip"),
-            lambda: self.toggleDrawMode(False, createMode="linestrip"),
-            shortcuts["create_linestrip"],
-            "objects",
-            self.tr("Start drawing linestrip. Ctrl+LeftClick ends creation."),
-            enabled=False,
-        )
+        # createLineStripMode = action(
+        #     self.tr("Create LineStrip"),
+        #     lambda: self.toggleDrawMode(False, createMode="linestrip"),
+        #     shortcuts["create_linestrip"],
+        #     "objects",
+        #     self.tr("Start drawing linestrip. Ctrl+LeftClick ends creation."),
+        #     enabled=False,
+        # )
         editMode = action(
             self.tr("Edit Polygons"),
             self.setEditMode,
@@ -504,6 +515,7 @@ class MainWindow(QtWidgets.QMainWindow):
         hideAll = action(
             self.tr("&Hide\nPolygons"),
             functools.partial(self.togglePolygons, False),
+            shortcuts["hideAll"],
             icon="eye",
             tip=self.tr("Hide all polygons"),
             enabled=False,
@@ -511,23 +523,27 @@ class MainWindow(QtWidgets.QMainWindow):
         showAll = action(
             self.tr("&Show\nPolygons"),
             functools.partial(self.togglePolygons, True),
+            shortcuts["showAll"],
             icon="eye",
             tip=self.tr("Show all polygons"),
             enabled=False,
         )
 
-        help = action(
+        tutorial = action(
             self.tr("&Help"),
             self.tutorial,
+            shortcuts["tutorial"],
             icon="help",
             tip=self.tr("Show GitHub page"),
         )
-        # changepwd = action(
-        #     self.tr("&Change Password"),
-        #     self.changePasswordAction,
-        #     icon="chg_pwd",
-        #     tip=self.tr("To change self password")
-        # )
+        changepwd = action(
+            self.tr("&Change Password"),
+            self.changePasswordAction,
+            shortcuts["changepwd"],
+            icon="chg_pwd",
+            tip=self.tr("To change self password")
+        )
+
 
         zoom = QtWidgets.QWidgetAction(self)
         zoom.setDefaultWidget(self.zoomWidget)
@@ -570,14 +586,14 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tr("Zoom to original size"),
             enabled=False,
         )
-        keepPrevScale = action(
-            self.tr("&Keep Previous Scale"),
-            self.enableKeepPrevScale,
-            tip=self.tr("Keep previous zoom scale"),
-            checkable=True,
-            checked=self._config["keep_prev_scale"],
-            enabled=True,
-        )
+        # keepPrevScale = action(
+        #     self.tr("&Keep Previous Scale"),
+        #     self.enableKeepPrevScale,
+        #     tip=self.tr("Keep previous zoom scale"),
+        #     checkable=True,
+        #     checked=self._config["keep_prev_scale"],
+        #     enabled=True,
+        # )
         fitWindow = action(
             self.tr("&Fit Window"),
             self.setFitWindow,
@@ -597,11 +613,11 @@ class MainWindow(QtWidgets.QMainWindow):
             enabled=False,
         )
         brightnessContrast = action(
-            "&Brightness Contrast",
+            "&Brightness\nContrast",
             self.brightnessContrast,
-            None,
+            shortcuts["brightness_contrast"],
             "color",
-            "Adjust brightness and contrast",
+            self.tr("Adjust brightness and contrast"),
             enabled=False,
         )
         # Group zoom controls into a list for easier toggling.
@@ -661,7 +677,7 @@ class MainWindow(QtWidgets.QMainWindow):
             open=open_,
             close=close,
             deleteFile=deleteFile,
-            toggleKeepPrevMode=toggle_keep_prev_mode,
+            #toggleKeepPrevMode=toggle_keep_prev_mode,
             delete=delete,
             edit=edit,
             duplicate=duplicate,
@@ -676,13 +692,13 @@ class MainWindow(QtWidgets.QMainWindow):
             createCircleMode=createCircleMode,
             createLineMode=createLineMode,
             createPointMode=createPointMode,
-            createLineStripMode=createLineStripMode,
+            #createLineStripMode=createLineStripMode,
 
             zoom=zoom,
             zoomIn=zoomIn,
             zoomOut=zoomOut,
             zoomOrg=zoomOrg,
-            keepPrevScale=keepPrevScale,
+            #keepPrevScale=keepPrevScale,
             fitWindow=fitWindow,
             fitWidth=fitWidth,
             brightnessContrast=brightnessContrast,
@@ -699,10 +715,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 None,
                 undo,
                 undoLastPoint,
-                None,
-                removePoint,
-                None,
-                toggle_keep_prev_mode,
+                # None,
+                # removePoint,
+                # None,
+                # toggle_keep_prev_mode,
             ),
             # menu shown at right click
             menu=(
@@ -711,7 +727,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 createCircleMode,
                 createLineMode,
                 createPointMode,
-                createLineStripMode,
+                #createLineStripMode,
                 editMode,
                 edit,
                 duplicate,
@@ -720,7 +736,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 delete,
                 undo,
                 undoLastPoint,
-                removePoint,
+                # removePoint,
             ),
             onLoadActive=(
                 close,
@@ -729,7 +745,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 createCircleMode,
                 createLineMode,
                 createPointMode,
-                createLineStripMode,
+                #createLineStripMode,
                 editMode,
                 brightnessContrast,
             ),
@@ -768,7 +784,7 @@ class MainWindow(QtWidgets.QMainWindow):
             ),
         )
         #utils.addActions(self.menus.help, (help, None, changepwd))
-        utils.addActions(self.menus.help, (help, ))
+        utils.addActions(self.menus.help, (tutorial, None, changepwd))
 
         utils.addActions(
             self.menus.view,
@@ -778,7 +794,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 hideAll,
                 showAll,
                 None,
-                self.topToolbar_dock.toggleViewAction(),
+                #self.topToolbar_dock.toggleViewAction(),
                 self.grades_dock.toggleViewAction(),
                 self.products_dock.toggleViewAction(),
                 self.shape_dock.toggleViewAction(),
@@ -787,7 +803,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 zoomIn,
                 zoomOut,
                 zoomOrg,
-                keepPrevScale,
+                #keepPrevScale,
                 None,
                 fitWindow,
                 fitWidth,
@@ -833,8 +849,6 @@ class MainWindow(QtWidgets.QMainWindow):
             fitWidth,
         )
 
-        # add ckd
-        #self.toptools = self.toptoolbar("Top")
         # Menu buttons on Left
         self.statusBar().showMessage(str(self.tr("%s started.")) % __appname__)
         self.statusBar().setFont(appFont())
@@ -966,7 +980,8 @@ class MainWindow(QtWidgets.QMainWindow):
         toolbar.setToolButtonStyle(Qt.ToolButtonIconOnly)
         if actions:
             utils.addActions(toolbar, actions)
-        self.addToolBar(Qt.TopToolBarArea, toolbar)
+
+        #self.addToolBar(Qt.TopToolBarArea, toolbar)
         return toolbar
 
     # Support Functions
@@ -987,7 +1002,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.actions.createCircleMode,
             self.actions.createLineMode,
             self.actions.createPointMode,
-            self.actions.createLineStripMode,
+            #self.actions.createLineStripMode,
             self.actions.editMode,
         )
         utils.addActions(self.menus.edit, actions + self.actions.editMenu)
@@ -1022,7 +1037,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.createCircleMode.setEnabled(True)
         self.actions.createLineMode.setEnabled(True)
         self.actions.createPointMode.setEnabled(True)
-        self.actions.createLineStripMode.setEnabled(True)
+        #self.actions.createLineStripMode.setEnabled(True)
         title = __appname__
         if self.filename is not None:
             title = "{} - {}".format(title, self.filename)
@@ -1103,13 +1118,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
 
     def tutorial(self):
-        url = "https://github.com/kingntop/labelme"  # NOQA
+        url = self._config["api_url"] + 'ords/r/lm/labelme'  # NOQA
         webbrowser.open(url)
 
     def changePasswordAction(self):
-        #status = self._pwdDlg.popUpDlg()
+        status = self._pwdDlg.popUpDlg()
         #print("status of change pwd is %s" % status)
-         pass
+        #pass
 
 
     def toggleDrawingSensitive(self, drawing=True):
@@ -1130,8 +1145,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.actions.createCircleMode.setEnabled(True)
             self.actions.createLineMode.setEnabled(True)
             self.actions.createPointMode.setEnabled(True)
-            self.actions.createLineStripMode.setEnabled(True)
-
+            #self.actions.createLineStripMode.setEnabled(True)
             self.topToolWidget.editmodeClick(True)
         else:
             if createMode == "polygon":
@@ -1140,8 +1154,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createCircleMode.setEnabled(True)
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
-                self.actions.createLineStripMode.setEnabled(True)
-
+                #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "rectangle":
                 self.actions.createMode.setEnabled(True)
@@ -1149,8 +1162,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createCircleMode.setEnabled(True)
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
-                self.actions.createLineStripMode.setEnabled(True)
-
+                #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "line":
                 self.actions.createMode.setEnabled(True)
@@ -1158,8 +1170,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createCircleMode.setEnabled(True)
                 self.actions.createLineMode.setEnabled(False)
                 self.actions.createPointMode.setEnabled(True)
-                self.actions.createLineStripMode.setEnabled(True)
-
+                #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "point":
                 self.actions.createMode.setEnabled(True)
@@ -1167,8 +1178,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createCircleMode.setEnabled(True)
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(False)
-                self.actions.createLineStripMode.setEnabled(True)
-
+                #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "circle":
                 self.actions.createMode.setEnabled(True)
@@ -1176,8 +1186,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createCircleMode.setEnabled(False)
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
-                self.actions.createLineStripMode.setEnabled(True)
-
+                #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "linestrip":
                 self.actions.createMode.setEnabled(True)
@@ -1185,8 +1194,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createCircleMode.setEnabled(True)
                 self.actions.createLineMode.setEnabled(True)
                 self.actions.createPointMode.setEnabled(True)
-                self.actions.createLineStripMode.setEnabled(False)
-
+                #self.actions.createLineStripMode.setEnabled(False)
                 self.topToolWidget.eventFromMenu(createMode)
             else:
                 raise ValueError("Unsupported createMode: %s" % createMode)
@@ -1847,6 +1855,16 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def togglePolygons(self, value):
+        if value:
+            self.actions.tool[7].setEnabled(True)
+            self.actions.tool[8].setEnabled(True)
+            self.actions.tool[9].setEnabled(False)
+        else:
+            self.actions.tool[7].setEnabled(False)
+            self.actions.tool[8].setEnabled(False)
+            self.actions.tool[9].setEnabled(True)
+        #         action.setEnabled(value)
+
         self.labelList.checkStatus(1 if value else 0)
 
     def loadFile(self, filename=None):
@@ -2045,6 +2063,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.setFocus()
         self.status(str(self.tr("Loaded %s")) % osp.basename(str(filename)))
 
+        self.togglePolygons(True) # add ckd
+
         # add ckd
         self.topToolWidget.editmodeClick(True)
 
@@ -2232,6 +2252,16 @@ class MainWindow(QtWidgets.QMainWindow):
     def enableSaveImageWithData(self, enabled):
         self._config["store_data"] = enabled
         self.actions.saveWithImageData.setChecked(enabled)
+
+    def saveAutoAction(self, enabled):
+        self._config["auto_save"] = enabled
+        if enabled is False:
+            self.actions.saveAuto.setText(self.tr("Save automatically"))
+            self.actions.saveAuto.setToolTip(self.tr("Save automatically"))
+        else:
+            self.actions.saveAuto.setText(self.tr("Turn off Save automatically"))
+            self.actions.saveAuto.setToolTip(self.tr("Turn off Save automatically"))
+        self.actions.saveAuto.setChecked(enabled)
 
     def closeEvent(self, event):
         if not self.mayContinue():
