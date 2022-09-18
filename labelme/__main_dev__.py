@@ -10,6 +10,8 @@ from labelme import __appname__, __version__
 from labelme.app import MainWindow
 from labelme.config import get_config
 from labelme.config import get_app_version
+from labelme.config import get_app_origin_version
+from labelme.config import copy_to_version
 from labelme.logger import logger
 from labelme.utils import newIcon
 
@@ -158,8 +160,19 @@ def main():
     filename = config_from_args.pop("filename")
     output = config_from_args.pop("output")
     config_file_or_yaml = config_from_args.pop("config")
-    config = get_config(config_file_or_yaml, config_from_args)
 
+    o_app_version = get_app_origin_version(config_file_or_yaml)
+    if o_app_version is not None and o_app_version is not "":
+        r_app_version = get_app_version()
+        if r_app_version != o_app_version:
+            cody_to_version()
+    elif o_app_version is None:
+        copy_to_version()
+    else:
+        pass
+
+    config = get_config(config_file_or_yaml, config_from_args)
+    config['app_version'] = get_app_version()
 
     config['api_url'] = ''
     config_def = {"api_url": ""}

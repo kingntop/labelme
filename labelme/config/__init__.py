@@ -45,9 +45,33 @@ def get_app_version():
     appv = '20220913'
     with open(config_file) as f:
         config = yaml.safe_load(f)
-        if 'app_version' in config:
-            appv = config['app_version']
+    if 'app_version' in config:
+        appv = config['app_version']
     return appv
+
+def copy_to_version():
+    config_file = osp.join(here, "default_config.yaml")
+    user_config_file = osp.join(osp.expanduser("~"), ".labelmerc")
+    try:
+        shutil.copy(config_file, user_config_file)
+    except Exception:
+        logger.warn("Failed to save config: {}".format(user_config_file))
+    pass
+
+def get_app_origin_version(config_file_or_yaml=None):
+    if config_file_or_yaml is None:
+        return None
+    if not osp.exists(config_file_or_yaml):
+        return None
+    config_from_yaml = yaml.safe_load(config_file_or_yaml)
+    if not isinstance(config_from_yaml, dict):
+        with open(config_from_yaml) as f:
+            config_from_yaml = yaml.safe_load(f)
+        if 'app_version' in config_from_yaml:
+            return config_from_yaml['app_version']
+        return None
+
+    return None
 
 def validate_config_item(key, value):
     if key == "validate_label" and value not in [None, "exact"]:

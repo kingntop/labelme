@@ -126,5 +126,6 @@ shortcuts:
   showAll: Alt+0
   brightness_contrast: Ctrl+B
   trans: Ctrl+X
+  cursorArrow: Ctrl+7
 
-app_version: 20220913
+app_version: 20220918

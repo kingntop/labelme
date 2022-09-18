@@ -198,12 +198,11 @@ class MainWindow(QtWidgets.QMainWindow):
         self.shape_dock.setWidget(polygonListWidget)
 
         # top Tool area
-        self.selected_shapType = None
         self.topToolWidget = topToolWidget("toptool", self)
         self.topToolbar_dock = QtWidgets.QDockWidget(self.tr("Top bar"), self)
         self.topToolbar_dock.setWidget(self.topToolWidget)
         self.topToolbar_dock.setTitleBarWidget(QtWidgets.QWidget())
-        self.topToolWidget.setEnabled(True)
+        self.topToolWidget.setEnabled(False)
 
 
         self.fileSearch = QtWidgets.QLineEdit()
@@ -759,7 +758,6 @@ class MainWindow(QtWidgets.QMainWindow):
             edit=self.menu(self.tr("&Edit")),
             view=self.menu(self.tr("&View")),
             help=self.menu(self.tr("&Help")),
-            # lang=self.menu(self.tr("&Language")),
             recentFiles=QtWidgets.QMenu(self.tr("Open &Recent")),
             labelList=labelMenu,
         )
@@ -783,7 +781,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 quit,
             ),
         )
-        #utils.addActions(self.menus.help, (help, None, changepwd))
         utils.addActions(self.menus.help, (tutorial, None, changepwd))
 
         utils.addActions(
@@ -834,7 +831,7 @@ class MainWindow(QtWidgets.QMainWindow):
             save,
             deleteFile,
             None,
-            # createMode,
+            createMode,
             editMode,
             hideAll,
             showAll,
@@ -992,6 +989,12 @@ class MainWindow(QtWidgets.QMainWindow):
     def populateModeActions(self):
         tool, menu = self.actions.tool, self.actions.menu
         self.tools.clear()
+        if isinstance(tool[7], QtWidgets.QAction):
+            ac_txt = tool[7].iconText()
+            ac_txt = ac_txt + "(1)"
+            tool[7].setIconText(ac_txt)
+
+
         utils.addActions(self.tools, tool)
         self.canvas.menus[0].clear()
         utils.addActions(self.canvas.menus[0], menu)
@@ -1856,14 +1859,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def togglePolygons(self, value):
         if value:
-            self.actions.tool[7].setEnabled(True)
-            self.actions.tool[8].setEnabled(True)
-            self.actions.tool[9].setEnabled(False)
-        else:
-            self.actions.tool[7].setEnabled(False)
-            self.actions.tool[8].setEnabled(False)
             self.actions.tool[9].setEnabled(True)
-        #         action.setEnabled(value)
+            self.actions.tool[10].setEnabled(False)
+        else:
+            self.actions.tool[9].setEnabled(False)
+            self.actions.tool[10].setEnabled(True)
 
         self.labelList.checkStatus(1 if value else 0)
 

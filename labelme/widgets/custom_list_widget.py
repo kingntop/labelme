@@ -486,33 +486,7 @@ class topToolWidget(QtWidgets.QWidget):
         #     icon="poly",
         #     tip=self.tr("Start drawing polygons"),
         # )
-        # top_create_rectangle = action(
-        #     self.tr("Create Rectangle"),
-        #     self.temp_top_create_rectangle,
-        #     shortcuts["create_rectangle"],
-        #     icon="rect",
-        #     tip=self.tr("Start drawing rectangles"),
-        # )
-        # top_create_circle = action(
-        #     self.tr("Create Circle"),
-        #     self.temp_top_create_rectangle,
-        #     shortcuts["create_circle"],
-        #     icon="circle",
-        #     tip=self.tr("Start drawing circles"),
-        # )
-        # top_create_line = action(
-        #     self.tr("Create Line"),
-        #     self.temp_top_create_rectangle,
-        #     shortcuts["create_line"],
-        #     icon="line",
-        #     tip=self.tr("Start drawing lines"),
-        # )
-        # self.actions.topToolbar_dock = (
-        #     top_create_polygon,
-        #     top_create_rectangle,
-        #     top_create_circle,
-        #     top_create_line,
-        # )
+
 
         hbox_layout = QHBoxLayout()
         hbox_layout.setSpacing(0)
@@ -547,6 +521,7 @@ class topToolWidget(QtWidgets.QWidget):
         self.arrow.setIconSize(QtCore.QSize(20, 20))
         self.arrow.clicked.connect(self.arrowClick)
         self.arrow.setEnabled(False)
+        self.arrow.setShortcut(shortcuts["cursorArrow"])
 
         self.trans = QToolButton()
         self.trans.setIcon(utils.newIcon("ftrans"))
@@ -578,7 +553,6 @@ class topToolWidget(QtWidgets.QWidget):
         self.circle.setEnabled(True)
         self.line.setEnabled(True)
         if self._app is not None:
-            self._app.selected_shapType = "polygon"
             self._app.toggleDrawMode(False, createMode="polygon")
 
     def rectClick(self):
@@ -587,7 +561,6 @@ class topToolWidget(QtWidgets.QWidget):
         self.circle.setEnabled(True)
         self.line.setEnabled(True)
         if self._app is not None:
-            self._app.selected_shapType = "rectangle"
             self._app.toggleDrawMode(False, createMode="rectangle")
 
     def circleClick(self):
@@ -596,7 +569,6 @@ class topToolWidget(QtWidgets.QWidget):
         self.circle.setEnabled(False)
         self.line.setEnabled(True)
         if self._app is not None:
-            self._app.selected_shapType = "circle"
             self._app.toggleDrawMode(False, createMode="circle")
 
     def lineClick(self):
@@ -605,7 +577,6 @@ class topToolWidget(QtWidgets.QWidget):
         self.circle.setEnabled(True)
         self.line.setEnabled(False)
         if self._app is not None:
-            self._app.selected_shapType = "line"
             self._app.toggleDrawMode(False, createMode="line")
 
     def arrowClick(self):
@@ -613,9 +584,7 @@ class topToolWidget(QtWidgets.QWidget):
         #     self._app.canvas.current = None
         #     self._app.canvas.drawingPolygon.emit(False)
         #     self._app.canvas.update()
-
         self._app.toggleDrawMode(True)
-        self._app.canvas.setEnabled(False)
         self._app.canvas.overrideCursor(QtCore.Qt.ArrowCursor)
 
     def transClick(self):
@@ -632,6 +601,9 @@ class topToolWidget(QtWidgets.QWidget):
 
 
     def eventFromMenu(self, mode):
+        if self.isEnabled() is False:
+            self.setEnabled(True)
+
         if mode == "polygon":
             self.polygon.setEnabled(False)
             self.rect.setEnabled(True)
