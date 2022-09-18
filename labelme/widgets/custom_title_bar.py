@@ -26,12 +26,12 @@ class DockInPutTitleBar(QtWidgets.QWidget):
             if lang == "ko_KR":
                 self.titleLabel.setText("등급 (총 %s)" % 0)
             else:
-                self.titleLabel.setText("Grades (Total %s)" % 0)
+                self.titleLabel.setText(self.tr("Grades (Total %s)") % 0)
         if self._bartype == "productsbar":
             if lang == "ko_KR":
                 self.titleLabel.setText("대표 품목 (총 %s)" % 0)
             else:
-                self.titleLabel.setText("Products (Total %s)" % 0)
+                self.titleLabel.setText(self.tr("Products (Total %s)") % 0)
 
 
         self.hidnBtn = QtWidgets.QPushButton(self)
@@ -205,7 +205,7 @@ class DockCheckBoxTitleBar(QtWidgets.QWidget):
         boxLayout.setContentsMargins(1, 1, 1, 1)
 
         self.titleLabel = QLabel(self)
-        polyT = "Polygon Labels (Total %s)"
+        polyT = self.tr("Polygon Labels (Total %s)")
         if self._app._config["local_lang"] == "ko_KR":
             polyT = "다각형 레이블 (총 %s)"
         self.titleLabel.setText(polyT % 0)

@@ -254,8 +254,6 @@ class MyCustomWidget(QtWidgets.QWidget):
         self._id = idx
         self.label.setText("#{}  {}".format(self._id, self._shape.label_display))
 
-
-
 # polygon list
 class CustomLabelListWidget(QtWidgets.QListWidget):
     itemSelectionChanged = QtCore.Signal(list, list)
@@ -401,9 +399,6 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
             if isinstance(widgetitem, QListWidgetItem):
                 s_items.append(widgetitem)
         return s_items
-
-
-
 
 class topToolWidget(QtWidgets.QWidget):
     def __init__(self, objname, app=None):
@@ -614,14 +609,14 @@ class topToolWidget(QtWidgets.QWidget):
             self._app.toggleDrawMode(False, createMode="line")
 
     def arrowClick(self):
-        if self._app.canvas.current:
-            self._app.canvas.current = None
-            self._app.canvas.drawingPolygon.emit(False)
-            self._app.canvas.update()
+        # if self._app.canvas.current:
+        #     self._app.canvas.current = None
+        #     self._app.canvas.drawingPolygon.emit(False)
+        #     self._app.canvas.update()
 
-        #self._app.toggleDrawMode(True)
-        #self._app.canvas.setEnabled(False)
-        #self._app.canvas.overrideCursor(QtCore.Qt.ArrowCursor)
+        self._app.toggleDrawMode(True)
+        self._app.canvas.setEnabled(False)
+        self._app.canvas.overrideCursor(QtCore.Qt.ArrowCursor)
 
     def transClick(self):
         self.trans.setEnabled(False)

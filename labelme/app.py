@@ -372,9 +372,9 @@ class MainWindow(QtWidgets.QMainWindow):
         saveAuto.setChecked(self._config["auto_save"])
 
         saveWithImageData = action(
-            text="Save With Image Data",
+            text=self.tr("Save With Image Data"),
             slot=self.enableSaveImageWithData,
-            tip="Save image data in label file",
+            tip=self.tr("Save image data in label file"),
             checkable=True,
             checked=self._config["store_data"],
         )
@@ -534,7 +534,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tutorial,
             shortcuts["tutorial"],
             icon="help",
-            tip=self.tr("Show GitHub page"),
+            tip=self.tr("Show Help page"),
         )
         changepwd = action(
             self.tr("&Change Password"),
@@ -604,7 +604,7 @@ class MainWindow(QtWidgets.QMainWindow):
             enabled=False,
         )
         fitWidth = action(
-            self.tr("Fit &Width"),
+            self.tr("&Fit Width"),
             self.setFitWidth,
             shortcuts["fit_width"],
             "fit-width",
@@ -613,7 +613,7 @@ class MainWindow(QtWidgets.QMainWindow):
             enabled=False,
         )
         brightnessContrast = action(
-            "&Brightness\nContrast",
+            self.tr("&Brightness\nContrast"),
             self.brightnessContrast,
             shortcuts["brightness_contrast"],
             "color",
