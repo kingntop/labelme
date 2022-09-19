@@ -60,7 +60,7 @@ class AppVersionDialog(QtWidgets.QDialog):
         self.setModal(True)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
         self.setFont(appFont())
-        self.setWindowTitle("버전" if self._config['local_lang'] == 'ko_KR' else 'Version')
+        self.setWindowTitle("버전정보" if self._config['local_lang'] == 'ko_KR' else 'Version')
         self._parent = parent
         trans = self._parent.topToolWidget.trans.pos()
         if trans:
@@ -70,7 +70,7 @@ class AppVersionDialog(QtWidgets.QDialog):
         self.label = QtWidgets.QLabel()
         self.label.setMidLineWidth(35)
         entxt = 'The current version is %s' % self._config['app_version']
-        kotxt = '현재 버전은 %s 입니다.' % self._config['app_version']
+        kotxt = '현재 버전정보는 %s 입니다.' % self._config['app_version']
         self.label.setText(kotxt if self._config['local_lang'] == 'ko_KR' else entxt)
         hvox_layout.addWidget(self.label)
 

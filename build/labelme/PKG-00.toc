@@ -57,29 +57,29 @@
   ('__main__',
    'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\__main__.py',
    'PYSOURCE'),
-  ('api-ms-win-crt-math-l1-1-0.dll',
+  ('api-ms-win-crt-runtime-l1-1-0.dll',
    'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-math-l1-1-0.dll',
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-runtime-l1-1-0.dll',
    'BINARY'),
+  ('python38.dll', 'd:\\program files\\python38\\python38.dll', 'BINARY'),
   ('VCRUNTIME140.dll',
    'd:\\program files\\python38\\VCRUNTIME140.dll',
    'BINARY'),
-  ('api-ms-win-crt-heap-l1-1-0.dll',
+  ('api-ms-win-crt-math-l1-1-0.dll',
    'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-heap-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-crt-stdio-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-stdio-l1-1-0.dll',
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-math-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-crt-locale-l1-1-0.dll',
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-locale-l1-1-0.dll',
    'BINARY'),
-  ('python38.dll', 'd:\\program files\\python38\\python38.dll', 'BINARY'),
-  ('api-ms-win-crt-runtime-l1-1-0.dll',
+  ('api-ms-win-crt-stdio-l1-1-0.dll',
    'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-runtime-l1-1-0.dll',
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-stdio-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-heap-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-heap-l1-1-0.dll',
    'BINARY'),
   ('ucrtbase.dll',
    'C:\\Program Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\ucrtbase.dll',
@@ -88,9 +88,17 @@
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-convert-l1-1-0.dll',
    'BINARY'),
+  ('api-ms-win-crt-conio-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-conio-l1-1-0.dll',
+   'BINARY'),
   ('api-ms-win-crt-string-l1-1-0.dll',
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-string-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-crt-time-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-time-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-crt-environment-l1-1-0.dll',
    'C:\\Program '
@@ -100,29 +108,45 @@
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-filesystem-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-crt-conio-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-conio-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-crt-time-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-time-l1-1-0.dll',
-   'BINARY'),
   ('api-ms-win-crt-process-l1-1-0.dll',
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-process-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-debug-l1-1-0.dll',
+  ('api-ms-win-core-heap-l1-1-0.dll',
    'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-debug-l1-1-0.dll',
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-heap-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-libraryloader-l1-1-0.dll',
+  ('api-ms-win-core-memory-l1-1-0.dll',
    'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-libraryloader-l1-1-0.dll',
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-memory-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-interlocked-l1-1-0.dll',
+  ('api-ms-win-core-synch-l1-1-0.dll',
    'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-interlocked-l1-1-0.dll',
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-synch-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-file-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-file-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-string-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-string-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-errorhandling-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-errorhandling-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-profile-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-profile-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-file-l1-2-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-file-l1-2-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-processenvironment-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-processenvironment-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-core-processthreads-l1-1-1.dll',
    'C:\\Program '
@@ -132,93 +156,85 @@
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-file-l2-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-synch-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-synch-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-rtlsupport-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-rtlsupport-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-memory-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-memory-l1-1-0.dll',
-   'BINARY'),
   ('api-ms-win-core-util-l1-1-0.dll',
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-util-l1-1-0.dll',
    'BINARY'),
-  ('api-ms-win-core-console-l1-1-0.dll',
+  ('api-ms-win-core-libraryloader-l1-1-0.dll',
    'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-console-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-file-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-file-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-heap-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-heap-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-processenvironment-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-processenvironment-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-timezone-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-timezone-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-profile-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-profile-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-localization-l1-2-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-localization-l1-2-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-datetime-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-datetime-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-namedpipe-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-namedpipe-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-string-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-string-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-processthreads-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-processthreads-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-file-l1-2-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-file-l1-2-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-handle-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-handle-l1-1-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-synch-l1-2-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-synch-l1-2-0.dll',
-   'BINARY'),
-  ('api-ms-win-core-errorhandling-l1-1-0.dll',
-   'C:\\Program '
-   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-errorhandling-l1-1-0.dll',
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-libraryloader-l1-1-0.dll',
    'BINARY'),
   ('api-ms-win-core-sysinfo-l1-1-0.dll',
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-sysinfo-l1-1-0.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\imageformats\\qwbmp.dll',
+  ('api-ms-win-core-timezone-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-timezone-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-handle-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-handle-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-namedpipe-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-namedpipe-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-rtlsupport-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-rtlsupport-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-interlocked-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-interlocked-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-console-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-console-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-synch-l1-2-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-synch-l1-2-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-datetime-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-datetime-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-debug-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-debug-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-processthreads-l1-1-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-processthreads-l1-1-0.dll',
+   'BINARY'),
+  ('api-ms-win-core-localization-l1-2-0.dll',
+   'C:\\Program '
+   'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-core-localization-l1-2-0.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\imageformats\\qgif.dll',
    'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qwbmp.dll',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qgif.dll',
    'BINARY'),
   ('PyQt5\\Qt5\\bin\\libGLESv2.dll',
    'D:\\Program '
    'Files\\Python38\\Lib\\site-packages\\PyQt5\\Qt5\\bin\\libGLESv2.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\imageformats\\qwbmp.dll',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qwbmp.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\bin\\opengl32sw.dll',
+   'D:\\Program '
+   'Files\\Python38\\Lib\\site-packages\\PyQt5\\Qt5\\bin\\opengl32sw.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\platforms\\qoffscreen.dll',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qoffscreen.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\imageformats\\qtga.dll',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qtga.dll',
    'BINARY'),
   ('PyQt5\\Qt5\\plugins\\imageformats\\qwebp.dll',
    'D:\\program '
@@ -228,73 +244,57 @@
    'D:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qtiff.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\iconengines\\qsvgicon.dll',
+  ('PyQt5\\Qt5\\plugins\\styles\\qwindowsvistastyle.dll',
    'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\iconengines\\qsvgicon.dll',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\styles\\qwindowsvistastyle.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\imageformats\\qtga.dll',
+  ('PyQt5\\Qt5\\plugins\\imageformats\\qicns.dll',
    'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qtga.dll',
-   'BINARY'),
-  ('libopenblas.FB5AE2TYXYH2IJRDKGDGQ3XBKLKTF43H.gfortran-win_amd64.dll',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\numpy\\.libs\\libopenblas.FB5AE2TYXYH2IJRDKGDGQ3XBKLKTF43H.gfortran-win_amd64.dll',
-   'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\platforms\\qminimal.dll',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qminimal.dll',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qicns.dll',
    'BINARY'),
   ('PyQt5\\Qt5\\plugins\\imageformats\\qico.dll',
    'D:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qico.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\styles\\qwindowsvistastyle.dll',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\styles\\qwindowsvistastyle.dll',
-   'BINARY'),
-  ('PyQt5\\Qt5\\bin\\libEGL.dll',
-   'D:\\Program '
-   'Files\\Python38\\Lib\\site-packages\\PyQt5\\Qt5\\bin\\libEGL.dll',
-   'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\imageformats\\qgif.dll',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qgif.dll',
-   'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\platforms\\qwindows.dll',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qwindows.dll',
-   'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\platforms\\qoffscreen.dll',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qoffscreen.dll',
-   'BINARY'),
   ('PyQt5\\Qt5\\bin\\d3dcompiler_47.dll',
    'D:\\Program '
    'Files\\Python38\\Lib\\site-packages\\PyQt5\\Qt5\\bin\\d3dcompiler_47.dll',
-   'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\platformthemes\\qxdgdesktopportal.dll',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platformthemes\\qxdgdesktopportal.dll',
    'BINARY'),
   ('PyQt5\\Qt5\\plugins\\imageformats\\qsvg.dll',
    'D:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qsvg.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\bin\\opengl32sw.dll',
-   'D:\\Program '
-   'Files\\Python38\\Lib\\site-packages\\PyQt5\\Qt5\\bin\\opengl32sw.dll',
+  ('PyQt5\\Qt5\\plugins\\platforms\\qwebgl.dll',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qwebgl.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\iconengines\\qsvgicon.dll',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\iconengines\\qsvgicon.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\platforms\\qwindows.dll',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qwindows.dll',
    'BINARY'),
   ('PyQt5\\Qt5\\plugins\\imageformats\\qjpeg.dll',
    'D:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qjpeg.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\platforms\\qwebgl.dll',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qwebgl.dll',
+  ('PyQt5\\Qt5\\bin\\libEGL.dll',
+   'D:\\Program '
+   'Files\\Python38\\Lib\\site-packages\\PyQt5\\Qt5\\bin\\libEGL.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\plugins\\imageformats\\qicns.dll',
+  ('libopenblas.FB5AE2TYXYH2IJRDKGDGQ3XBKLKTF43H.gfortran-win_amd64.dll',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\numpy\\.libs\\libopenblas.FB5AE2TYXYH2IJRDKGDGQ3XBKLKTF43H.gfortran-win_amd64.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\platformthemes\\qxdgdesktopportal.dll',
    'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\imageformats\\qicns.dll',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platformthemes\\qxdgdesktopportal.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\plugins\\platforms\\qminimal.dll',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\plugins\\platforms\\qminimal.dll',
    'BINARY'),
   ('_hashlib', 'd:\\program files\\python38\\DLLs\\_hashlib.pyd', 'EXTENSION'),
   ('select', 'd:\\program files\\python38\\DLLs\\select.pyd', 'EXTENSION'),
@@ -461,29 +461,29 @@
    'C:\\Program '
    'Files\\Microsoft\\jdk-11.0.12.7-hotspot\\bin\\api-ms-win-crt-utility-l1-1-0.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\bin\\Qt5Svg.dll',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Svg.dll',
-   'BINARY'),
   ('PyQt5\\Qt5\\bin\\Qt5Widgets.dll',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Widgets.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\bin\\Qt5DBus.dll',
+  ('PyQt5\\Qt5\\bin\\Qt5Svg.dll',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5DBus.dll',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Svg.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\bin\\Qt5Quick.dll',
+  ('PyQt5\\Qt5\\bin\\Qt5WebSockets.dll',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Quick.dll',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5WebSockets.dll',
    'BINARY'),
   ('PyQt5\\Qt5\\bin\\Qt5Network.dll',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Network.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\bin\\Qt5WebSockets.dll',
+  ('PyQt5\\Qt5\\bin\\Qt5Quick.dll',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5WebSockets.dll',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Quick.dll',
+   'BINARY'),
+  ('PyQt5\\Qt5\\bin\\Qt5DBus.dll',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5DBus.dll',
    'BINARY'),
   ('libcrypto-1_1.dll',
    'd:\\program files\\python38\\DLLs\\libcrypto-1_1.dll',
@@ -492,849 +492,893 @@
    'd:\\program files\\python38\\DLLs\\libssl-1_1.dll',
    'BINARY'),
   ('libffi-7.dll', 'd:\\program files\\python38\\DLLs\\libffi-7.dll', 'BINARY'),
-  ('PIL\\msvcp140.dll',
-   'd:\\program files\\python38\\lib\\site-packages\\PIL\\MSVCP140.dll',
-   'BINARY'),
   ('PIL\\vcruntime140_1.dll',
    'd:\\program files\\python38\\lib\\site-packages\\PIL\\VCRUNTIME140_1.dll',
+   'BINARY'),
+  ('PIL\\msvcp140.dll',
+   'd:\\program files\\python38\\lib\\site-packages\\PIL\\MSVCP140.dll',
    'BINARY'),
   ('python3.dll', 'D:\\Program Files\\Python38\\python3.dll', 'BINARY'),
   ('PyQt5\\Qt5\\bin\\msvcp140_1.dll',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\MSVCP140_1.dll',
    'BINARY'),
-  ('PyQt5\\Qt5\\bin\\Qt5Qml.dll',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Qml.dll',
-   'BINARY'),
   ('PyQt5\\Qt5\\bin\\Qt5QmlModels.dll',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5QmlModels.dll',
    'BINARY'),
+  ('PyQt5\\Qt5\\bin\\Qt5Qml.dll',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\bin\\Qt5Qml.dll',
+   'BINARY'),
   ('base_library.zip',
    'D:\\Work\\Ding\\labelme-work\\labelme\\build\\labelme\\base_library.zip',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_ar.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ar.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\matplotlibrc',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\matplotlibrc',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\cmss10.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmss10.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\topobathy.npz',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\topobathy.npz',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneral.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneral.ttf',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_fr.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_fr.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pbkd8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pbkd8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-BoldItalic.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-BoldItalic.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\move_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\hand.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\hand.png',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_pl.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_pl.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Symbol.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Symbol.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pncb8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncb8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Italic.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Italic.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\subplots.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\help_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\grayscale.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\grayscale.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\plot_directive\\plot_directive.css',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\plot_directive\\plot_directive.css',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralItalic.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralItalic.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\cmex10.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmex10.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Bold.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Bold.ttf',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_da.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_da.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pcrr8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrr8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\hand.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\hand.svg',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_es.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_es.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\matplotlib.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-notebook.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-notebook.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\ptmr8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmr8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Bold.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Bold.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFiveSymReg.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFiveSymReg.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUni.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUni.ttf',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_sk.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_sk.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\cmmi10.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmmi10.afm',
    'DATA'),
   ('matplotlib\\mpl-data\\images\\forward.png',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward.png',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvr8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvr8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvro8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvro8a.afm',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_ca.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ca.qm',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_zh_TW.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_zh_TW.qm',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_cs.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_cs.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\dark_background.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\dark_background.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\back-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\filesave.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\filesave.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\cmex10.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmex10.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\zoom_to_rect_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\jacksboro_fault_dem.npz',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\jacksboro_fault_dem.npz',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pcrb8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrb8a.afm',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_bg.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_bg.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\ptmbi8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmbi8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pagko8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagko8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pagk8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagk8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\forward.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Bold.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Bold.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\home-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-BoldOblique.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-BoldOblique.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvb8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvb8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pzdr.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pzdr.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\Minduka_Present_Blue_Pack.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\Minduka_Present_Blue_Pack.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\cmtt10.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmtt10.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\README.txt',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\README.txt',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\filesave-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\matplotlib_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\s1045.ima.gz',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\s1045.ima.gz',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvbo8an.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvbo8an.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\_mpl-gallery.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\_mpl-gallery.mplstyle',
-   'DATA'),
-  ('certifi\\py.typed',
-   'd:\\program files\\python38\\lib\\site-packages\\certifi\\py.typed',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\cmsy10.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmsy10.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_STIX',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_STIX',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-whitegrid.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-whitegrid.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymBol.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymBol.ttf',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_en.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_en.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pncr8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncr8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymBol.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymBol.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\move-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-pastel.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-pastel.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvlo8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvlo8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\putri8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putri8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\home.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pagd8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagd8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\subplots_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\psyr.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\psyr.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvbo8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvbo8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Roman.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Roman.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Oblique.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Oblique.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\help.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniIta.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniIta.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\home.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-bright.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-bright.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvl8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvl8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-ticks.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-ticks.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-darkgrid.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-darkgrid.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pplbi8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplbi8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\cmsy10.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmsy10.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\membrane.dat',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\membrane.dat',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\zoom_to_rect.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\zoom_to_rect-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-Bold.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-Bold.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pagdo8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagdo8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\cmb10.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmb10.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymBol.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymBol.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\_mpl-gallery-nogrid.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\_mpl-gallery-nogrid.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\back_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back_large.png',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_ru.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ru.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymReg.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymReg.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\help.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\ZapfDingbats.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\ZapfDingbats.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\filesave.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Italic.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Italic.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvr8an.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvr8an.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\qt4_editor_options_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\qt4_editor_options_large.png',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_de.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_de.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\ptmb8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmb8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-BoldItalic.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-BoldItalic.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-BoldOblique.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-BoldOblique.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymBol.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymBol.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\filesave_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\subplots-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\putr8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putr8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pplb8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplb8a.afm',
-   'DATA'),
   ('PyQt5\\Qt5\\translations\\qtbase_it.qm',
    'D:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_it.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymReg.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymReg.ttf',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_uk.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_uk.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Oblique.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Oblique.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\data_x_x2_x3.csv',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\data_x_x2_x3.csv',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-BoldOblique.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-BoldOblique.afm',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_he.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_he.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\cmtt10.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmtt10.ttf',
-   'DATA'),
-  ('certifi\\cacert.pem',
-   'd:\\program files\\python38\\lib\\site-packages\\certifi\\cacert.pem',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerifDisplay.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerifDisplay.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymReg.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymReg.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-muted.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-muted.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\embedding_in_wx3.xrc',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\embedding_in_wx3.xrc',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-dark-palette.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-dark-palette.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\cmmi10.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmmi10.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\forward-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\percent_bachelors_degrees_women_usa.csv',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\percent_bachelors_degrees_women_usa.csv',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pplri8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplri8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-dark.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-dark.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\cmr10.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmr10.afm',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_gd.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_gd.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\back.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Bold.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Bold.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\classic.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\classic.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\subplots.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Bold.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Bold.afm',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_lv.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_lv.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\qt4_editor_options.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\qt4_editor_options.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\matplotlib_128.ppm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib_128.ppm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\fivethirtyeight.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\fivethirtyeight.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pplr8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplr8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pncbi8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncbi8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymReg.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymReg.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\move.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\help-symbolic.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help-symbolic.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pzcmi8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pzcmi8a.afm',
    'DATA'),
   ('matplotlib\\mpl-data\\stylelib\\seaborn-deep.mplstyle',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-deep.mplstyle',
    'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\bmh.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\bmh.mplstyle',
+  ('PyQt5\\Qt5\\translations\\qtbase_bg.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_bg.qm',
    'DATA'),
-  ('matplotlib\\mpl-data\\images\\qt4_editor_options.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\qt4_editor_options.pdf',
+  ('PyQt5\\Qt5\\translations\\qtbase_fr.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_fr.qm',
    'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\msft.csv',
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvr8an.afm',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\msft.csv',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvr8an.afm',
    'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\grace_hopper.jpg',
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Italic.ttf',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\grace_hopper.jpg',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Italic.ttf',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_DEJAVU',
+  ('matplotlib\\mpl-data\\images\\matplotlib.svg',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_DEJAVU',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib.svg',
    'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\goog.npz',
+  ('matplotlib\\mpl-data\\stylelib\\fivethirtyeight.mplstyle',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\goog.npz',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\fivethirtyeight.mplstyle',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansDisplay.ttf',
+  ('matplotlib\\mpl-data\\images\\filesave.png',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansDisplay.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\move.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\home.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pcrro8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrro8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\ggplot.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\ggplot.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pcrbo8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrbo8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\putbi8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putbi8a.afm',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave.png',
    'DATA'),
   ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-Oblique.afm',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-Oblique.afm',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pbkdi8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pbkdi8a.afm',
-   'DATA'),
   ('PyQt5\\Qt5\\translations\\qtbase_hu.qm',
    'D:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_hu.qm',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\cmr10.ttf',
+  ('matplotlib\\mpl-data\\fonts\\afm\\pbkdi8a.afm',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmr10.ttf',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pbkdi8a.afm',
    'DATA'),
-  ('matplotlib\\mpl-data\\images\\zoom_to_rect.svg',
+  ('matplotlib\\mpl-data\\fonts\\ttf\\cmss10.ttf',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect.svg',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmss10.ttf',
    'DATA'),
-  ('matplotlib\\mpl-data\\images\\forward.pdf',
+  ('matplotlib\\mpl-data\\fonts\\afm\\pncri8a.afm',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward.pdf',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncri8a.afm',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier.afm',
+  ('matplotlib\\mpl-data\\sample_data\\jacksboro_fault_dem.npz',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier.afm',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\jacksboro_fault_dem.npz',
    'DATA'),
-  ('matplotlib\\mpl-data\\images\\zoom_to_rect.pdf',
+  ('matplotlib\\mpl-data\\fonts\\afm\\pagd8a.afm',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect.pdf',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagd8a.afm',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pbkl8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pbkl8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\tableau-colorblind10.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\tableau-colorblind10.mplstyle',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_tr.qm',
+  ('PyQt5\\Qt5\\translations\\qtbase_sk.qm',
    'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_tr.qm',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_sk.qm',
    'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-paper.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-paper.mplstyle',
-   'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_ko.qm',
+  ('PyQt5\\Qt5\\translations\\qtbase_gd.qm',
    'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ko.qm',
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_gd.qm',
    'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-poster.mplstyle',
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvb8an.afm',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-poster.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\ptmri8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmri8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\hand.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\hand.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\readme.txt',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\readme.txt',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralBol.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralBol.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\forward_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniBol.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniBol.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\axes_grid\\bivariate_normal.npy',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\axes_grid\\bivariate_normal.npy',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\Solarize_Light2.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\Solarize_Light2.mplstyle',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvb8an.afm',
    'DATA'),
   ('matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralBolIta.ttf',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralBolIta.ttf',
    'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\eeg.dat',
+  ('matplotlib\\mpl-data\\images\\subplots-symbolic.svg',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\eeg.dat',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots-symbolic.svg',
    'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\fast.mplstyle',
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-ticks.mplstyle',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\fast.mplstyle',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-ticks.mplstyle',
    'DATA'),
-  ('matplotlib\\mpl-data\\images\\back.png',
+  ('matplotlib\\mpl-data\\fonts\\afm\\putbi8a.afm',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back.png',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putbi8a.afm',
    'DATA'),
-  ('PyQt5\\Qt5\\translations\\qtbase_fi.qm',
-   'D:\\program '
-   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_fi.qm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\help.png',
+  ('matplotlib\\mpl-data\\stylelib\\seaborn.mplstyle',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help.png',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Bold.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Bold.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Bold.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Bold.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\bmh.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\bmh.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Bold.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Bold.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\ptmri8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmri8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_DEJAVU',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_DEJAVU',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\matplotlib.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\zoom_to_rect-symbolic.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect-symbolic.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansDisplay.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansDisplay.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\ptmbi8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmbi8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pagdo8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagdo8a.afm',
    'DATA'),
   ('PyQt5\\Qt5\\translations\\qtbase_ja.qm',
    'D:\\program '
    'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ja.qm',
    'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\putb8a.afm',
+  ('matplotlib\\mpl-data\\sample_data\\membrane.dat',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putb8a.afm',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\membrane.dat',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif.ttf',
    'DATA'),
   ('matplotlib\\mpl-data\\stylelib\\seaborn-white.mplstyle',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-white.mplstyle',
    'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\_classic_test_patch.mplstyle',
+  ('matplotlib\\mpl-data\\images\\matplotlib_large.png',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\_classic_test_patch.mplstyle',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\back.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pplr8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplr8a.afm',
+   'DATA'),
+  ('certifi\\cacert.pem',
+   'd:\\program files\\python38\\lib\\site-packages\\certifi\\cacert.pem',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\forward_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\putri8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putri8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\filesave_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-BoldOblique.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-BoldOblique.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-dark.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-dark.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-whitegrid.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-whitegrid.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymBol.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymBol.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\filesave.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\topobathy.npz',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\topobathy.npz',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\home.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\filesave-symbolic.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave-symbolic.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\forward.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward.svg',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_cs.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_cs.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\_mpl-gallery-nogrid.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\_mpl-gallery-nogrid.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\goog.npz',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\goog.npz',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pcrb8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrb8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pncr8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncr8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Oblique.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier-Oblique.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\grace_hopper.jpg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\grace_hopper.jpg',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_lv.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_lv.qm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_ru.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ru.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\putb8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putb8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymBol.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymBol.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymReg.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymReg.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymReg.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymReg.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\Minduka_Present_Blue_Pack.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\Minduka_Present_Blue_Pack.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralBol.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralBol.ttf',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_en.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_en.qm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_de.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_de.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-BoldItalic.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-BoldItalic.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\Solarize_Light2.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\Solarize_Light2.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Italic.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Italic.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\move_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniIta.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniIta.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\forward.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica.afm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_fi.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_fi.qm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_he.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_he.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\cmmi10.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmmi10.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\axes_grid\\bivariate_normal.npy',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\axes_grid\\bivariate_normal.npy',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvl8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvl8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Symbol.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Symbol.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\psyr.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\psyr.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\qt4_editor_options_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\qt4_editor_options_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\cmr10.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmr10.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\tableau-colorblind10.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\tableau-colorblind10.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pbkl8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pbkl8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFiveSymReg.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFiveSymReg.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-bright.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-bright.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pcrro8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrro8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\README.txt',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\README.txt',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvro8an.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvro8an.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\embedding_in_wx3.xrc',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\embedding_in_wx3.xrc',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pplbi8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplbi8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralItalic.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneralItalic.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\back.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pzcmi8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pzcmi8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\plot_directive\\plot_directive.css',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\plot_directive\\plot_directive.css',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pagko8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagko8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\qt4_editor_options.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\qt4_editor_options.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\eeg.dat',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\eeg.dat',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Courier.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-BoldOblique.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-BoldOblique.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-talk.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-talk.mplstyle',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_tr.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_tr.qm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_ko.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ko.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\_mpl-gallery.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\_mpl-gallery.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-darkgrid.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-darkgrid.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-paper.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-paper.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvro8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvro8a.afm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_uk.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_uk.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\ZapfDingbats.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\ZapfDingbats.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\ptmb8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmb8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\zoom_to_rect.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pncbi8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncbi8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pplri8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplri8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pzdr.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pzdr.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\cmex10.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmex10.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\back.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pcrbo8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrbo8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymReg.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizOneSymReg.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pplb8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pplb8a.afm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_da.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_da.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\readme.txt',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\readme.txt',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\matplotlib.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\subplots.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots.pdf',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_ca.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ca.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\cmsy10.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmsy10.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Bold.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Bold.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\cmr10.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmr10.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pcrr8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pcrr8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymReg.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizThreeSymReg.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\data_x_x2_x3.csv',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\data_x_x2_x3.csv',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-poster.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-poster.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniBol.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniBol.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\percent_bachelors_degrees_women_usa.csv',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\percent_bachelors_degrees_women_usa.csv',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\cmsy10.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmsy10.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Oblique.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Oblique.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-BoldOblique.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-BoldOblique.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\cmmi10.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmmi10.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymBol.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizFourSymBol.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\help-symbolic.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help-symbolic.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\zoom_to_rect_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\zoom_to_rect.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymBol.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXSizTwoSymBol.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvbo8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvbo8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\hand.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\hand.png',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_zh_TW.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_zh_TW.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\home.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home.pdf',
+   'DATA'),
+  ('certifi\\py.typed',
+   'd:\\program files\\python38\\lib\\site-packages\\certifi\\py.typed',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\logo2.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\logo2.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\ptmr8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\ptmr8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\matplotlibrc',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\matplotlibrc',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\move-symbolic.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move-symbolic.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\kpsewhich.lua',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\kpsewhich.lua',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\back_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back_large.png',
    'DATA'),
   ('matplotlib\\mpl-data\\images\\qt4_editor_options.svg',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\qt4_editor_options.svg',
    'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-BoldItalic.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-BoldItalic.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\subplots.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Oblique.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSans-Oblique.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvbo8an.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvbo8an.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pagk8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pagk8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\qt4_editor_options.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\qt4_editor_options.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\move.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-pastel.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-pastel.mplstyle',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_pl.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_pl.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerifDisplay.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerifDisplay.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\home-symbolic.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home-symbolic.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\hand.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\hand.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\move.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\_classic_test_patch.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\_classic_test_patch.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvlo8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvlo8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUni.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUni.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-dark-palette.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-dark-palette.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\filesave.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\filesave.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\dark_background.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\dark_background.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\fast.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\fast.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pncb8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncb8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvb8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvb8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-muted.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-muted.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\home.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\ggplot.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\ggplot.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\help.pdf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help.pdf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\matplotlib_128.ppm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib_128.ppm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneral.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\STIXGeneral.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Bold.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif-Bold.ttf',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_es.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_es.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\home_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\cmtt10.ttf',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmtt10.ttf',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-colorblind.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-colorblind.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\pbkd8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pbkd8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\cmtt10.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmtt10.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\phvr8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvr8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\afm\\putr8a.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\putr8a.afm',
+   'DATA'),
+  ('PyQt5\\Qt5\\translations\\qtbase_ar.qm',
+   'D:\\program '
+   'files\\python38\\lib\\site-packages\\PyQt5\\Qt5\\translations\\qtbase_ar.qm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-Bold.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Helvetica-Bold.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\help.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\help_large.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help_large.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Roman.afm',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\pdfcorefonts\\Times-Roman.afm',
+   'DATA'),
   ('matplotlib\\mpl-data\\fonts\\afm\\pbkli8a.afm',
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pbkli8a.afm',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\classic.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\classic.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\seaborn-notebook.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-notebook.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\back-symbolic.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back-symbolic.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\zoom_to_rect.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\zoom_to_rect.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_STIX',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\LICENSE_STIX',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\subplots.png',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots.png',
+   'DATA'),
+  ('matplotlib\\mpl-data\\stylelib\\grayscale.mplstyle',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\grayscale.mplstyle',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\s1045.ima.gz',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\s1045.ima.gz',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\hand.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\hand.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\images\\help.svg',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\help.svg',
+   'DATA'),
+  ('matplotlib\\mpl-data\\sample_data\\msft.csv',
+   'd:\\program '
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\msft.csv',
    'DATA'),
   ('matplotlib\\mpl-data\\fonts\\ttf\\STIXNonUniBolIta.ttf',
    'd:\\program '
@@ -1344,213 +1388,40 @@
    'd:\\program '
    'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-BoldOblique.ttf',
    'DATA'),
-  ('matplotlib\\mpl-data\\images\\back.svg',
+  ('matplotlib\\mpl-data\\fonts\\afm\\cmex10.afm',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\back.svg',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\cmex10.afm',
    'DATA'),
-  ('matplotlib\\mpl-data\\sample_data\\logo2.png',
+  ('matplotlib\\mpl-data\\fonts\\ttf\\cmb10.ttf',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\sample_data\\logo2.png',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\cmb10.ttf',
    'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-colorblind.mplstyle',
+  ('matplotlib\\mpl-data\\images\\subplots_large.png',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-colorblind.mplstyle',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots_large.png',
    'DATA'),
-  ('matplotlib\\mpl-data\\images\\subplots.png',
+  ('matplotlib\\mpl-data\\images\\forward-symbolic.svg',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\subplots.png',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\forward-symbolic.svg',
    'DATA'),
-  ('matplotlib\\mpl-data\\kpsewhich.lua',
+  ('matplotlib\\mpl-data\\images\\move.png',
    'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\kpsewhich.lua',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\matplotlib.pdf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib.pdf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvro8an.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvro8an.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\phvb8an.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\phvb8an.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\home_large.png',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\home_large.png',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\matplotlib.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\matplotlib.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\images\\move.svg',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move.svg',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\afm\\pncri8a.afm',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\afm\\pncri8a.afm',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSerif.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Oblique.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono-Oblique.ttf',
-   'DATA'),
-  ('matplotlib\\mpl-data\\stylelib\\seaborn-talk.mplstyle',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\stylelib\\seaborn-talk.mplstyle',
-   'DATA'),
-  ('matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono.ttf',
-   'd:\\program '
-   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\fonts\\ttf\\DejaVuSansMono.ttf',
-   'DATA'),
-  ('labelme\\icons\\rect.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\rect.png',
-   'DATA'),
-  ('labelme\\icons\\box1.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\box1.png',
-   'DATA'),
-  ('labelme\\icons\\icon.icns',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\icon.icns',
-   'DATA'),
-  ('labelme\\icons\\expert.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\expert.png',
-   'DATA'),
-  ('labelme\\icons\\loginuser.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\loginuser.png',
-   'DATA'),
-  ('labelme\\icons\\file.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\file.png',
-   'DATA'),
-  ('labelme\\icons\\fit-window.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\fit-window.png',
-   'DATA'),
-  ('labelme\\icons\\icon.ico',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\icon.ico',
-   'DATA'),
-  ('labelme\\icons\\next.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\next.png',
-   'DATA'),
-  ('labelme\\icons\\poly.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\poly.png',
-   'DATA'),
-  ('labelme\\icons\\save-as.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save-as.png',
-   'DATA'),
-  ('labelme\\icons\\chg_pwd.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\chg_pwd.png',
-   'DATA'),
-  ('labelme\\icons\\zoom-out.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\zoom-out.png',
-   'DATA'),
-  ('labelme\\icons\\CursorArrow.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\CursorArrow.png',
-   'DATA'),
-  ('labelme\\icons\\quit.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\quit.png',
-   'DATA'),
-  ('labelme\\icons\\delete.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\delete.png',
-   'DATA'),
-  ('labelme\\icons\\labels.svg',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\labels.svg',
-   'DATA'),
-  ('labelme\\icons\\zoom.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\zoom.png',
-   'DATA'),
-  ('labelme\\icons\\labels.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\labels.png',
-   'DATA'),
-  ('labelme\\icons\\cancel.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\cancel.png',
-   'DATA'),
-  ('labelme\\icons\\done.svg',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\done.svg',
-   'DATA'),
-  ('labelme\\icons\\ftrans.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\ftrans.png',
-   'DATA'),
-  ('labelme\\icons\\circle.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\circle.png',
-   'DATA'),
-  ('labelme\\icons\\box-h.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\box-h.png',
-   'DATA'),
-  ('labelme\\icons\\fit-width.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\fit-width.png',
-   'DATA'),
-  ('labelme\\icons\\save-as.svg',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save-as.svg',
-   'DATA'),
-  ('labelme\\icons\\undo.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\undo.png',
-   'DATA'),
-  ('labelme\\translate\\ko_KR.qm',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\translate\\ko_KR.qm',
-   'DATA'),
-  ('labelme\\config\\default_config.yaml',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\config\\default_config.yaml',
-   'DATA'),
-  ('labelme\\icons\\copy.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\copy.png',
-   'DATA'),
-  ('labelme\\icons\\undo-cross.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\undo-cross.png',
-   'DATA'),
-  ('labelme\\icons\\feBlend-icon.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\feBlend-icon.png',
-   'DATA'),
-  ('labelme\\icons\\icon.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\icon.png',
-   'DATA'),
-  ('labelme\\icons\\line.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\line.png',
-   'DATA'),
-  ('labelme\\icons\\open.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\open.png',
-   'DATA'),
-  ('labelme\\icons\\color-line.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\color-line.png',
-   'DATA'),
-  ('labelme\\icons\\done.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\done.png',
-   'DATA'),
-  ('labelme\\icons\\color.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\color.png',
-   'DATA'),
-  ('labelme\\icons\\close.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\close.png',
-   'DATA'),
-  ('labelme\\icons\\zoom-in.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\zoom-in.png',
-   'DATA'),
-  ('labelme\\icons\\save.svg',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save.svg',
-   'DATA'),
-  ('labelme\\icons\\x.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\x.png',
-   'DATA'),
-  ('labelme\\icons\\fit.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\fit.png',
+   'files\\python38\\lib\\site-packages\\matplotlib\\mpl-data\\images\\move.png',
    'DATA'),
   ('labelme\\icons\\open.svg',
    'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\open.svg',
    'DATA'),
-  ('labelme\\icons\\save.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save.png',
+  ('labelme\\icons\\labels.svg',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\labels.svg',
    'DATA'),
-  ('labelme\\icons\\new.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\new.png',
+  ('labelme\\icons\\ftrans.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\ftrans.png',
    'DATA'),
-  ('labelme\\icons\\help.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\help.png',
+  ('labelme\\icons\\loginuser.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\loginuser.png',
    'DATA'),
-  ('labelme\\icons\\eye.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\eye.png',
+  ('labelme\\icons\\close.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\close.png',
    'DATA'),
   ('labelme\\icons\\prev.png',
    'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\prev.png',
@@ -1558,11 +1429,140 @@
   ('labelme\\icons\\edit.png',
    'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\edit.png',
    'DATA'),
-  ('labelme\\icons\\objects.png',
-   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\objects.png',
+  ('labelme\\icons\\box1.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\box1.png',
+   'DATA'),
+  ('labelme\\icons\\labels.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\labels.png',
+   'DATA'),
+  ('labelme\\icons\\zoom-out.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\zoom-out.png',
+   'DATA'),
+  ('labelme\\icons\\done.svg',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\done.svg',
+   'DATA'),
+  ('labelme\\icons\\color.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\color.png',
+   'DATA'),
+  ('labelme\\config\\default_config.yaml',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\config\\default_config.yaml',
+   'DATA'),
+  ('labelme\\icons\\save.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save.png',
+   'DATA'),
+  ('labelme\\icons\\color-line.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\color-line.png',
+   'DATA'),
+  ('labelme\\icons\\new.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\new.png',
+   'DATA'),
+  ('labelme\\icons\\chg_pwd.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\chg_pwd.png',
+   'DATA'),
+  ('labelme\\icons\\rect.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\rect.png',
+   'DATA'),
+  ('labelme\\icons\\poly.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\poly.png',
+   'DATA'),
+  ('labelme\\icons\\box-h.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\box-h.png',
+   'DATA'),
+  ('labelme\\icons\\eye.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\eye.png',
+   'DATA'),
+  ('labelme\\icons\\open.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\open.png',
+   'DATA'),
+  ('labelme\\icons\\fit.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\fit.png',
    'DATA'),
   ('labelme\\icons\\wx.png',
    'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\wx.png',
+   'DATA'),
+  ('labelme\\icons\\next.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\next.png',
+   'DATA'),
+  ('labelme\\icons\\copy.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\copy.png',
+   'DATA'),
+  ('labelme\\icons\\circle.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\circle.png',
+   'DATA'),
+  ('labelme\\icons\\save-as.svg',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save-as.svg',
+   'DATA'),
+  ('labelme\\icons\\icon.icns',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\icon.icns',
+   'DATA'),
+  ('labelme\\icons\\fit-window.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\fit-window.png',
+   'DATA'),
+  ('labelme\\icons\\CursorArrow.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\CursorArrow.png',
+   'DATA'),
+  ('labelme\\icons\\undo.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\undo.png',
+   'DATA'),
+  ('labelme\\icons\\delete.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\delete.png',
+   'DATA'),
+  ('labelme\\icons\\x.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\x.png',
+   'DATA'),
+  ('labelme\\icons\\zoom.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\zoom.png',
+   'DATA'),
+  ('labelme\\icons\\fit-width.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\fit-width.png',
+   'DATA'),
+  ('labelme\\icons\\file.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\file.png',
+   'DATA'),
+  ('labelme\\icons\\save-as.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save-as.png',
+   'DATA'),
+  ('labelme\\icons\\feBlend-icon.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\feBlend-icon.png',
+   'DATA'),
+  ('labelme\\icons\\line.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\line.png',
+   'DATA'),
+  ('labelme\\icons\\icon.ico',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\icon.ico',
+   'DATA'),
+  ('labelme\\icons\\zoom-in.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\zoom-in.png',
+   'DATA'),
+  ('labelme\\icons\\undo-cross.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\undo-cross.png',
+   'DATA'),
+  ('labelme\\translate\\ko_KR.qm',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\translate\\ko_KR.qm',
+   'DATA'),
+  ('labelme\\icons\\quit.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\quit.png',
+   'DATA'),
+  ('labelme\\icons\\done.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\done.png',
+   'DATA'),
+  ('labelme\\icons\\save.svg',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\save.svg',
+   'DATA'),
+  ('labelme\\icons\\objects.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\objects.png',
+   'DATA'),
+  ('labelme\\icons\\help.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\help.png',
+   'DATA'),
+  ('labelme\\icons\\cancel.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\cancel.png',
+   'DATA'),
+  ('labelme\\icons\\expert.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\expert.png',
+   'DATA'),
+  ('labelme\\icons\\icon.png',
+   'D:\\Work\\Ding\\labelme-work\\labelme\\labelme\\icons\\icon.png',
    'DATA')],
  False,
  False,

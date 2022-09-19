@@ -544,7 +544,7 @@ class MainWindow(QtWidgets.QMainWindow):
             tip=self.tr("To change self password")
         )
         appVersion = action(
-            "버전" if self._config['local_lang'] == 'ko_KR' else 'Version',
+            "버전정보" if self._config['local_lang'] == 'ko_KR' else 'Version',
             self.viewAppVersion,
             icon="icon"
         )
