@@ -30,7 +30,7 @@ class LoginDLG(QWidget):
         v_mainlayout.setContentsMargins(40, 15, 40, 30)
         v_mainlayout.setSpacing(10)
         self.setLayout(v_mainlayout)
-        self.setWindowTitle(self.tr('User Login'))
+        self.setWindowTitle(self.tr('User Login [%s]' % self._config['app_version']))
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
 
         # self.setGeometry(300, 300, 200, 150)
