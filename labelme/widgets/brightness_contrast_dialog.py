@@ -27,28 +27,37 @@ class BrightnessContrastDialog(QtWidgets.QDialog):
         assert isinstance(img, PIL.Image.Image)
         self.img = img
         self.callback = callback
-        self.pre_bright = 50
-        self.pre_cont = 50
+        # self.pre_bright = self.slider_brightness.value()
+        # self.pre_cont = self.slider_contrast.value()
 
 
     def onNewValue(self, value):
-        brightness = value / 50.0
-        contrast = value / 50.0
+        brightness = self.slider_brightness.value() / 50.0
+        contrast = self.slider_contrast.value() / 50.0
 
-        delta_b = math.fabs(value - self.pre_bright)
-        delta_c = math.fabs(value - self.pre_cont)
-
-        if delta_b < 5 and delta_c < 5:
-            return
+        # delta_b = math.fabs(self.slider_brightness.value() - self.pre_bright)
+        # delta_c = math.fabs(self.slider_contrast.value() - self.pre_cont)
+        #
+        # if delta_b < 5 and delta_c < 5:
+        #     return
 
         img = self.img
         img = PIL.ImageEnhance.Brightness(img).enhance(brightness)
         img = PIL.ImageEnhance.Contrast(img).enhance(contrast)
 
-        threading.Timer(0.01, self.startShapeBright, [img]).start()  # add ckd
-        # img_data = utils.img_pil_to_data(img)
-        # qimage = QtGui.QImage.fromData(img_data)
-        # self.callback(qimage)
+        threading.Timer(0.01, self.startShapeBright, [img]).start()
+
+    def onNewValue_old(self, value):
+        brightness = self.slider_brightness.value() / 50.0
+        contrast = self.slider_contrast.value() / 50.0
+
+        img = self.img
+        img = PIL.ImageEnhance.Brightness(img).enhance(brightness)
+        img = PIL.ImageEnhance.Contrast(img).enhance(contrast)
+
+        img_data = utils.img_pil_to_data(img)
+        qimage = QtGui.QImage.fromData(img_data)
+        self.callback(qimage)
 
     def _create_slider(self):
         slider = QtWidgets.QSlider(Qt.Horizontal)
@@ -62,5 +71,5 @@ class BrightnessContrastDialog(QtWidgets.QDialog):
         img_data = utils.img_pil_to_data(img)
         qimage = QtGui.QImage.fromData(img_data)
         self.callback(qimage)
-        self.pre_bright = self.slider_brightness.value()
-        self.pre_cont = self.slider_contrast.value()
+        # self.pre_bright = self.slider_brightness.value()
+        # self.pre_cont = self.slider_contrast.value()

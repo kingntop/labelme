@@ -924,7 +924,7 @@ class MainWindow(QtWidgets.QMainWindow):
         if self._config["net"] != "":
             try:
                 #nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
-                cmd = r'{}'.format(self._config['net'])
+                cmd = r'{}'.format(self._config['net'])  # net use z: \\data /user:user123 password
                 subproc = subprocess.run(cmd, shell=True)
                 # arg = self.subprocess.args
                 print(subproc)

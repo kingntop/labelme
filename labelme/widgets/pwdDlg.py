@@ -53,7 +53,7 @@ class PwdDlg(QtWidgets.QDialog):
         v_mainlayout.addLayout(alram_layout)
         v_mainlayout.addLayout(btn_layout)
 
-        lb_name = QtWidgets.QLabel(self.tr('Name'))
+        lb_name = QtWidgets.QLabel(self.tr('ID'))
         self._name_edit = QtWidgets.QLineEdit()
 
         self._name_edit.setFixedWidth(200)
@@ -123,7 +123,8 @@ class PwdDlg(QtWidgets.QDialog):
 
     def popUpDlg(self):
 
-        self._name_edit.setText("")
+        self._name_edit.setText(self._config['user_id'])
+        self._name_edit.setReadOnly(True)
         self._lb_pwd_edit.setText("")
         self._newpwd_edit.setText("")
         self._verify_edit.setText("")
@@ -167,7 +168,7 @@ class PwdDlg(QtWidgets.QDialog):
             self._lb_alram.setText(self.tr("The password is not correct."))
             threading.Timer(3, self.showErrorText).start()
         else:
-            url = self._config["api_url"] + 'ords/lm/v1/labelme/accounts/%s' % name
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/accounts/:id'
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             data = {
                     "user_id": name,
@@ -229,7 +230,7 @@ class PwdDlgWin(QWidget):
         v_mainlayout.addLayout(verify_layout)
         v_mainlayout.addLayout(alram_layout)
         v_mainlayout.addLayout(btn_layout)
-        lb_name = QtWidgets.QLabel(self.tr('Name'))
+        lb_name = QtWidgets.QLabel(self.tr('ID'))
         self._name_edit = QtWidgets.QLineEdit()
 
         self._name_edit.setFixedWidth(200)
@@ -237,6 +238,8 @@ class PwdDlgWin(QWidget):
         self._name_edit.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 5px; padding: 2px 6px}")
         name_layout.addWidget(lb_name)
         name_layout.addWidget(self._name_edit)
+        self._name_edit.setText(self._config["user_id"])
+        self._name_edit.setReadOnly(True)
         #id_layout.setSpacing(10)
         lb_pwd = QtWidgets.QLabel(self.tr('Current pasword'))
 
@@ -313,7 +316,7 @@ class PwdDlgWin(QWidget):
             self._lb_alram.setText(self.tr("The password is not correct."))
             threading.Timer(3, self.showErrorText).start()
         else:
-            url = self._config["api_url"] + 'ords/lm/v1/labelme/accounts/%s' % name
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/accounts/:id'
             headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
             data = {
                     "user_id": name,
