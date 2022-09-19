@@ -34,6 +34,7 @@ from labelme.logger import logger
 from labelme.shape import Shape
 from labelme.widgets import BrightnessContrastDialog
 from labelme.widgets import PolygonTransDialog
+from labelme.widgets import AppVersionDialog
 from labelme.widgets import Canvas
 from labelme.widgets import FileDialogPreview
 #from labelme.widgets import LabelDialog
@@ -542,6 +543,11 @@ class MainWindow(QtWidgets.QMainWindow):
             icon="chg_pwd",
             tip=self.tr("To change self password")
         )
+        appVersion = action(
+            "버전" if self._config['local_lang'] == 'ko_KR' else 'Version',
+            self.viewAppVersion,
+            icon="icon"
+        )
 
 
         zoom = QtWidgets.QWidgetAction(self)
@@ -781,7 +787,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 quit,
             ),
         )
-        utils.addActions(self.menus.help, (tutorial, None, changepwd))
+        utils.addActions(self.menus.help, (tutorial, None, changepwd, None, appVersion))
 
         utils.addActions(
             self.menus.view,
@@ -1836,6 +1842,12 @@ class MainWindow(QtWidgets.QMainWindow):
         transObj.setEnabled(True)
         self.actions.save.setEnabled(True)
 
+    def viewAppVersion(self):
+        self.appVersionDialog = AppVersionDialog(
+            self._config,
+            parent=self,
+        )
+        self.appVersionDialog.exec_()
 
     def polygonTrans(self, value):
         if self.canvas.shapes and len(self.canvas.shapes) < 1:

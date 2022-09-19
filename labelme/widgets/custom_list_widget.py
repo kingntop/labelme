@@ -592,6 +592,9 @@ class topToolWidget(QtWidgets.QWidget):
         self._app.PolygonAlpha(self.trans)
 
     def editmodeClick(self, value):
+        if self.isEnabled() is False:
+            self.setEnabled(True)
+
         self.polygon.setEnabled(value)
         self.rect.setEnabled(value)
         self.circle.setEnabled(value)

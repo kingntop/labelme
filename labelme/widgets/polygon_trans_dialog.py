@@ -51,3 +51,31 @@ class PolygonTransDialog(QtWidgets.QDialog):
         x = 100 * (self._parent.polygonTrans_deta_value - value) / self._parent.polygonTrans_deta_value
         self.label.setText("{}%".format(int(x)))
         self.callback(value)
+
+
+class AppVersionDialog(QtWidgets.QDialog):
+    def __init__(self, congig=None, parent=None):
+        super(AppVersionDialog, self).__init__(parent)
+        self._config = congig
+        self.setModal(True)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setFont(appFont())
+        self.setWindowTitle("버전" if self._config['local_lang'] == 'ko_KR' else 'Version')
+        self._parent = parent
+        trans = self._parent.topToolWidget.trans.pos()
+        if trans:
+            self.move(trans.x() + 300, trans.y() + 50)
+
+        hvox_layout = QtWidgets.QHBoxLayout()
+        self.label = QtWidgets.QLabel()
+        self.label.setMidLineWidth(35)
+        entxt = 'The current version is %s' % self._config['app_version']
+        kotxt = '현재 버전은 %s 입니다.' % self._config['app_version']
+        self.label.setText(kotxt if self._config['local_lang'] == 'ko_KR' else entxt)
+        hvox_layout.addWidget(self.label)
+
+        formLayout = QtWidgets.QFormLayout()
+        formLayout.addRow(hvox_layout)
+
+        self.setLayout(formLayout)
+        self.setMinimumWidth(250)
