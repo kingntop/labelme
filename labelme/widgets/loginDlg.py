@@ -256,5 +256,5 @@ class LoginDLG(QWidget):
             self._downstate = False
             self.close()
         except Exception as e:
-            LogPrint("새로운 버젼 다운로딍중 오류발생하였습니다.")
+            LogPrint("새로운 버젼 다운로딩중 오류발생하였습니다.")
             pass
