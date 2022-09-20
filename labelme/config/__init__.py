@@ -40,7 +40,7 @@ def get_default_config():
 
 def get_app_version():
     config_file = osp.join(here, "default_config.yaml")
-    appv = '20220913'
+    appv = '20220918'
     with open(config_file) as f:
         config = yaml.safe_load(f)
     if 'app_version' in config:
