@@ -129,7 +129,7 @@ def fmtShortcut(text):
 
 def LogPrint(error: str):
     current_time = time.strftime("%Y.%m.%d/%H:%M:%S", time.localtime(time.time()))
-    with open("Log.txt", "a") as f:
+    with open("Log.txt", "a", encoding='utf8') as f:
         f.write(f"[{current_time}] - {error}\n")
 
 

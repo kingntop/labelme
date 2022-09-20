@@ -927,17 +927,37 @@ class MainWindow(QtWidgets.QMainWindow):
     # if self.firstStart:
     #    QWhatsThis.enterWhatsThisMode()
 
+        threading.Timer(0.1, self.connetNetDriver).start()
+
+    def connetNetDriver(self):
         if self._config["net"] != "":
             try:
                 #nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
                 cmd = r'{}'.format(self._config['net'])  # net use z: \\data /user:user123 password
                 subproc = subprocess.run(cmd, shell=True)
                 # arg = self.subprocess.args
+                #print(subproc)
+            except subprocess.CalledProcessError as e:
+                LogPrint("Error subprocess : %s" % e)
+            except Exception as e:
+                LogPrint("Error subprocess : %s" % e)
+            else:
+                LogPrint("컴맨드 (%s) 실행되였습니다." % cmd)
+
+    def deConnetNetDriver(self):
+        if self._config["net"] != "":
+            try:
+                # nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
+                cmd = r'net use * /delete'
+                subproc = subprocess.run(cmd, shell=True)
                 print(subproc)
             except subprocess.CalledProcessError as e:
                 LogPrint("Error subprocess : %s" % e)
             except Exception as e:
                 LogPrint("Error subprocess : %s" % e)
+            else:
+                LogPrint("컴맨드 (%s) 실행되였습니다." % cmd)
+
 
     # add recent files
     def addRecentFilesToList(self):
@@ -2292,17 +2312,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #self.labelList._itemList.clear()
         self.labelList.clear()
         self._polyonList.clear()
-        if self._config["net"] != "":
-            try:
-                # nd = r'net use d:\\Temp /user:{} {}'.format(self._config['user_id'], 'demo1234!')
-                cmd = r'net use * /delete'
-                subproc = subprocess.run(cmd, shell=True)
-                print(subproc)
-            except subprocess.CalledProcessError as e:
-                LogPrint("Error subprocess : %s" % e)
-            except Exception as e:
-                LogPrint("Error subprocess : %s" % e)
-
+        threading.Timer(0.01, self.deConnetNetDriver).start()
 
     def dragEnterEvent(self, event):
         extensions = [
