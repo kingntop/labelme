@@ -59,8 +59,10 @@ class PwdDlg(QtWidgets.QDialog):
         self._name_edit.setFixedWidth(200)
         self._name_edit.setFixedHeight(25)
         self._name_edit.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 5px; padding: 2px 6px}")
+        self._name_edit.setText(self._config['user_id'])
         name_layout.addWidget(lb_name)
         name_layout.addWidget(self._name_edit)
+
         #id_layout.setSpacing(10)
 
         lb_pwd = QtWidgets.QLabel(self.tr('Current pasword'))
@@ -122,7 +124,6 @@ class PwdDlg(QtWidgets.QDialog):
 
 
     def popUpDlg(self):
-
         self._name_edit.setText(self._config['user_id'])
         self._name_edit.setReadOnly(True)
         self._lb_pwd_edit.setText("")
@@ -156,10 +157,10 @@ class PwdDlg(QtWidgets.QDialog):
 
     def changeAction(self):
         self._lb_alram.setStyleSheet("QLabel { color : red; }")
-        user_id = self._config["user_id"]
+        user_id = self._config["user_id"].strip()
         name = self._name_edit.text().strip()
         if user_id != name and name == '':
-            self._lb_alram.setText(self.tr("The user name is not correct."))
+            self._lb_alram.setText(self.tr("The user id is not correct."))
             threading.Timer(3, self.showErrorText).start()
         elif self._lb_pwd_edit.text().strip() == "":
             self._lb_alram.setText(self.tr("Please enter your current password."))
@@ -236,9 +237,9 @@ class PwdDlgWin(QWidget):
         self._name_edit.setFixedWidth(200)
         self._name_edit.setFixedHeight(25)
         self._name_edit.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 5px; padding: 2px 6px}")
+        self._name_edit.setText(self._config["user_id"])
         name_layout.addWidget(lb_name)
         name_layout.addWidget(self._name_edit)
-        self._name_edit.setText(self._config["user_id"])
         self._name_edit.setReadOnly(True)
         #id_layout.setSpacing(10)
         lb_pwd = QtWidgets.QLabel(self.tr('Current pasword'))
@@ -301,13 +302,13 @@ class PwdDlgWin(QWidget):
 
     def changeAction(self):
         self._lb_alram.setStyleSheet("QLabel { color : red; }")
-        user_id = self._config["user_id"]
+        user_id = self._config["user_id"].strip()
         name = self._name_edit.text().strip()
         if name == '':
-            self._lb_alram.setText(self.tr("The user name is not correct."))
+            self._lb_alram.setText(self.tr("The user id is not correct."))
             threading.Timer(3, self.showErrorText).start()
         elif user_id != name:
-            self._lb_alram.setText(self.tr("The user name is not correct."))
+            self._lb_alram.setText(self.tr("The user id is not correct."))
             threading.Timer(3, self.showErrorText).start()
         elif self._lb_pwd_edit.text().strip() == "":
             self._lb_alram.setText(self.tr("Please enter your current password."))

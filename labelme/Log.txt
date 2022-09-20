@@ -3,3 +3,14 @@
 [2022.09.16/11:17:38] - Error subprocess : Command 'net use z: \\data /user:user123 password' returned non-zero exit status 2.
 [2022.09.16/11:18:49] - Error subprocess : Command 'net use z: \\data /user:user123 password' returned non-zero exit status 2.
 [2022.09.20/10:00:45] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2022.09.20/10:39:11] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2022.09.20/10:51:17] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2022.09.20/10:53:23] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2022.09.20/10:56:30] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2022.09.20/10:57:09] - 컴맨드 (net use z: /delete /yes) 실행되였습니다.
+[2022.09.20/11:28:05] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2022.09.20/11:29:09] - 컴맨드 (net use z: /delete /yes) 실행되였습니다.
+[2022.09.20/11:33:28] - 컴맨드 (net use z: /delete /yes) 실행되였습니다.
+[2022.09.20/11:35:25] - 컴맨드 (net use z: /delete /yes) 실행되였습니다.
+[2022.09.20/11:41:22] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2022.09.20/11:42:38] - 컴맨드 (net use z: /delete /yes) 실행되였습니다.
