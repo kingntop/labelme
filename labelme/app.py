@@ -1175,6 +1175,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def toggleDrawMode(self, edit=True, createMode="polygon"):
         self.canvas.setEditing(edit)
+        if self.actions.editMode.isEnabled() is False and self.canvas.createMode != createMode:
+            return
         self.canvas.createMode = createMode
         if edit:
             self.actions.createMode.setEnabled(True)

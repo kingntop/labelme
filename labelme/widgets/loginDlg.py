@@ -152,11 +152,13 @@ class LoginDLG(QWidget):
 
         url = self._config["api_url"] + 'ords/lm/v1/labelme/login'
         headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
+
+        self._config["user_id"] = uid
         data = {'user_id': uid, 'password': pwd}
         # respone = requests.post(url, headers=headers, json=data)
         # jsstr = respone.json()
         jsstr = httpReq(url, "post", headers, data)
-        # print(json.dumps(jsstr))
+
         if jsstr['message'] != 'success':
             if 'code' in jsstr and jsstr['code'].upper() == 'C001':
                 self._config["login_state"] = 'tochangepwd'
@@ -173,13 +175,11 @@ class LoginDLG(QWidget):
                 self._config["grade_yn"] = jsstr['grade_yn'].upper() if jsstr['grade_yn'].upper() == "Y" else "N"
                 self._config["product_yn"] = jsstr['product_yn'].upper() if jsstr['product_yn'].upper() == "Y" else "N"
                 self._config["label_yn"] = jsstr['label_yn'].upper() if jsstr['label_yn'].upper() == "Y" else "N"
-                self._config["user_id"] = uid
                 self._config["net"] = jsstr['net'] if jsstr['net'] else ""
 
             self._config["login_state"] = False
-            # self._lb_alram.setText(self.tr("Sucess Log in"))
-            # threading.Timer(0.05, self.showAlarmtext).start()
             self.CheckAppVersion()
+
 
     def CheckAppVersion(self):
         url = self._config["api_url"] + 'ords/lm/v1/labelme/versions'
