@@ -1,10 +1,8 @@
+import os
 import os.path as osp
 import shutil
-
 import yaml
-
 from labelme.logger import logger
-
 
 here = osp.dirname(osp.abspath(__file__))
 
@@ -52,6 +50,13 @@ def get_app_version():
 def copy_to_version():
     config_file = osp.join(here, "default_config.yaml")
     user_config_file = osp.join(osp.expanduser("~"), ".labelmerc")
+    if osp.isfile(user_config_file):
+        try:
+            os.remove(user_config_file)
+        except Exception:
+            logger.warn("Failed to remove config: {}".format(user_config_file))
+        pass
+
     try:
         shutil.copy(config_file, user_config_file)
     except Exception:
