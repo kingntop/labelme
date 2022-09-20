@@ -245,15 +245,16 @@ class LoginDLG(QWidget):
     def downloadApp(self, *args):
         filename = args[0]
         file = args[1]
-        with open(filename, "wb") as fb:
-            for chunk in file.iter_content(chunk_size=1024):
-                if chunk:
-                    fb.write(chunk)
-        self._config["login_state"] = False
         try:
+            with open(filename, "wb") as fb:
+                for chunk in file.iter_content(chunk_size=1024):
+                    if chunk:
+                        fb.write(chunk)
+            self._config["login_state"] = False
             self.setEnabled(True)
             self._lb_alram.setText("")
             self._downstate = False
             self.close()
         except Exception as e:
-            raise
+            LogPrint("새로운 버젼 다운로딍중 오류발생하였습니다.")
+            pass
