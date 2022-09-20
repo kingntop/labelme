@@ -167,7 +167,7 @@ def main():
         if r_app_version != o_app_version:
             copy_to_version()
     elif o_app_version is None:
-        cody_to_version()
+        copy_to_version()
     else:
         pass
 
