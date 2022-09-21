@@ -63,8 +63,11 @@ def copy_to_version():
         logger.warn("Failed to save config: {}".format(user_config_file))
     pass
 
-def get_app_origin_version(config_file_or_yaml=None):
+
+def get_app_origin_val(config_file_or_yaml=None, key=None):
     if config_file_or_yaml is None:
+        return None
+    if key is None:
         return None
     if not osp.exists(config_file_or_yaml):
         return None
@@ -72,8 +75,8 @@ def get_app_origin_version(config_file_or_yaml=None):
     if not isinstance(config_from_yaml, dict):
         with open(config_from_yaml) as f:
             config_from_yaml = yaml.safe_load(f)
-        if 'app_version' in config_from_yaml:
-            return config_from_yaml['app_version']
+        if key in config_from_yaml:
+            return config_from_yaml[key]
         return None
 
     return None

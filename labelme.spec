@@ -28,7 +28,7 @@ exe = EXE(
     a.binaries,
     a.zipfiles,
     a.datas,
-    name='labelme',
+    name='RaiidLabelStudio',
     debug=False,
     strip=False,
     upx=True,
@@ -39,7 +39,7 @@ exe = EXE(
 app = BUNDLE(
     exe,
     name='Labelme.app',
-    icon='labelme/icons/icon.icns',
+    icon='labelme/icons/icon.ico',
     bundle_identifier=None,
     info_plist={'NSHighResolutionCapable': 'True'},
 )

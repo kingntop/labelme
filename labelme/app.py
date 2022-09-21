@@ -2053,9 +2053,10 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.loadPixmap(QtGui.QPixmap.fromImage(image))
 
         if self.labelFile:
+            #threading.Timer(0.01, self.asyncLoadLabels, [self.labelFile.shapes]).start()
             self.loadLabels(self.labelFile.shapes)
-        # part grades of here ckd
 
+        # part grades of here ckd
         if self._config["keep_prev"] and self.noShapes():
             self.loadShapes(prev_shapes, replace=False)
             self.setDirty()
@@ -2105,8 +2106,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.setFocus()
         self.status(str(self.tr("Loaded %s")) % osp.basename(str(filename)))
 
-        self.togglePolygons(True) # add ckd
-
+        self.togglePolygons(True)  # add ckd
         # add ckd
         self.topToolWidget.editmodeClick(True)
 

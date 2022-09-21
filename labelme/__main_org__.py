@@ -10,7 +10,6 @@ from labelme import __appname__, __version__
 from labelme.app import MainWindow
 from labelme.config import get_config
 from labelme.config import get_app_version
-from labelme.config import get_app_origin_version
 from labelme.config import copy_to_version
 from labelme.logger import logger
 from labelme.utils import newIcon
@@ -161,7 +160,7 @@ def main():
     output = config_from_args.pop("output")
     config_file_or_yaml = config_from_args.pop("config")
 
-    o_app_version = get_app_origin_version(config_file_or_yaml)
+    o_app_version = get_app_origin_val(config_file_or_yaml, 'app_version')
     if o_app_version is not None and o_app_version != "":
         r_app_version = get_app_version()
         if r_app_version != o_app_version:

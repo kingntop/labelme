@@ -234,9 +234,46 @@ class AppInfoFile(object):
                     else:
                         line_content += '\n'
 
-            line_content += "\n{}: {}\n".format(self._key, self._val)
+            line_content += "{}: {}\n".format(self._key, self._val)
             with open(self._file, "w", encoding="utf-8") as fp:
                 fp.write(line_content)
+        else:
+            self.overideKeyAndValue()
+
+    def overideKeyAndValue(self):
+        if not self._file:
+            return
+        if os.path.exists(self._file) is not True:
+            return
+        if self._key is None:
+            return
+        if self._val is None:
+            return
+
+        hv = False
+        with open(self._file, "r", encoding="utf-8") as fp:
+            lines = fp.readlines()
+            for i, le in enumerate(lines):
+                if le:
+                    if le.find(self._key) == 0:
+                        hv = True
+
+        if hv is True:
+            line_content = ""
+            with open(self._file, "r", encoding="utf-8") as fp:
+                lines = fp.readlines()
+                for i, le in enumerate(lines):
+                    if le:
+                        if le.find(self._key) == 0:
+                            line_content += "{}: {}\n".format(self._key, self._val)
+                        else:
+                            line_content += le
+                    else:
+                        line_content += '\n'
+
+            with open(self._file, "w", encoding="utf-8") as fp:
+                fp.write(line_content)
+
 
     def hasKey(self, key=None):
         if not self._file:
