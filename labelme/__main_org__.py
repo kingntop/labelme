@@ -10,6 +10,7 @@ from labelme import __appname__, __version__
 from labelme.app import MainWindow
 from labelme.config import get_config
 from labelme.config import get_app_version
+from labelme.config import get_app_origin_val
 from labelme.config import copy_to_version
 from labelme.logger import logger
 from labelme.utils import newIcon
@@ -166,7 +167,7 @@ def main():
         if r_app_version != o_app_version:
             copy_to_version()
     elif o_app_version is None:
-        cody_to_version()
+        copy_to_version()
     else:
         pass
 
@@ -212,7 +213,10 @@ def main():
 
     local_lang = config["local_lang"] if config["local_lang"] is not None else QtCore.QLocale.system().name()
     # start get lang of UI
-    config["local_lang"] = local_lang
+    # 언어를 변경하지 않는다.
+    #config["local_lang"] = local_lang
+    config["local_lang"] = 'ko_KR'  # 고정시킨다.
+
     run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config)
 
 def run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config):
@@ -233,7 +237,8 @@ def run_loginWin(config, default_config_file, filename, output_file, output_dir,
     config["net"] = ""
 
     login_win = LoginDLG(
-        config=config
+        config=config,
+        default_config_file=default_config_file,
     )
     login_win.show()
     ret = login_app.exec_()
@@ -250,8 +255,9 @@ def run_pwdWin(config, default_config_file, filename, output_file, output_dir, r
     lang = config["local_lang"]
     lang = str(lang).replace('.qm', '')
 
-    appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
-    appinfo_file.saveValue()
+    # 언어를 변경하지 않는다.
+    #appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
+    #appinfo_file.saveValue()
 
     pwd_translator = QtCore.QTranslator()
     mlang = newLang(lang)
@@ -279,8 +285,10 @@ def run_mainApp(config, default_config_file, filename, output_file, output_dir, 
     lang = str(lang).replace('.qm', '')
 
     # save new lang to labelme.spec //
-    appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
-    appinfo_file.saveValue()
+    orign_lang = get_app_origin_val(default_config_file, 'local_lang')
+    if orign_lang is None or orign_lang != lang:
+        appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
+        appinfo_file.saveValue()
     # // end save
 
     mlang = newLang(lang)

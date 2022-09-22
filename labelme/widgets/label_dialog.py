@@ -378,8 +378,12 @@ class SearchLabelListWidget(QtWidgets.QWidget):
     def findItems(self, shape):
         for it in self._itemList:
             #lb = it._shape["label"]
-            if it._shape["label"] == shape.label:
-                return True
+            try:
+                if it._shape["label"] == shape.label:
+                    return True
+            except Exception as e:
+                pass
+
         return False
 
     def mousePressEventHandle(self, event, shape, mode=None):

@@ -162,7 +162,7 @@ def main():
     config_file_or_yaml = config_from_args.pop("config")
 
     o_app_version = get_app_origin_val(config_file_or_yaml, 'app_version')
-    if o_app_version is not None and o_app_version is not "":
+    if o_app_version is not None and o_app_version != "":
         r_app_version = get_app_version()
         if r_app_version != o_app_version:
             cody_to_version()
@@ -224,7 +224,7 @@ def main():
     config["grade_yn"] = "N"
     config["product_yn"] = "N"
     config["label_yn"] = "N"
-    config["user_id"] = ""
+    config["user_id"] = "grade_yn"
     config["net"] = ""
     run_mainApp(config, default_config_file, filename, output_file, output_dir, reset_config)
 

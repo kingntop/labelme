@@ -205,10 +205,11 @@ class DockCheckBoxTitleBar(QtWidgets.QWidget):
         boxLayout.setContentsMargins(1, 1, 1, 1)
 
         self.titleLabel = QLabel(self)
-        polyT = self.tr("Polygon Labels (Total %s)")
+        polyT = "Polygon Labels (Total 0)"
         if self._app._config["local_lang"] == "ko_KR":
-            polyT = "다각형 레이블 (총 %s)"
-        self.titleLabel.setText(polyT % 0)
+            polyT = "다각형 레이블 (총 0)"
+        self.titleLabel.setText(polyT)
+        self.titleLabel.setMinimumWidth(150)
 
         self.hidnBtn = QtWidgets.QPushButton(self)
         self.hidnBtn.setText('')

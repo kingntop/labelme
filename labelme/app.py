@@ -9,8 +9,13 @@ import re
 import webbrowser
 import threading
 import copy
+import platform
+import time
 # import ctypes
 import subprocess
+
+import asyncio
+
 from typing import final
 
 import imgviz
@@ -35,6 +40,7 @@ from labelme.logger import logger
 from labelme.shape import Shape
 from labelme.widgets import BrightnessContrastDialog
 from labelme.widgets import PolygonTransDialog
+from labelme.widgets import LoadingLabelProgress
 from labelme.widgets import AppVersionDialog
 from labelme.widgets import Canvas
 from labelme.widgets import FileDialogPreview
@@ -64,13 +70,13 @@ from labelme.convert_coco_label import ConvertCoCOLabel
 
 # TODO(unknown):
 # - Zoom is too "steppy".
-
-
 LABEL_COLORMAP = imgviz.label_colormap()
 
+# os.environ['HTTP_PROXY'] = "http://127.0.0.1:3213"
+# os.environ['HTTPS_PROXY'] = "https://127.0.0.1:3213"
 
 class MainWindow(QtWidgets.QMainWindow):
-
+    fileLoadedSignal = QtCore.Signal(list)
     FIT_WINDOW, FIT_WIDTH, MANUAL_ZOOM = 0, 1, 2
     selected_grade = None
     userInfo = {}
@@ -153,6 +159,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grades_dock.setWidget(self.grades_widget)
         #if self._config["grades"]:
         threading.Timer(0.3, self.gradeButtonEvent, args=(True,)).start()
+        self.fileLoadedSignal.connect(self.fileLoadedSignalHandle)
 
         # products part ckd
         self.selected_product = None
@@ -276,7 +283,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.addDockWidget(Qt.RightDockWidgetArea, self.products_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.shape_dock)
         self.addDockWidget(Qt.RightDockWidgetArea, self.file_dock)
-
 
         # Actions
         action = functools.partial(utils.newAction, self)
@@ -920,7 +926,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Callbacks:
         self.zoomWidget.valueChanged.connect(self.paintCanvas)
-
         self.populateModeActions()
         # self.addRecentFilesToList("first")  # add ckd
 
@@ -1473,19 +1478,55 @@ class MainWindow(QtWidgets.QMainWindow):
         # self.actions.edit.setEnabled(n_selected == 1) # edit for single
         self.actions.edit.setEnabled(n_selected)  # add ckd 9/7/2022
 
+    def addLabel_(self, shape, fileloading=False):
+        ##Add polygon list 파일로딩때에만 호출됨
+        listitem = QListWidgetItem(self.labelList)
+        self.labelList.addItem(listitem)
+        row = MyCustomWidget(shape, self.labelList)
+        listitem.setSizeHint(row.minimumSizeHint())
+        self.labelList.setItemWidget(listitem, row)
+
+        if fileloading is True:
+            self.labelList._itemList.append(row)
+        else:
+            fnd = False
+            for i in range(len(self.labelList._itemList)):
+                itm = self.labelList._itemList[i]
+                if isinstance(itm, MyCustomWidget):
+                    if row._shape == itm._shape:
+                        fnd = True
+                        break
+
+            if fnd is False:
+                self.labelList._itemList.append(row)
+
+        self.labelDialog.addLabelHistory(shape)
+        for action in self.actions.onShapesPresent:
+            action.setEnabled(True)
+
+        if fileloading is False:
+            prodT = "Polygon Labels (Total %s)"
+            if self._config["local_lang"] == "ko_KR":
+                prodT = "다각형 레이블 (총 %s)"
+            self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+
+        #self._update_shape_color(shape) 이부분에선 불필요
+
     def addLabel(self, shape):
-        # Add polygon list
+        # Add polygon list 파일로딩때에만 호출됨
         self.labelList.addShape(shape)
         self.labelDialog.addLabelHistory(shape)
         for action in self.actions.onShapesPresent:
             action.setEnabled(True)
 
-        self._update_shape_color(shape)
-        # update polygon count ckd
-        prodT = "Polygon Labels (Total %s)"
+        # # update polygon count ckd
+        prodT = "Polygon Labels (Total {})".format(self.labelList.count())
         if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+            prodT = "다각형 레이블 (총 {})".format(self.labelList.count())
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
+        #self.shape_dock.titleBarWidget().titleLabel.sizeHint()
+        self._update_shape_color(shape)
+
 
     def _update_shape_color(self, shape):
         sc = shape.color if shape.color else "#808000"
@@ -1524,13 +1565,40 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.labelList.reSort()
 
+
     def loadShapes(self, shapes, replace=True):
+        self._noSelectionSlot = True
+        self.canvas.loadShapes(shapes, replace=replace)
+
+    def loadShapes_(self, shapes, replace=True):
         self._noSelectionSlot = True
         for shape in shapes:
             self.addLabel(shape)
+        # update polygon count ckd
+        prodT = "Polygon Labels (Total %s)"
+        if self._config["local_lang"] == "ko_KR":
+            prodT = "다각형 레이블 (총 %s)"
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+
         self.labelList.clearSelection()
         self._noSelectionSlot = False
         self.canvas.loadShapes(shapes, replace=replace)
+
+    def loadShapes_asyncio(self, shapes, replace=True):
+        self._noSelectionSlot = True
+        if platform.system().lower() == 'windows':
+            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+        asyncio.run(self.drawListOfShape(shapes))
+
+        prodT = "Polygon Labels (Total %s)"
+        if self._config["local_lang"] == "ko_KR":
+            prodT = "다각형 레이블 (총 %s)"
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+
+        self.labelList.clearSelection()
+        self._noSelectionSlot = False
+        self.canvas.loadShapes(shapes, replace=replace)
+
 
     def loadLabels(self, shapes):
         s = []
@@ -1909,7 +1977,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.labelList.checkStatus(1 if value else 0)
 
-    def loadFile(self, filename=None):
+
+    def loadFile_(self, filename=None):
         """Load the specified file, or the last opened file if None."""
         # changing fileListWidget loads file
         if filename in self.imageList and (
@@ -2053,9 +2122,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.loadPixmap(QtGui.QPixmap.fromImage(image))
 
         if self.labelFile:
-            #threading.Timer(0.01, self.asyncLoadLabels, [self.labelFile.shapes]).start()
             self.loadLabels(self.labelFile.shapes)
-
         # part grades of here ckd
         if self._config["keep_prev"] and self.noShapes():
             self.loadShapes(prev_shapes, replace=False)
@@ -2063,6 +2130,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.setClean()
         self.canvas.setEnabled(True)
+
         # set zoom values
         is_initial_load = not self.zoom_values
         if self.filename in self.zoom_values:
@@ -2112,7 +2180,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         return True
 
-    def loadFile_(self, filename=None):
+
+    def loadFile(self, filename=None):
         """Load the specified file, or the last opened file if None."""
         # changing fileListWidget loads file
         if filename in self.imageList and (
@@ -2137,6 +2206,18 @@ class MainWindow(QtWidgets.QMainWindow):
         self.status(
             str(self.tr("Loading %s...")) % osp.basename(str(filename))
         )
+        cocofile = False
+        labelfile = False
+        coco_file = "{}_coco.{}".format(osp.splitext(filename)[0], "json")
+        if self.output_dir:
+            coco_file_without_path = osp.basename(coco_file)
+            coco_file = osp.join(self.output_dir, coco_file_without_path)
+
+        if QtCore.QFile.exists(coco_file) and ConvertCoCOLabel.is_coco_file(
+            coco_file
+        ):
+            cocofile = True
+
         label_file = osp.splitext(filename)[0] + ".json"
         if self.output_dir:
             label_file_without_path = osp.basename(label_file)
@@ -2144,6 +2225,9 @@ class MainWindow(QtWidgets.QMainWindow):
         if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
             label_file
         ):
+            labelfile = True
+
+        if cocofile is True and labelfile is True:
             try:
                 self.labelFile = LabelFile(label_file)
             except LabelFileError as e:
@@ -2164,11 +2248,59 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.labelFile.imagePath,
             )
             self.otherData = self.labelFile.otherData
+        elif cocofile is False and labelfile is True:
+            try:
+                self.labelFile = LabelFile(label_file)
+            except LabelFileError as e:
+                self.errorMessage(
+                    self.tr("Error opening file"),
+                    self.tr(
+                        "<p><b>%s</b></p>"
+                        "<p>Make sure <i>%s</i> is a valid label file."
+                    )
+                    % (e, label_file),
+                )
+                # LogPrint("e : %s" % e)
+                self.status(self.tr("Error reading %s") % label_file)
+                return False
+            self.imageData = self.labelFile.imageData
+            self.imagePath = osp.join(
+                osp.dirname(label_file),
+                self.labelFile.imagePath,
+            )
+            self.otherData = self.labelFile.otherData
+        elif cocofile is True and labelfile is False:
+            ccls = ConvertCoCOLabel(coco_file, label_file)
+            label_file = ccls.save()
+            if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
+                    label_file
+            ):
+                try:
+                    self.labelFile = LabelFile(label_file)
+                except LabelFileError as e:
+                    self.errorMessage(
+                        self.tr("Error opening file"),
+                        self.tr(
+                            "<p><b>%s</b></p>"
+                            "<p>Make sure <i>%s</i> is a valid label file."
+                        )
+                        % (e, label_file),
+                    )
+                    # LogPrint("e : %s" % e)
+                    self.status(self.tr("Error reading %s") % label_file)
+                    return False
+                self.imageData = self.labelFile.imageData
+                self.imagePath = osp.join(
+                    osp.dirname(label_file),
+                    self.labelFile.imagePath,
+                )
+                self.otherData = self.labelFile.otherData
         else:
             self.imageData = LabelFile.load_image_file(filename)
             if self.imageData:
                 self.imagePath = filename
             self.labelFile = None
+
         image = QtGui.QImage.fromData(self.imageData)
 
         if image.isNull():
@@ -2185,22 +2317,18 @@ class MainWindow(QtWidgets.QMainWindow):
             )
             self.status(self.tr("Error reading %s") % filename)
             return False
+
         self.image = image
         self.filename = filename
+        prev_shapes = None
         if self._config["keep_prev"]:
             prev_shapes = self.canvas.shapes
         self.canvas.loadPixmap(QtGui.QPixmap.fromImage(image))
 
         if self.labelFile:
             self.loadLabels(self.labelFile.shapes)
-        # part grades of here ckd
 
-        if self._config["keep_prev"] and self.noShapes():
-            self.loadShapes(prev_shapes, replace=False)
-            self.setDirty()
-        else:
-            self.setClean()
-        self.canvas.setEnabled(True)
+
         # set zoom values
         is_initial_load = not self.zoom_values
         if self.filename in self.zoom_values:
@@ -2238,16 +2366,50 @@ class MainWindow(QtWidgets.QMainWindow):
         self.brightnessContrast_values[self.filename] = (brightness, contrast)
         if brightness is not None or contrast is not None:
             dialog.onNewValue(None)
+
+        threading.Timer(0.1, self.fileLoadedSignalThread).start()  # add 9/21/2022
+        return True
+
+    def fileLoadedSignalThread(self):
+        self.fileLoadedSignal.emit(self.canvas.shapes)  # add 9/21/2022
+
+
+    def fileLoadedSignalHandle(self, shapes):
+        slen = len(shapes) / 100
+        if slen > 3:
+            self.loadingLabelDlg = LoadingLabelProgress(parent=self, config=self._config, size=len(shapes))
+            self.loadingLabelDlg.show()
+            self.labelList._itemList.clear()
+            i = 0
+            for shape in shapes:
+                self.addLabel(shape)
+                if i < slen:
+                    i = i + 1
+                else:
+                    self.loadingLabelDlg.doAction()
+                    time.sleep(0.007)
+                    i = 0
+            self.loadingLabelDlg._isEnd = True
+            self.loadingLabelDlg.close()
+        else:
+            for shape in shapes:
+                self.addLabel(shape)
+
+        self.labelList.clearSelection()
+        self._noSelectionSlot = False
+
+        self.setClean()
+        self.canvas.setEnabled(True)
         self.paintCanvas()
         self.addRecentFile(self.filename)
         self.toggleActions(True)
         self.canvas.setFocus()
-        self.status(str(self.tr("Loaded %s")) % osp.basename(str(filename)))
+        self.status(str(self.tr("Loaded %s")) % osp.basename(str(self.filename)))
 
+        self.togglePolygons(True)  # add ckd
         # add ckd
         self.topToolWidget.editmodeClick(True)
 
-        return True
 
     def resizeEvent(self, event):
         if (

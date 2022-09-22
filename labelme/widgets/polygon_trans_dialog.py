@@ -79,3 +79,39 @@ class AppVersionDialog(QtWidgets.QDialog):
 
         self.setLayout(formLayout)
         self.setMinimumWidth(250)
+
+
+class LoadingLabelProgress(QtWidgets.QWidget):
+    def __init__(self, parent=None, config=None, size=None):
+        self._config = config
+        self._isEnd = False
+        self.step = 0
+        self.size = size if size is not None else 1
+        super(LoadingLabelProgress, self).__init__(parent)
+        self.setMinimumWidth(250)
+        self.setMinimumHeight(150)
+        trans = parent.topToolWidget.trans.pos()
+        if trans:
+            self.move(trans.x() + 300, trans.y() - 40)
+        # qr = self.frameGeometry()
+        # cp = QtWidgets.QDesktopWidget().availableGeometry().center()
+        # qr.moveCenter(cp)
+        # self.move(qr.topLeft())
+        self.pbar = QtWidgets.QProgressBar(self)
+        self.pbar.setMinimum(0)
+        #self.pbar.setMaximum(self.size)
+        self.pbar.setMaximum(self.size)
+        self.pbar.setValue(0)
+        self.pbar.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+        hvox_layout = QtWidgets.QHBoxLayout()
+        hvox_layout.addWidget(self.pbar)
+        self.setLayout(hvox_layout)
+
+    def doAction(self):
+        self.step = self.step + self.size / 100
+        if self.step < self.size:
+            self.pbar.setValue(self.step)
+
+    def closeEvent(self, event):
+        if self._isEnd is False:
+            event.ignore()

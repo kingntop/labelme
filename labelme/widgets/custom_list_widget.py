@@ -271,22 +271,6 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
         self.selectionModel().selectionChanged.connect(
             self.itemSelectionChangedEvent
         )
-    """
-    def addShapes(self, shapes):
-        if len(shapes) < 1:
-            return
-        self.clear()
-        for shape in shapes:
-            rowItem = RowWidgetItem(shape, self)
-            self.vContent_layout.addWidget(rowItem)
-            #self._itemList.append(rowItem)
-
-        polyT = "Polygon Labels (Total %s)"
-        if self._app._config["local_lang"] == "ko_KR":
-            polyT = "다각형 레이블 (총 %s)"
-        if self._app.shape_dock:
-            self._app.shape_dock.titleBarWidget().titleLabel.setText(polyT % len(self._itemList))
-    """
 
     def itemSelectionChangedEvent(self, selected, deselected):
         selected = [self.itemFromIndex(i) for i in selected.indexes()]

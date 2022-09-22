@@ -14,7 +14,8 @@ from labelme.utils.qt import LogPrint
 from labelme.widgets.processini import AppInfoFile
 from labelme.config import get_app_origin_val
 
-
+# os.environ['HTTP_PROXY'] = "http://192.168.0.3:3213"
+# os.environ['HTTPS_PROXY'] = "https://192.168.0.3:3213"
 
 class LoginDLG(QWidget):
 
