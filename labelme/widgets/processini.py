@@ -229,8 +229,9 @@ class AppInfoFile(object):
             with open(self._file, "r", encoding="utf-8") as fp:
                 lines = fp.readlines()
                 for i, le in enumerate(lines):
-                    if le:
-                        line_content += le
+                    line = le.rstrip()
+                    if line:
+                        line_content += line + '\n'
                     else:
                         line_content += '\n'
 
@@ -263,11 +264,12 @@ class AppInfoFile(object):
             with open(self._file, "r", encoding="utf-8") as fp:
                 lines = fp.readlines()
                 for i, le in enumerate(lines):
-                    if le:
-                        if le.find(self._key) == 0:
+                    line = le.rstrip()
+                    if line:
+                        if line.find(self._key) == 0:
                             line_content += "{}: {}\n".format(self._key, self._val)
                         else:
-                            line_content += le
+                            line_content += line + '\n'
                     else:
                         line_content += '\n'
 
