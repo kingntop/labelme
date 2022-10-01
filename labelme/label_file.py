@@ -11,6 +11,7 @@ from labelme.logger import logger
 from labelme import PY2
 from labelme import QT4
 from labelme import utils
+from labelme.utils.qt import LogPrint
 
 
 PIL.Image.MAX_IMAGE_PIXELS = None
@@ -82,6 +83,7 @@ class LabelFile(object):
             "label",
             "color",
             "points",
+            "lineweight",
             "group_id",
             "shape_type",
         ]
@@ -110,14 +112,18 @@ class LabelFile(object):
                     imageData = utils.img_data_to_png_data(imageData)
             else:
                 # relative path from label file to relative path from cwd
-                imagePath = osp.join(osp.dirname(filename), data["imagePath"])
+                dfilename = filename.replace("meta/", "")  # add ckd
+                imagePath = osp.join(osp.dirname(dfilename), data["imagePath"])
                 imageData = self.load_image_file(imagePath)
             imagePath = data["imagePath"]
-            self._check_image_height_and_width(
-                base64.b64encode(imageData).decode("utf-8"),
-                data.get("imageHeight"),
-                data.get("imageWidth"),
-            )
+            if imageData is not None:
+                self._check_image_height_and_width(
+                    base64.b64encode(imageData).decode("utf-8"),
+                    data.get("imageHeight"),
+                    data.get("imageWidth"),
+                )
+            else:
+                LogPrint("원본이미지 이름과 json 파일에 저장된 이미지 이름이 일치하지 않습니다.")
 
             shapes = [
                 dict(
@@ -126,6 +132,7 @@ class LabelFile(object):
                     label_display=s["label_display"] if 'label_display' in s else s["label"],
                     color=s["color"] if 'color' in s else "#808000",
                     points=s["points"],
+                    lineweight=s["lineweight"] if 'lineweight' in s else "2.0",
                     shape_type=s.get("shape_type", "polygon"),
                     group_id=s.get("group_id"),
                     other_data={

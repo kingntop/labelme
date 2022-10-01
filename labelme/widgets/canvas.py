@@ -382,9 +382,20 @@ class Canvas(QtWidgets.QWidget):
                         self.drawingPolygon.emit(True)
                         self.update()
             elif self.editing():
-                if self.selectedEdge():
-                    self.addPointToEdge()
-                elif (
+                # add ckd //
+                # if self.selectedEdge():
+                #     self.addPointToEdge()
+                # elif (
+                #     self.selectedVertex()
+                #     and int(ev.modifiers()) == QtCore.Qt.ShiftModifier
+                # ):
+                #     # Delete point if: left-click + SHIFT on a point
+                #     self.removeSelectedPoint()
+
+                # // end
+
+
+                if (
                     self.selectedVertex()
                     and int(ev.modifiers()) == QtCore.Qt.ShiftModifier
                 ):
@@ -471,6 +482,23 @@ class Canvas(QtWidgets.QWidget):
     def mouseDoubleClickEvent(self, ev):
         # We need at least 4 points here, since the mousePress handler
         # adds an extra one before this handler is called.
+
+        # add ckd //
+        if self.editing():
+            if QT5:
+                pos = self.transformPos(ev.localPos())
+            else:
+                pos = self.transformPos(ev.posF())
+            if self.selectedEdge():
+                self.addPointToEdge()
+
+            group_mode = int(ev.modifiers()) == QtCore.Qt.ControlModifier
+            self.selectShapePoint(pos, multiple_selection_mode=group_mode)
+            self.prevPoint = pos
+            self.repaint()
+        # // end
+
+
         if (
             self.double_click == "close"
             and self.canCloseShape()
@@ -478,6 +506,8 @@ class Canvas(QtWidgets.QWidget):
         ):
             self.current.popPoint()
             self.finalise()
+
+
 
     def selectShapes(self, shapes):
         self.setHiding()

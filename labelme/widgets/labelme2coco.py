@@ -38,8 +38,9 @@ class labelme2coco(object):
                     #    self.label.append(label)
                     self.label.append(label)
                     color = shapes["color"]
+                    lineweight = shapes["lineweight"]
                     shape_type = shapes["shape_type"]
-                    self.categories.append(self.category(grade, label, color, shape_type))
+                    self.categories.append(self.category(grade, label, color, lineweight, shape_type))
                     points = shapes["points"]
                     self.annotations.append(self.annotation(points, label, num))
                     self.annID += 1
@@ -102,12 +103,13 @@ class labelme2coco(object):
         category["name"] = label[0]
         return category
 
-    def category(self, grade, label, color, shape_type):
+    def category(self, grade, label, color, lineweight, shape_type):
         category = {}
         category["supercategory"] = grade
         category["id"] = len(self.categories)
         category["name"] = label
         category["color"] = color
+        category["lineweight"] = lineweight
         category["shape_type"] = shape_type
         return category
 
@@ -164,7 +166,10 @@ class labelme2coco(object):
         mask = np.zeros(img_shape, dtype=np.uint8)
         mask = PIL.Image.fromarray(mask)
         xy = list(map(tuple, polygons))
-        PIL.ImageDraw.Draw(mask).polygon(xy=xy, outline=1, fill=1)
+        if len(polygons) == 1:  # add ckd
+            PIL.ImageDraw.Draw(mask).point(xy=xy, fill=1)
+        else:
+            PIL.ImageDraw.Draw(mask).polygon(xy=xy, outline=1, fill=1)
         mask = np.array(mask, dtype=bool)
         return mask
 
@@ -176,11 +181,10 @@ class labelme2coco(object):
         return data_coco
 
     def save_json(self):
-        print("saving coco json")
+        #print("saving coco json")
         self.data_transfer()
         self.data_coco = self.data2coco()
-
-        print(self.save_json_path)
+        #print(self.save_json_path)
         os.makedirs(
             os.path.dirname(os.path.abspath(self.save_json_path)), exist_ok=True
         )

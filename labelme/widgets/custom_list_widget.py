@@ -58,6 +58,7 @@ class CustomListWidget(QtWidgets.QWidget):
     def get(self):
         return self._items
 
+
     def itemClickEventHandle(self):
         # process ploygon with one selected product
         if self._selected_item is not None and self._objtag == "grades":
@@ -77,8 +78,14 @@ class CustomListWidget(QtWidgets.QWidget):
                 if lbObj is not None:
                     txt = lbObj.text()
                     objname = lbObj.objectName()  # will do using after this val
-                    if txt != self._selected_item:
+                    if txt != self._app.selected_grade:
                         lbObj.setStyleSheet("QLabel { border: 0px solid #aaa; padding:2px}")
+                    else:
+                        lbObj.setStyleSheet("QLabel { background-color: rgb(204, 232, 255); border: 0; padding:2px}")
+
+        if self._app.labelDialog:
+            self._app.labelDialog.changeGradeDis(self._app.selected_grade)
+
 
     def addItemsToQHBox(self, items):
         if len(items) > 0:
@@ -224,18 +231,25 @@ class MyCustomWidget(QtWidgets.QWidget):
         self.clrlabel = QtWidgets.QLabel()
         self.clrlabel.setStyleSheet(
             "QLabel{border: 1px soild #aaa; background: %s;}" % color_txt)
-        self.clrlabel.setFixedWidth(8)
+        self.clrlabel.setFixedWidth(10)
 
         self.checkbox = QtWidgets.QCheckBox("")
         self.checkbox.setCheckState(Qt.Checked)  # Qt.Checked
         self.checkbox.stateChanged.connect(self.checkBoxStateChangeHandle)
 
+        # self.row.addWidget(self.label)
+        # self.row.addStretch()
+        # self.row.addWidget(self.clrlabel)
+        # self.row.addSpacing(6)
+        # self.row.addWidget(self.checkbox)
+        # self.row.addSpacing(33)
+
+        self.row.addWidget(self.checkbox)
+        self.row.addSpacing(10)
+        self.row.addWidget(self.clrlabel)
+        self.row.addSpacing(3)
         self.row.addWidget(self.label)
         self.row.addStretch()
-        self.row.addWidget(self.clrlabel)
-        self.row.addSpacing(6)
-        self.row.addWidget(self.checkbox)
-        self.row.addSpacing(33)
         self.setLayout(self.row)
         self.setContentsMargins(6, 3, 6, 3)
 
@@ -471,7 +485,6 @@ class topToolWidget(QtWidgets.QWidget):
         #     tip=self.tr("Start drawing polygons"),
         # )
 
-
         hbox_layout = QHBoxLayout()
         hbox_layout.setSpacing(0)
         hbox_layout.setContentsMargins(5, 5, 0, 0)
@@ -481,24 +494,28 @@ class topToolWidget(QtWidgets.QWidget):
         self.polygon.setIconSize(QtCore.QSize(20, 20))
         self.polygon.clicked.connect(self.polygonClick)
         self.polygon.setEnabled(False)
+        self.polygon.setToolTip("폴리곤 그리기" if self._app._config["local_lang"] == "ko_KR" else "Drawing ploygon")
 
         self.rect = QToolButton()
         self.rect.setIcon(utils.newIcon("rect"))
         self.rect.setIconSize(QtCore.QSize(20, 20))
         self.rect.clicked.connect(self.rectClick)
         self.rect.setEnabled(False)
+        self.rect.setToolTip("사각형 그리기" if self._app._config["local_lang"] == "ko_KR" else "Drawing rectangle")
 
         self.circle = QToolButton()
         self.circle.setIcon(utils.newIcon("circle"))
         self.circle.setIconSize(QtCore.QSize(20, 20))
         self.circle.clicked.connect(self.circleClick)
         self.circle.setEnabled(False)
+        self.circle.setToolTip("원 그리기" if self._app._config["local_lang"] == "ko_KR" else "Drawing circle")
 
         self.line = QToolButton()
         self.line.setIcon(utils.newIcon("line"))
         self.line.setIconSize(QtCore.QSize(20, 20))
         self.line.clicked.connect(self.lineClick)
         self.line.setEnabled(False)
+        self.line.setToolTip("선 그리기" if self._app._config["local_lang"] == "ko_KR" else "Drawing line")
 
         self.arrow = QToolButton()
         self.arrow.setIcon(utils.newIcon("CursorArrow"))
@@ -506,6 +523,7 @@ class topToolWidget(QtWidgets.QWidget):
         self.arrow.clicked.connect(self.arrowClick)
         self.arrow.setEnabled(False)
         self.arrow.setShortcut(shortcuts["cursorArrow"])
+        self.arrow.setToolTip("그리기 해제" if self._app._config["local_lang"] == "ko_KR" else "Drawing off")
 
         self.trans = QToolButton()
         self.trans.setIcon(utils.newIcon("ftrans"))
@@ -513,6 +531,13 @@ class topToolWidget(QtWidgets.QWidget):
         self.trans.clicked.connect(self.transClick)
         self.trans.setEnabled(False)
         self.trans.setShortcut(shortcuts["trans"])
+        self.trans.setToolTip("투명도 설정" if self._app._config["local_lang"] == "ko_KR" else "Transparency setting")
+        
+        self.editOrDraw = QLabel("")
+        self.editOrDraw.setFont(appFont())
+        #self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
+        ##self.editOrDraw.setFixedHeight(18)
+        
 
         hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.polygon, 0, QtCore.Qt.AlignLeft)
@@ -526,6 +551,8 @@ class topToolWidget(QtWidgets.QWidget):
         hbox_layout.addWidget(self.arrow, 0, QtCore.Qt.AlignLeft)
         hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.trans, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(40)
+        hbox_layout.addWidget(self.editOrDraw, 0, QtCore.Qt.AlignLeft)
 
         hbox_layout.addStretch()
 
@@ -536,32 +563,28 @@ class topToolWidget(QtWidgets.QWidget):
         self.rect.setEnabled(True)
         self.circle.setEnabled(True)
         self.line.setEnabled(True)
-        if self._app is not None:
-            self._app.toggleDrawMode(False, createMode="polygon")
+        self.appActionControll(False, createMode="polygon")
 
     def rectClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(False)
         self.circle.setEnabled(True)
         self.line.setEnabled(True)
-        if self._app is not None:
-            self._app.toggleDrawMode(False, createMode="rectangle")
+        self.appActionControll(False, createMode="rectangle")
 
     def circleClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(True)
         self.circle.setEnabled(False)
         self.line.setEnabled(True)
-        if self._app is not None:
-            self._app.toggleDrawMode(False, createMode="circle")
+        self.appActionControll(False, createMode="circle")
 
     def lineClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(True)
         self.circle.setEnabled(True)
         self.line.setEnabled(False)
-        if self._app is not None:
-            self._app.toggleDrawMode(False, createMode="line")
+        self.appActionControll(False, createMode="line")
 
     def arrowClick(self):
         # if self._app.canvas.current:
@@ -579,6 +602,9 @@ class topToolWidget(QtWidgets.QWidget):
         if self.isEnabled() is False:
             self.setEnabled(True)
 
+        self.editOrDraw.setText("해제 모드")
+        self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#ed7d31")  # 해제 #ed7d31
+
         self.polygon.setEnabled(value)
         self.rect.setEnabled(value)
         self.circle.setEnabled(value)
@@ -586,10 +612,50 @@ class topToolWidget(QtWidgets.QWidget):
         self.arrow.setEnabled(value)
         self.trans.setEnabled(value)
 
+    def appActionControll(self, edit=False, createMode="polygon"):
+        self._app.canvas.setEditing(edit)
+        self._app.canvas.createMode = createMode
+
+        self.editOrDraw.setText("그리기 모드")
+        self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
+
+        if createMode == "polygon":
+            self._app.actions.createMode.setEnabled(False)
+            self._app.actions.createRectangleMode.setEnabled(True)
+            self._app.actions.createCircleMode.setEnabled(True)
+            self._app.actions.createLineMode.setEnabled(True)
+            self._app.actions.createPointMode.setEnabled(True)
+            # self.actions.createLineStripMode.setEnabled(True)
+        elif createMode == "rectangle":
+            self._app.actions.createMode.setEnabled(True)
+            self._app.actions.createRectangleMode.setEnabled(False)
+            self._app.actions.createCircleMode.setEnabled(True)
+            self._app.actions.createLineMode.setEnabled(True)
+            self._app.actions.createPointMode.setEnabled(True)
+            # self.actions.createLineStripMode.setEnabled(True)
+        elif createMode == "line":
+            self._app.actions.createMode.setEnabled(True)
+            self._app.actions.createRectangleMode.setEnabled(True)
+            self._app.actions.createCircleMode.setEnabled(True)
+            self._app.actions.createLineMode.setEnabled(False)
+            self._app.actions.createPointMode.setEnabled(True)
+            # self.actions.createLineStripMode.setEnabled(True)
+        elif createMode == "circle":
+            self._app.actions.createMode.setEnabled(True)
+            self._app.actions.createRectangleMode.setEnabled(True)
+            self._app.actions.createCircleMode.setEnabled(False)
+            self._app.actions.createLineMode.setEnabled(True)
+            self._app.actions.createPointMode.setEnabled(True)
+            # self.actions.createLineStripMode.setEnabled(True)
+        self._app.actions.editMode.setEnabled(not edit)
+
 
     def eventFromMenu(self, mode):
         if self.isEnabled() is False:
             self.setEnabled(True)
+
+        self.editOrDraw.setText("그리기 모드")
+        self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
 
         if mode == "polygon":
             self.polygon.setEnabled(False)

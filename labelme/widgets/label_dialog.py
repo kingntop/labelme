@@ -1,4 +1,6 @@
 import re
+import threading
+import copy
 
 from qtpy import QT_VERSION
 from qtpy import QtCore
@@ -447,6 +449,7 @@ class LabelSearchDialog(QtWidgets.QDialog):
         super(LabelSearchDialog, self).__init__(parent)
 
         self._app = parent  # add ckd
+        self.actived = False
         self._list_items = []
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
 
@@ -456,6 +459,24 @@ class LabelSearchDialog(QtWidgets.QDialog):
         self.edit.setPlaceholderText(text)
         self.edit.returnPressed.connect(self.searchProcess)
         layout = QtWidgets.QVBoxLayout()
+        layout_grade = QtWidgets.QHBoxLayout()
+        layout.addLayout(layout_grade)
+        static_grade = QtWidgets.QLabel("등급:" if self._app._config["local_lang"] == "ko_KR" else "Grade:")
+        static_grade.setStyleSheet("QLabel {font-size: 14px; font-weight: bold}")
+        self.dis_grade = QtWidgets.QLabel("등급" if self._app._config["local_lang"] == "ko_KR" else "Grade")
+        self.dis_grade.setStyleSheet("QLabel {color: red; font-size: 14px; font-weight: bold}")
+
+        self.gradelist = QtWidgets.QComboBox()
+        self.gradelist.setFixedHeight(22)
+        self.gradelist.currentIndexChanged.connect(self.currentIndexChangedHandle)
+        self.gradelist.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 1px; padding: 3px; font-size: 14px;}")
+
+        layout_grade.addWidget(static_grade)
+        layout_grade.addWidget(self.dis_grade)
+        layout_grade.addSpacing(20)
+        layout_grade.addWidget(self.gradelist, 1)
+        #layout_grade.addStretch()
+
         if show_text_field:
             layout_edit = QtWidgets.QHBoxLayout()
             layout_edit.addWidget(self.edit, 6)
@@ -475,11 +496,45 @@ class LabelSearchDialog(QtWidgets.QDialog):
 
         # label_list
         self.labelList = SearchLabelListWidget(self)
-        # self.labelList.itemSelectionChanged.connect(self.labelItemSelected)
+        ##self.labelList.itemSelectionChanged.connect(self.labelItemSelected)
         self.edit.setListWidget(self.labelList)
         layout.addWidget(self.labelList)
 
         self.setLayout(layout)
+
+    def changeGradeDis(self, gradetxt, called=False):
+        self.dis_grade.setText(gradetxt)
+        cbidx = 0
+        for i in range(0, self.gradelist.count()):
+            itxt = self.gradelist.itemText(i)
+            ml = self.dis_grade.text()
+            if itxt == ml:
+                cbidx = i
+                break
+        if self.gradelist.count() > 0:
+            self.gradelist.setCurrentIndex(cbidx)
+
+    def currentIndexChangedHandle(self, *args):
+        sarg = args[0]
+        if self.actived is False:
+            return
+        txt = self.gradelist.currentText()
+        if len(txt) > 0 and txt != "--선택--":
+            #self._app.selected_grade = txt
+            self._app.grades_widget._selected_item = txt
+            self._app.grades_widget._objtag = "grades"
+            self._app.grades_widget.itemClickEventHandle()
+
+    # 제일 처음에 한번 호출
+    def addGrades(self, items):
+        if len(items) > 0:
+            self.gradelist.clear()
+            item_count = len(items)
+            self.gradelist.addItem("--선택--", "--선택--")
+            for j in range(0, item_count):
+                item = items[j]
+                grade = item["grade"]
+                self.gradelist.addItem(grade, grade)
 
     def labelItemSelected(self, shape, mode=None):
         #item = self.labelList.currentItem()
@@ -536,14 +591,17 @@ class LabelSearchDialog(QtWidgets.QDialog):
                 self.edit.setText(shape.label)
             else:
                 self.edit.setText(shape["label"])
+        self.actived = True
 
         if self.exec_():
+            self.actived = False
             shape = self.labelList.getShapeSelectedItem()
             if shape:
                 return shape
             else:
                 return None
         else:
+            self.actived = False
             return None
 
     def colorOfitem(self, txt):

@@ -9,7 +9,7 @@ from labelme.utils import appFont
 
 
 class PolygonTransDialog(QtWidgets.QDialog):
-    def __init__(self, callback, parent=None):
+    def __init__(self, callback, linecallback, parent=None):
         super(PolygonTransDialog, self).__init__(parent)
         self.setModal(True)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
@@ -20,25 +20,35 @@ class PolygonTransDialog(QtWidgets.QDialog):
         if trans:
             self.move(trans.x() + 300, trans.y() + 50)
 
-        self.slider_trans = self._create_slider()
+        self.slider_trans = self._create_slider_trans()
+        self.slider_pen = self._create_slider_pen()
 
-        hvox_layout = QtWidgets.QHBoxLayout()
+        hvox_layout_trans = QtWidgets.QHBoxLayout()
         self.label = QtWidgets.QLabel()
         self.label.setMidLineWidth(35)
         self.label.setText("100%")
 
+        hvox_layout_trans.addWidget(self.slider_trans)
+        hvox_layout_trans.addWidget(self.label)
+        # line weight
+        hvox_layout_line = QtWidgets.QHBoxLayout()
+        self.label_line = QtWidgets.QLabel()
+        self.label_line.setMidLineWidth(35)
+        self.label_line.setText("2.0")
 
-        hvox_layout.addWidget(self.slider_trans)
-        hvox_layout.addWidget(self.label)
+        hvox_layout_line.addWidget(self.slider_pen)
+        hvox_layout_line.addWidget(self.label_line)
 
         formLayout = QtWidgets.QFormLayout()
-        formLayout.addRow(self.tr("Transparency"), hvox_layout)
+        formLayout.addRow(self.tr("Transparency"), hvox_layout_trans)
+        formLayout.addRow("Line weight" if self._parent._config["local_lang"] != "ko_KR" else "선 굵기", hvox_layout_line)
 
         self.setLayout(formLayout)
         self.setMinimumWidth(250)
         self.callback = callback
+        self.linecallback = linecallback
 
-    def _create_slider(self):
+    def _create_slider_trans(self):
         slider = QtWidgets.QSlider(Qt.Horizontal, self)
         slider.setRange(0, self._parent.polygonTrans_deta_value)
         slider.setValue(0)
@@ -47,10 +57,23 @@ class PolygonTransDialog(QtWidgets.QDialog):
         slider.valueChanged.connect(self.onNewValue)
         return slider
 
+    def _create_slider_pen(self):
+        slider = QtWidgets.QSlider(Qt.Horizontal, self)
+        slider.setRange(2.0, 10.0)
+        slider.setValue(2.0)
+        slider.setSingleStep(1.0)
+        slider.valueChanged.connect(self.onNewValueLine)
+        return slider
+
     def onNewValue(self, value):
         x = 100 * (self._parent.polygonTrans_deta_value - value) / self._parent.polygonTrans_deta_value
         self.label.setText("{}%".format(int(x)))
         self.callback(value)
+
+
+    def onNewValueLine(self, value):
+        self.label_line.setText("{}".format(float(value)))
+        self.linecallback(value)
 
 
 class AppVersionDialog(QtWidgets.QDialog):

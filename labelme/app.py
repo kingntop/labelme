@@ -332,14 +332,15 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tr("Save labels to file"),
             enabled=False,
         )
-        saveAs = action(
-            self.tr("&Save As"),
-            self.saveFileAs,
-            shortcuts["save_as"],
-            "save-as",
-            self.tr("Save labels to a different file"),
-            enabled=False,
-        )
+        # add 9.28.2022
+        # saveAs = action(
+        #     self.tr("&Save As"),
+        #     self.saveFileAs,
+        #     shortcuts["save_as"],
+        #     "save-as",
+        #     self.tr("Save labels to a different file"),
+        #     enabled=False,
+        # )
 
         deleteFile = action(
             self.tr("&Delete File"),
@@ -350,13 +351,14 @@ class MainWindow(QtWidgets.QMainWindow):
             enabled=False,
         )
 
-        changeOutputDir = action(
-            self.tr("&Change Output Dir"),
-            slot=self.changeOutputDirDialog,
-            shortcut=shortcuts["save_to"],
-            icon="open",
-            tip=self.tr("Change where annotations are loaded/saved"),
-        )
+        # add 9.28.2022
+        # changeOutputDir = action(
+        #     self.tr("&Change Output Dir"),
+        #     slot=self.changeOutputDirDialog,
+        #     shortcut=shortcuts["save_to"],
+        #     icon="open",
+        #     tip=self.tr("Change where annotations are loaded/saved"),
+        # )
 
         # saveAuto = action(
         #     text=self.tr("Save &Automatically"),
@@ -367,24 +369,24 @@ class MainWindow(QtWidgets.QMainWindow):
         #     checkable=True,
         #     enabled=True,
         # )
-        saveAuto = action(
-            text=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
-            slot=self.saveAutoAction,
-            shortcut=shortcuts["saveAuto"],
-            icon="save",
-            tip=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
-            checkable=True,
-            enabled=True,
-        )
-        saveAuto.setChecked(self._config["auto_save"])
+        # saveAuto = action(
+        #     text=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
+        #     slot=self.saveAutoAction,
+        #     shortcut=shortcuts["saveAuto"],
+        #     icon="save",
+        #     tip=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
+        #     checkable=True,
+        #     enabled=True,
+        # )
+        # saveAuto.setChecked(self._config["auto_save"])
 
-        saveWithImageData = action(
-            text=self.tr("Save With Image Data"),
-            slot=self.enableSaveImageWithData,
-            tip=self.tr("Save image data in label file"),
-            checkable=True,
-            checked=self._config["store_data"],
-        )
+        # saveWithImageData = action(
+        #     text=self.tr("Save With Image Data"),
+        #     slot=self.enableSaveImageWithData,
+        #     tip=self.tr("Save image data in label file"),
+        #     checkable=True,
+        #     checked=self._config["store_data"],
+        # )  add 9.28.2022
 
         close = action(
             "&Close",
@@ -502,11 +504,11 @@ class MainWindow(QtWidgets.QMainWindow):
             enabled=False,
         )
         removePoint = action(
-            text="Remove Selected Point",
+            text="Remove Selected Point" if self._config['local_lang'] != 'ko_KR' else '선택한 점 삭제',
             slot=self.removeSelectedPoint,
             shortcut=shortcuts["remove_selected_point"],
             icon="edit",
-            tip="Remove selected point from polygon",
+            tip="Remove selected point from polygon" if self._config['local_lang'] != 'ko_KR' else '폴리곤으로 부터 선택한 점을 삭제한다',
             enabled=False,
         )
 
@@ -681,11 +683,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Store actions for further handling.
         self.actions = utils.struct(
-            saveAuto=saveAuto,
-            saveWithImageData=saveWithImageData,
-            changeOutputDir=changeOutputDir,
+            #saveAuto=saveAuto,
+            # saveWithImageData=saveWithImageData,
+            # changeOutputDir=changeOutputDir,
             save=save,
-            saveAs=saveAs,
+            #saveAs=saveAs,
             open=open_,
             close=close,
             deleteFile=deleteFile,
@@ -717,7 +719,8 @@ class MainWindow(QtWidgets.QMainWindow):
             zoomActions=zoomActions,
             openNextImg=openNextImg,
             openPrevImg=openPrevImg,
-            fileMenuActions=(open_, opendir, save, saveAs, close, quit),
+            #fileMenuActions=(open_, opendir, save, saveAs, close, quit),
+            fileMenuActions=(open_, opendir, save, close, quit),
             tool=(),
             # XXX: need to add some actions here to activate the shortcut
             editMenu=(
@@ -728,7 +731,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 undo,
                 undoLastPoint,
                 # None,
-                # removePoint,
+                removePoint,
                 # None,
                 # toggle_keep_prev_mode,
             ),
@@ -748,7 +751,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 delete,
                 undo,
                 undoLastPoint,
-                # removePoint,
+                removePoint,
             ),
             onLoadActive=(
                 close,
@@ -761,7 +764,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 editMode,
                 brightnessContrast,
             ),
-            onShapesPresent=(saveAs, hideAll, showAll),
+            #onShapesPresent=(saveAs, hideAll, showAll),
+            onShapesPresent=(hideAll, showAll),
         )
 
         self.canvas.vertexSelected.connect(self.actions.removePoint.setEnabled)
@@ -784,10 +788,10 @@ class MainWindow(QtWidgets.QMainWindow):
                 opendir,
                 self.menus.recentFiles,
                 save,
-                saveAs,
-                saveAuto,
-                changeOutputDir,
-                saveWithImageData,
+                #saveAs,
+                #saveAuto,
+                #changeOutputDir,
+                #saveWithImageData,
                 close,
                 deleteFile,
                 None,
@@ -885,6 +889,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.brightnessContrast_values = {}
         self.polygonTrans_deta_value = 128
         self.polygonTrans_value = 0
+        self.lineweight_value = 2.0
         self.scroll_values = {
             Qt.Horizontal: {},
             Qt.Vertical: {},
@@ -1057,13 +1062,14 @@ class MainWindow(QtWidgets.QMainWindow):
         # Even if we autosave the file, we keep the ability to undo
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
 
-        if self._config["auto_save"] or self.actions.saveAuto.isChecked():
-            label_file = osp.splitext(self.imagePath)[0] + ".json"
-            if self.output_dir:
-                label_file_without_path = osp.basename(label_file)
-                label_file = osp.join(self.output_dir, label_file_without_path)
-            self.saveLabels(label_file)
-            return
+        # if self._config["auto_save"] or self.actions.saveAuto.isChecked():
+        #     label_file = osp.splitext(self.imagePath)[0] + ".json"
+        #     if self.output_dir:
+        #         label_file_without_path = osp.basename(label_file)
+        #         label_file = osp.join(self.output_dir, label_file_without_path)
+        #     self.saveLabels(label_file)
+        #     return
+
         self.dirty = True
         self.actions.save.setEnabled(True)
         title = __appname__
@@ -1179,6 +1185,70 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.delete.setEnabled(not drawing)
 
     def toggleDrawMode(self, edit=True, createMode="polygon"):
+        self.canvas.setEditing(edit)
+        self.canvas.createMode = createMode
+        if edit:
+            self.actions.createMode.setEnabled(True)
+            self.actions.createRectangleMode.setEnabled(True)
+            self.actions.createCircleMode.setEnabled(True)
+            self.actions.createLineMode.setEnabled(True)
+            self.actions.createPointMode.setEnabled(True)
+            #self.actions.createLineStripMode.setEnabled(True)
+            self.topToolWidget.editmodeClick(True)
+        else:
+            if createMode == "polygon":
+                self.actions.createMode.setEnabled(False)
+                self.actions.createRectangleMode.setEnabled(True)
+                self.actions.createCircleMode.setEnabled(True)
+                self.actions.createLineMode.setEnabled(True)
+                self.actions.createPointMode.setEnabled(True)
+                # self.actions.createLineStripMode.setEnabled(True)
+                self.topToolWidget.eventFromMenu(createMode)
+            elif createMode == "rectangle":
+                self.actions.createMode.setEnabled(True)
+                self.actions.createRectangleMode.setEnabled(False)
+                self.actions.createCircleMode.setEnabled(True)
+                self.actions.createLineMode.setEnabled(True)
+                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineStripMode.setEnabled(True)
+                self.topToolWidget.eventFromMenu(createMode)
+            elif createMode == "line":
+                self.actions.createMode.setEnabled(True)
+                self.actions.createRectangleMode.setEnabled(True)
+                self.actions.createCircleMode.setEnabled(True)
+                self.actions.createLineMode.setEnabled(False)
+                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineStripMode.setEnabled(True)
+                self.topToolWidget.eventFromMenu(createMode)
+            elif createMode == "point":
+                self.actions.createMode.setEnabled(True)
+                self.actions.createRectangleMode.setEnabled(True)
+                self.actions.createCircleMode.setEnabled(True)
+                self.actions.createLineMode.setEnabled(True)
+                self.actions.createPointMode.setEnabled(False)
+                #self.actions.createLineStripMode.setEnabled(True)
+                self.topToolWidget.eventFromMenu(createMode)
+            elif createMode == "circle":
+                self.actions.createMode.setEnabled(True)
+                self.actions.createRectangleMode.setEnabled(True)
+                self.actions.createCircleMode.setEnabled(False)
+                self.actions.createLineMode.setEnabled(True)
+                self.actions.createPointMode.setEnabled(True)
+                # self.actions.createLineStripMode.setEnabled(True)
+                self.topToolWidget.eventFromMenu(createMode)
+            elif createMode == "linestrip":
+                self.actions.createMode.setEnabled(True)
+                self.actions.createRectangleMode.setEnabled(True)
+                self.actions.createCircleMode.setEnabled(True)
+                self.actions.createLineMode.setEnabled(True)
+                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineStripMode.setEnabled(False)
+                self.topToolWidget.eventFromMenu(createMode)
+            else:
+                raise ValueError("Unsupported createMode: %s" % createMode)
+        self.actions.editMode.setEnabled(not edit)
+
+    def toggleDrawMode_org(self, edit=True, createMode="polygon"):
         self.canvas.setEditing(edit)
         if self.actions.editMode.isEnabled() is False and self.canvas.createMode != createMode:
             return
@@ -1617,6 +1687,7 @@ class MainWindow(QtWidgets.QMainWindow):
             label = shape["label"]
             color = shape["color"]
             points = shape["points"]
+            lineweight = shape["lineweight"]
             shape_type = shape["shape_type"]
             group_id = shape["group_id"]
             other_data = shape["other_data"]
@@ -1629,6 +1700,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.polygonTrans_value = 0
                 else:
                     self.polygonTrans_value = self.polygonTrans_deta_value - a
+
+                self.lineweight_value = float(lineweight)
                 inval = True
 
             color = QtGui.QColor(r, g, b, a if a < self.polygonTrans_deta_value else self.polygonTrans_deta_value)
@@ -1643,6 +1716,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 label=label,
                 label_display=label_display,
                 color=color,
+                lineweight=lineweight,
                 shape_type=shape_type,
                 group_id=group_id,
             )
@@ -1698,9 +1772,12 @@ class MainWindow(QtWidgets.QMainWindow):
             label = s.label.encode("utf-8") if PY2 else s.label
 
             cColor = QtGui.QColor(s.color if s.color else "#808000")
+            lineweight = s.lineweight if s.lineweight else "2.0"
             # r, g, b, a = cColor.red(), cColor.green(), cColor.blue(), cColor.alpha()
             #print("save shape", str(a))
-
+            plen = len(s.points)
+            if plen == 1:
+                s.shape_type = "point"
             cnams_str = cColor.name(QtGui.QColor.HexArgb)
             data.update(
                 dict(
@@ -1709,6 +1786,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     label_display=label_display,
                     color=cnams_str,
                     points=[(p.x(), p.y()) for p in s.points],
+                    lineweight=lineweight,
                     shape_type=s.shape_type,
                     group_id=s.group_id
                 )
@@ -1717,10 +1795,18 @@ class MainWindow(QtWidgets.QMainWindow):
 
         shapes = [format_shape(item._shape) for item in self.labelList.getShapeItems()]
         try:
+            if self.imagePath.find("meta/") > -1:
+                self.imagePath = self.imagePath.replace("meta/", "")
             imagePath = osp.relpath(self.imagePath, osp.dirname(filename))
-            imageData = self.imageData if self._config["store_data"] else None
+            #imageData = self.imageData if self._config["store_data"] else None # add ckd 9.28.2022
+            imageData = None
+            meta_dir = osp.dirname(filename) + "/meta"
+            filename = meta_dir + '/' + osp.basename(filename)
+            # if osp.dirname(filename) and not osp.exists(osp.dirname(filename)):
+            #     os.makedirs(osp.dirname(filename))
             if osp.dirname(filename) and not osp.exists(osp.dirname(filename)):
                 os.makedirs(osp.dirname(filename))
+
             lf.save(
                 filename=filename,
                 shapes=shapes,
@@ -1825,6 +1911,7 @@ class MainWindow(QtWidgets.QMainWindow):
             else:
                 a = self.polygonTrans_deta_value
             shape.color = QtGui.QColor(r, g, b, a)
+            shape.lineweight = self.lineweight_value
             # print("new shape", str(a))
 
             self.addLabel(shape)
@@ -1929,14 +2016,23 @@ class MainWindow(QtWidgets.QMainWindow):
     def PolygonAlpha(self, transObj):
         self.polygonAlphaDlg = PolygonTransDialog(
             self.polygonTrans,
+            self.lineweight,
             parent=self,
         )
         if self.polygonTrans_value:
             self.polygonAlphaDlg.slider_trans.setValue(self.polygonTrans_value)
+
+        if self.lineweight_value:
+            self.polygonAlphaDlg.slider_pen.setValue(self.lineweight_value)
+
         self.polygonAlphaDlg.exec_()
 
         val = self.polygonAlphaDlg.slider_trans.value()
         self.polygonTrans_value = val
+
+        val_l = self.polygonAlphaDlg.slider_pen.value()
+        self.lineweight_value = val_l
+
         transObj.setEnabled(True)
         self.actions.save.setEnabled(True)
 
@@ -1963,6 +2059,16 @@ class MainWindow(QtWidgets.QMainWindow):
             # shape.select_line_color = QtGui.QColor(255, 255, 255, alpha + 50)
             # shape.select_fill_color = QtGui.QColor(r, g, b, alpha + 27)  # a = 155
             self._update_shape_color(shape)
+
+        self.canvas.update()
+
+
+    def lineweight(self, value):
+        if self.canvas.shapes and len(self.canvas.shapes) < 1:
+            return
+
+        for shape in self.canvas.shapes:
+            shape.lineweight = value
 
         self.canvas.update()
 
@@ -2208,7 +2314,9 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         cocofile = False
         labelfile = False
-        coco_file = "{}_coco.{}".format(osp.splitext(filename)[0], "json")
+        meta_dir = osp.dirname(filename) + "/meta"
+        coco_file = meta_dir + '/{}_coco.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
+        #coco_file = "{}_coco.{}".format(osp.splitext(filename)[0], "json")
         if self.output_dir:
             coco_file_without_path = osp.basename(coco_file)
             coco_file = osp.join(self.output_dir, coco_file_without_path)
@@ -2218,7 +2326,8 @@ class MainWindow(QtWidgets.QMainWindow):
         ):
             cocofile = True
 
-        label_file = osp.splitext(filename)[0] + ".json"
+        label_file = meta_dir + '/{}.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
+        #label_file = osp.splitext(filename)[0] + ".json"
         if self.output_dir:
             label_file_without_path = osp.basename(label_file)
             label_file = osp.join(self.output_dir, label_file_without_path)
@@ -2232,19 +2341,22 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.labelFile = LabelFile(label_file)
             except LabelFileError as e:
                 self.errorMessage(
-                    self.tr("Error opening file"),
+                    self.tr("Error opening file" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 열기중 오류'),
                     self.tr(
-                        "<p><b>%s</b></p>"
-                        "<p>Make sure <i>%s</i> is a valid label file."
-                    )
-                    % (e, label_file),
+                        "<p><b>{}</b></p>"
+                        "<p>Make sure <i>{}</i> is a valid label file." if self._config['local_lang'] != 'ko_KR' else '<i>{}</i> 이 유효한 레이블파일인가를 확인하세요'
+                    ).format(e, label_file),
+                    #% (e, label_file),
                 )
                 # LogPrint("e : %s" % e)
-                self.status(self.tr("Error reading %s") % label_file)
+                self.status(self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 읽기중 오류').format(label_file))
                 return False
             self.imageData = self.labelFile.imageData
+            imgpath = label_file
+            if imgpath.find("meta/") > -1:
+                imgpath = imgpath.replace("meta/", "")
             self.imagePath = osp.join(
-                osp.dirname(label_file),
+                osp.dirname(imgpath),
                 self.labelFile.imagePath,
             )
             self.otherData = self.labelFile.otherData
@@ -2253,19 +2365,24 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.labelFile = LabelFile(label_file)
             except LabelFileError as e:
                 self.errorMessage(
-                    self.tr("Error opening file"),
+                    self.tr("Error opening file" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 열기중 오류'),
                     self.tr(
-                        "<p><b>%s</b></p>"
-                        "<p>Make sure <i>%s</i> is a valid label file."
-                    )
-                    % (e, label_file),
+                        "<p><b>{}</b></p>"
+                        "<p>Make sure <i>{}</i> is a valid label file." if self._config['local_lang'] != 'ko_KR' else '<i>{}</i> 이 유효한 레이블 파일인가를 확인하세요'
+                    ).format(e, label_file),
+                    # % (e, label_file),
                 )
                 # LogPrint("e : %s" % e)
-                self.status(self.tr("Error reading %s") % label_file)
+                self.status(
+                    self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 읽기중 오류').format(
+                        label_file))
                 return False
             self.imageData = self.labelFile.imageData
+            imgpath = label_file
+            if imgpath.find("meta/") > -1:
+                imgpath = imgpath.replace("meta/", "")
             self.imagePath = osp.join(
-                osp.dirname(label_file),
+                osp.dirname(imgpath),
                 self.labelFile.imagePath,
             )
             self.otherData = self.labelFile.otherData
@@ -2279,19 +2396,23 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.labelFile = LabelFile(label_file)
                 except LabelFileError as e:
                     self.errorMessage(
-                        self.tr("Error opening file"),
+                        self.tr("Error opening file" if self._config['local_lang'] != 'ko_KR' else '레벨파일 열기중 오류'),
                         self.tr(
-                            "<p><b>%s</b></p>"
-                            "<p>Make sure <i>%s</i> is a valid label file."
-                        )
-                        % (e, label_file),
+                            "<p><b>{}</b></p>"
+                            "<p>Make sure <i>{}</i> is a valid label file." if self._config['local_lang'] != 'ko_KR' else '<i>{}</i> 이 유효한 레벨파일인가를 확인하세요'
+                        ).format(e, label_file),
+                        # % (e, label_file),
                     )
                     # LogPrint("e : %s" % e)
-                    self.status(self.tr("Error reading %s") % label_file)
+                    self.status(
+                        self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레벨파일 읽기중 오류').format(label_file))
                     return False
                 self.imageData = self.labelFile.imageData
+                imgpath = label_file
+                if imgpath.find("meta/") > -1:
+                    imgpath = imgpath.replace("meta/", "")
                 self.imagePath = osp.join(
-                    osp.dirname(label_file),
+                    osp.dirname(imgpath),
                     self.labelFile.imagePath,
                 )
                 self.otherData = self.labelFile.otherData
@@ -2308,14 +2429,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 "*.{}".format(fmt.data().decode())
                 for fmt in QtGui.QImageReader.supportedImageFormats()
             ]
+            ermsg = "<p>Make sure <i>{0}</i> is a valid image file.<br/>" if self._config["local_lang"] != "ko_KR" else "<p><i>{0}</i> 이 유효한 이미지파일인가를 확인하세요<br/>(이미지 이름과 레이블 json 파일에 저장된 이미지 이름이 일치하지 않을수 있습니다)<br/>"
+            ermsg += "Supported image formats: {1}</p>" if self._config["local_lang"] != "ko_KR" else "지원하는 이미지 형식: {1}</p>"
             self.errorMessage(
-                self.tr("Error opening file"),
-                self.tr(
-                    "<p>Make sure <i>{0}</i> is a valid image file.<br/>"
-                    "Supported image formats: {1}</p>"
-                ).format(filename, ",".join(formats)),
+                self.tr("Error opening file" if self._config['local_lang'] != 'ko_KR' else '파일 열기중 오류'),
+                ermsg.format(filename, ",".join(formats)),
             )
-            self.status(self.tr("Error reading %s") % filename)
+            self.status(self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 읽기중 오류').format(filename))
             return False
 
         self.image = image
@@ -2573,9 +2693,15 @@ class MainWindow(QtWidgets.QMainWindow):
             "*.{}".format(fmt.data().decode())
             for fmt in QtGui.QImageReader.supportedImageFormats()
         ]
-        filters = self.tr("Image & Label files (%s)") % " ".join(
-            formats + ["*%s" % LabelFile.suffix]
+        # filters = self.tr("Image & Label files (%s)") % " ".join(
+        #     formats + ["*%s" % LabelFile.suffix]
+        # )
+        stt = "Image (%s)" if self._config['local_lang'] != 'ko_KR' else "이미지 (%s)"
+        filters = stt % " ".join(
+            formats
         )
+
+
         fileDialog = FileDialogPreview(self)
         fileDialog.setFileMode(FileDialogPreview.ExistingFile)
         fileDialog.setNameFilter(filters)
@@ -2630,12 +2756,27 @@ class MainWindow(QtWidgets.QMainWindow):
         assert not self.image.isNull(), "cannot save empty image"
         if self.labelFile:
             # DL20180323 - overwrite when in directory
-            self._saveFile(self.labelFile.filename)
+            filename = self.labelFile.filename
+            if self.labelFile.filename.find("meta/") > -1:
+                filename = self.labelFile.filename.replace("meta/", "")  # add ckd
+            self._saveFile(filename)
         elif self.output_file:
             self._saveFile(self.output_file)
             self.close()
         else:
-            self._saveFile(self.saveFileDialog())
+            #self._saveFile(self.saveFileDialog())
+            assert len(self.filename) > 3, "cannot save empty file"
+            basename = osp.basename(osp.splitext(self.filename)[0])
+            filename = osp.join(
+                self.currentPath(), basename + LabelFile.suffix
+            )
+            if isinstance(filename, tuple):
+                filename, _ = filename
+
+            if filename.find("meta/") > -1:
+                filename = filename.replace("meta/", "")  # add ckd
+            self._saveFile(filename)
+
 
     def saveFileAs(self, _value=False):
         assert not self.image.isNull(), "cannot save empty image"
@@ -2677,6 +2818,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _saveFile(self, filename):
         if filename and self.saveLabels(filename):
+            meta_dir = osp.dirname(filename) + "/meta"
+            filename = meta_dir + '/' + osp.basename(filename)
             self.addRecentFile(filename)
             self.setClean()
             # run coco format
@@ -2688,13 +2831,17 @@ class MainWindow(QtWidgets.QMainWindow):
         # put to coco format
         cf = ""
         try:
-            cocofiles = []
-            cocofiles.append(arg)
+            labelmefiles = []
+            labelmefiles.append(arg)
             basename = os.path.basename(arg)
             coco_fname = os.path.splitext(basename)[0]
             dirname = os.path.dirname(arg)
             cocofp = "{}/{}_coco.{}".format(dirname, coco_fname, "json")
-            labelme2coco(cocofiles, cocofp)
+            if osp.dirname(cocofp) and not osp.exists(osp.dirname(cocofp)):
+                os.makedirs(osp.dirname(cocofp))
+
+            labelme2coco(labelmefiles, cocofp)
+            print("Success save coco json")
         except LabelFileError as e:
             self.errorMessage(
                 self.tr("Error creating coco file"),
@@ -2705,7 +2852,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 % (e, cf),
             )
 
-        print("Success save coco json")
+
 
 
     def closeFile(self, _value=False):
@@ -2715,13 +2862,14 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setClean()
         self.toggleActions(False)
         self.canvas.setEnabled(False)
-        self.actions.saveAs.setEnabled(False)
+        #self.actions.saveAs.setEnabled(False)
 
         self.topToolWidget.editmodeClick(False)
         self.polygonTrans_value = 0
         try:
             if self.polygonAlphaDlg is not None:
                 self.polygonAlphaDlg.label.setText("100%")
+                self.polygonAlphaDlg.label_line.setText("2.0")
             self.polygonAlphaDlg = None
         except AttributeError as a:
             pass
@@ -2784,12 +2932,13 @@ class MainWindow(QtWidgets.QMainWindow):
         if not self.dirty:
             return True
         mb = QtWidgets.QMessageBox
-        msg = self.tr('Save annotations to "{}" before closing?').format(
+        msgstr = 'Save annotations to "{}" before closing?' if self._config['local_lang'] != 'ko_KR' else '닫기전에 "{}" 을 보관하시겠습니까?'
+        msg = msgstr.format(
             self.filename
         )
         answer = mb.question(
             self,
-            self.tr("Save annotations?"),
+            "Save annotations?" if self._config['local_lang'] != 'ko_KR' else '주석 저장?',
             msg,
             mb.Save | mb.Discard | mb.Cancel,
             mb.Save,
@@ -3040,6 +3189,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
                     if items and len(items) > 0:
                         self._polyonList = items
+
+                        if self.labelDialog.actived is True:
+                            self.labelDialog._list_items.clear()
+                            self.labelDialog._list_items = items[:]
+                            self.labelDialog.labelList.clear()
+                            self.labelDialog.labelList.addItems(items)
                     else:
                         temp = [{
                             "label_display": "미정-미정",
@@ -3048,6 +3203,7 @@ class MainWindow(QtWidgets.QMainWindow):
                             "color": "#ff0000"
                         }]
                         self._polyonList = temp
+
                 except AttributeError:
                     pass
             else:
@@ -3061,6 +3217,7 @@ class MainWindow(QtWidgets.QMainWindow):
         jsstr = httpReq(url, "get", headers)
         if jsstr['message'] == 'success':
             self.grades_widget.set(jsstr['items'])
+            self.labelDialog.addGrades(jsstr['items'])
         else:
             return QtWidgets.QMessageBox.critical(
                 self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])

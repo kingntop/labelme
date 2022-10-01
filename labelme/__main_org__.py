@@ -21,6 +21,7 @@ from labelme.widgets.loginDlg import LoginDLG
 from labelme.widgets.pwdDlg import PwdDlgWin
 from labelme.utils import newLang
 from labelme.utils import appFont
+from labelme.utils.qt import LogPrint
 
 
 def main():
@@ -161,15 +162,18 @@ def main():
     output = config_from_args.pop("output")
     config_file_or_yaml = config_from_args.pop("config")
 
-    o_app_version = get_app_origin_val(config_file_or_yaml, 'app_version')
-    if o_app_version is not None and o_app_version != "":
-        r_app_version = get_app_version()
-        if r_app_version != o_app_version:
+    try:
+        o_app_version = get_app_origin_val(config_file_or_yaml, 'app_version')
+        if o_app_version is not None and o_app_version != "":
+            r_app_version = get_app_version()
+            if r_app_version != o_app_version:
+                copy_to_version()
+        elif o_app_version is None:
             copy_to_version()
-    elif o_app_version is None:
-        copy_to_version()
-    else:
-        pass
+        else:
+            pass
+    except Exception as e:
+        LogPrint("앱버젼확인에서 오류가 발생하였습니다.")
 
     config = get_config(config_file_or_yaml, config_from_args)
     config['app_version'] = get_app_version()
