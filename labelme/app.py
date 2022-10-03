@@ -77,6 +77,7 @@ LABEL_COLORMAP = imgviz.label_colormap()
 
 class MainWindow(QtWidgets.QMainWindow):
     fileLoadedSignal = QtCore.Signal(list)
+    LoadShapesSignal = QtCore.Signal(list)
     FIT_WINDOW, FIT_WIDTH, MANUAL_ZOOM = 0, 1, 2
     selected_grade = None
     userInfo = {}
@@ -160,6 +161,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #if self._config["grades"]:
         threading.Timer(0.3, self.gradeButtonEvent, args=(True,)).start()
         self.fileLoadedSignal.connect(self.fileLoadedSignalHandle)
+        self.LoadShapesSignal.connect(self.LoadShapesSignalHandle)
 
         # products part ckd
         self.selected_product = None
@@ -227,7 +229,8 @@ class MainWindow(QtWidgets.QMainWindow):
         fileListLayout.addWidget(self.fileSearch)
         fileListLayout.addWidget(self.fileListWidget)
 
-        self.file_dock = QtWidgets.QDockWidget(self.tr("File List"), self)
+        fdname = "File List (Total 0)" if self._config["local_lang"] != "ko_KR" else "파일 목록 (총 0)"
+        self.file_dock = QtWidgets.QDockWidget(fdname, self)
         self.file_dock.setObjectName("Files")
         fileListWidget = QtWidgets.QWidget()
         fileListWidget.setLayout(fileListLayout)
@@ -360,25 +363,16 @@ class MainWindow(QtWidgets.QMainWindow):
         #     tip=self.tr("Change where annotations are loaded/saved"),
         # )
 
-        # saveAuto = action(
-        #     text=self.tr("Save &Automatically"),
-        #     slot=lambda x: self.actions.saveAuto.setChecked(x),
-        #     shortcut=shortcuts["saveAuto"],
-        #     icon="save",
-        #     tip=self.tr("Save automatically"),
-        #     checkable=True,
-        #     enabled=True,
-        # )
-        # saveAuto = action(
-        #     text=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
-        #     slot=self.saveAutoAction,
-        #     shortcut=shortcuts["saveAuto"],
-        #     icon="save",
-        #     tip=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
-        #     checkable=True,
-        #     enabled=True,
-        # )
-        # saveAuto.setChecked(self._config["auto_save"])
+        saveAuto = action(
+            text=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
+            slot=self.saveAutoAction,
+            shortcut=shortcuts["saveAuto"],
+            icon="save",
+            tip=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
+            checkable=True,
+            enabled=True,
+        )
+        saveAuto.setChecked(self._config["auto_save"])
 
         # saveWithImageData = action(
         #     text=self.tr("Save With Image Data"),
@@ -683,7 +677,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         # Store actions for further handling.
         self.actions = utils.struct(
-            #saveAuto=saveAuto,
+            saveAuto=saveAuto,
             # saveWithImageData=saveWithImageData,
             # changeOutputDir=changeOutputDir,
             save=save,
@@ -789,7 +783,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.menus.recentFiles,
                 save,
                 #saveAs,
-                #saveAuto,
+                saveAuto,
                 #changeOutputDir,
                 #saveWithImageData,
                 close,
@@ -808,7 +802,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 hideAll,
                 showAll,
                 None,
-                #self.topToolbar_dock.toggleViewAction(),
+                self.topToolbar_dock.toggleViewAction(),
                 self.grades_dock.toggleViewAction(),
                 self.products_dock.toggleViewAction(),
                 self.shape_dock.toggleViewAction(),
@@ -1062,13 +1056,19 @@ class MainWindow(QtWidgets.QMainWindow):
         # Even if we autosave the file, we keep the ability to undo
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
 
-        # if self._config["auto_save"] or self.actions.saveAuto.isChecked():
-        #     label_file = osp.splitext(self.imagePath)[0] + ".json"
-        #     if self.output_dir:
-        #         label_file_without_path = osp.basename(label_file)
-        #         label_file = osp.join(self.output_dir, label_file_without_path)
-        #     self.saveLabels(label_file)
-        #     return
+        if self._config["auto_save"] or self.actions.saveAuto.isChecked():
+            label_file = osp.splitext(self.imagePath)[0] + ".json"
+            if self.output_dir:
+                label_file_without_path = osp.basename(label_file)
+                label_file = osp.join(self.output_dir, label_file_without_path)
+            self.saveLabels(label_file)
+
+            if label_file.find("meta") < 0:
+                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file)
+
+            # run coco format
+            threading.Timer(0.005, self.putDownCocoFormat, [label_file]).start()
+            return
 
         self.dirty = True
         self.actions.save.setEnabled(True)
@@ -1151,6 +1151,8 @@ class MainWindow(QtWidgets.QMainWindow):
         return None
 
     def addRecentFile(self, filename):
+        if osp.splitext(filename)[1] == ".json":  # don't save json file
+            return
         if filename in self.recentFiles:
             self.recentFiles.remove(filename)
         elif len(self.recentFiles) >= self.maxRecent:
@@ -1163,7 +1165,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.canvas.restoreShape()
         self.labelList.clear()
         self.loadShapes(self.canvas.shapes)
+        for shape in self.canvas.shapes:
+            self.addLabel(shape)
+        prodT = "Polygon Labels (Total %s)"
+        if self._config["local_lang"] == "ko_KR":
+            prodT = "다각형 레이블 (총 %s)"
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+        self.labelList.clearSelection()
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+        #threading.Timer(0.01, self.LoadShapesThread, [self.canvas.shapes]).start()
 
     def tutorial(self):
         url = self._config["api_url"] + 'ords/r/lm/labelme'  # NOQA
@@ -1638,6 +1648,10 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def loadShapes(self, shapes, replace=True):
         self._noSelectionSlot = True
+        # for shape in shapes:
+        #     self.addLabel(shape)
+        # self.labelList.clearSelection()
+        # self._noSelectionSlot = False
         self.canvas.loadShapes(shapes, replace=replace)
 
     def loadShapes_(self, shapes, replace=True):
@@ -1838,11 +1852,22 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelList.clearSelection()
         for shape in added_shapes:
             self.addLabel(shape)
+        prodT = "Polygon Labels (Total %s)"
+        if self._config["local_lang"] == "ko_KR":
+            prodT = "다각형 레이블 (총 %s)"
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
         self.setDirty()
 
     def pasteSelectedShape(self):
         self.loadShapes(self._copied_shapes, replace=False)
+        for shape in self._copied_shapes:
+            self.addLabel(shape)
+        prodT = "Polygon Labels (Total %s)"
+        if self._config["local_lang"] == "ko_KR":
+            prodT = "다각형 레이블 (총 %s)"
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
         self.setDirty()
+        #threading.Timer(0.01, self.LoadShapesThread, [self._copied_shapes]).start()
 
     def copySelectedShape(self):
         self._copied_shapes = [s.copy() for s in self.canvas.selectedShapes]
@@ -1870,7 +1895,6 @@ class MainWindow(QtWidgets.QMainWindow):
     def labelOrderChanged(self):
         self.setDirty()
         self.canvas.loadShapes([item._shape for item in self.labelList.getItems()])
-
     # Callback functions:
 
     def newShape(self):
@@ -2035,6 +2059,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         transObj.setEnabled(True)
         self.actions.save.setEnabled(True)
+        self.setDirty()
 
     def viewAppVersion(self):
         self.appVersionDialog = AppVersionDialog(
@@ -2493,8 +2518,11 @@ class MainWindow(QtWidgets.QMainWindow):
     def fileLoadedSignalThread(self):
         self.fileLoadedSignal.emit(self.canvas.shapes)  # add 9/21/2022
 
+    def LoadShapesThread(self, shapes):
+        self.LoadShapesSignal.emit(shapes)  # add 9/21/2022
 
     def fileLoadedSignalHandle(self, shapes):
+        self._noSelectionSlot = True
         slen = len(shapes) / 100
         if slen > 3:
             self.loadingLabelDlg = LoadingLabelProgress(parent=self, config=self._config, size=len(shapes))
@@ -2530,6 +2558,30 @@ class MainWindow(QtWidgets.QMainWindow):
         # add ckd
         self.topToolWidget.editmodeClick(True)
 
+    def LoadShapesSignalHandle(self, shapes):
+        self._noSelectionSlot = True
+        slen = len(shapes) / 100
+        if slen > 3:
+            self.loadingLabelDlg = LoadingLabelProgress(parent=self, config=self._config, size=len(shapes))
+            self.loadingLabelDlg.show()
+            self.labelList._itemList.clear()
+            i = 0
+            for shape in shapes:
+                self.addLabel(shape)
+                if i < slen:
+                    i = i + 1
+                else:
+                    self.loadingLabelDlg.doAction()
+                    time.sleep(0.007)
+                    i = 0
+            self.loadingLabelDlg._isEnd = True
+            self.loadingLabelDlg.close()
+        else:
+            for shape in shapes:
+                self.addLabel(shape)
+
+        self.labelList.clearSelection()
+        self._noSelectionSlot = False
 
     def resizeEvent(self, event):
         if (
@@ -2818,8 +2870,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _saveFile(self, filename):
         if filename and self.saveLabels(filename):
-            meta_dir = osp.dirname(filename) + "/meta"
-            filename = meta_dir + '/' + osp.basename(filename)
+            if filename.find("meta") < 0:
+                meta_dir = osp.dirname(filename) + "/meta"
+                filename = meta_dir + '/' + osp.basename(filename)
             self.addRecentFile(filename)
             self.setClean()
             # run coco format
@@ -3091,12 +3144,19 @@ class MainWindow(QtWidgets.QMainWindow):
         for filename in self.scanAllImages(dirpath):
             if pattern and pattern not in filename:
                 continue
-            label_file = osp.splitext(filename)[0] + ".json"
+
+            label_file = osp.splitext(filename)[0]
+            if label_file.find("meta") < 0:
+                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file) + ".json"
+            else:
+                label_file = osp.splitext(filename)[0] + ".json"
+
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
                 label_file = osp.join(self.output_dir, label_file_without_path)
             item = QtWidgets.QListWidgetItem(filename)
             item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+
             if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
                 label_file
             ):
@@ -3107,7 +3167,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.openNextImg(load=load)
         # print("{}".format(self.fileListWidget.count()))
-        self.file_dock.setWindowTitle(self.tr("File List (Total {})".format(self.fileListWidget.count())))
+        flistname = "File List (Total {})".format(self.fileListWidget.count()) if self._config["local_lang"] != "ko_KR" else "파일 목록 (총 {})".format(self.fileListWidget.count())
+        self.file_dock.setWindowTitle(flistname)
 
     def scanAllImages(self, folderPath):
         extensions = [

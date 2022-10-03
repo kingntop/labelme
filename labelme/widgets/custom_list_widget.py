@@ -398,6 +398,7 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
                 s_items.append(widgetitem)
         return s_items
 
+
 class topToolWidget(QtWidgets.QWidget):
     def __init__(self, objname, app=None):
         super(topToolWidget, self).__init__()

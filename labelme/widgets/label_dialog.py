@@ -266,7 +266,7 @@ class DlgRowWidgetItem(QtWidgets.QWidget):
 
         label.setText(txt)
         label.setFont(appFont())
-        label.setStyleSheet("QLabel { padding: 2px; }")
+        label.setStyleSheet("QLabel { padding: 2px; font-size:14px}")
 
         color_label = QtWidgets.QLabel(self)
         c_txt = self._shape["color"] if self._shape["color"] and self._shape["color"] != "" else "#808000"
@@ -452,12 +452,16 @@ class LabelSearchDialog(QtWidgets.QDialog):
         self.actived = False
         self._list_items = []
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setFont(appFont())
 
         self.edit = LabelQLineEdit()
-
-        self.setFont(appFont())
+        self.edit.setFont(appFont())
+        font = self.edit.font()  # lineedit current font
+        font.setPointSize(11)  # change it's size
+        self.edit.setFont(font)  # set font
         self.edit.setPlaceholderText(text)
         self.edit.returnPressed.connect(self.searchProcess)
+
         layout = QtWidgets.QVBoxLayout()
         layout_grade = QtWidgets.QHBoxLayout()
         layout.addLayout(layout_grade)
