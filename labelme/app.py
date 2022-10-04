@@ -794,6 +794,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         utils.addActions(self.menus.help, (tutorial, None, changepwd, None, appVersion))
 
+        self.tools = self.toolbar("Tools")
         utils.addActions(
             self.menus.view,
             (
@@ -802,6 +803,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 hideAll,
                 showAll,
                 None,
+                self.tools.toggleViewAction(),
                 self.topToolbar_dock.toggleViewAction(),
                 self.grades_dock.toggleViewAction(),
                 self.products_dock.toggleViewAction(),
@@ -832,7 +834,6 @@ class MainWindow(QtWidgets.QMainWindow):
             ),
         )
 
-        self.tools = self.toolbar("Tools")
         # Menu buttons on Left
         self.actions.tool = (
             open_,
