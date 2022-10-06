@@ -603,8 +603,9 @@ class topToolWidget(QtWidgets.QWidget):
         if self.isEnabled() is False:
             self.setEnabled(True)
 
-        self.editOrDraw.setText("해제 모드")
-        self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#ed7d31")  # 해제 #ed7d31
+        if self._app.canvas.editing() is True:
+            self.editOrDraw.setText("해제 모드")
+            self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#ed7d31")  # 해제 #ed7d31
 
         self.polygon.setEnabled(value)
         self.rect.setEnabled(value)
@@ -617,8 +618,9 @@ class topToolWidget(QtWidgets.QWidget):
         self._app.canvas.setEditing(edit)
         self._app.canvas.createMode = createMode
 
-        self.editOrDraw.setText("그리기 모드")
-        self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
+        if self._app.canvas.editing() is False:
+            self.editOrDraw.setText("그리기 모드")
+            self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
 
         if createMode == "polygon":
             self._app.actions.createMode.setEnabled(False)
@@ -655,32 +657,47 @@ class topToolWidget(QtWidgets.QWidget):
         if self.isEnabled() is False:
             self.setEnabled(True)
 
-        self.editOrDraw.setText("그리기 모드")
-        self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
+        if self._app.canvas.editing() is False:
+            self.editOrDraw.setText("그리기 모드")
+            self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
 
         if mode == "polygon":
             self.polygon.setEnabled(False)
             self.rect.setEnabled(True)
             self.circle.setEnabled(True)
             self.line.setEnabled(True)
+            if self.arrow.isEnabled() is False:
+                self.arrow.setEnabled(True)
+                self.trans.setEnabled(True)
         elif mode == "rectangle":
             self.polygon.setEnabled(True)
             self.rect.setEnabled(False)
             self.circle.setEnabled(True)
             self.line.setEnabled(True)
+            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                self.arrow.setEnabled(True)
+                self.trans.setEnabled(True)
         elif mode == "circle":
             self.polygon.setEnabled(True)
             self.rect.setEnabled(True)
             self.circle.setEnabled(False)
             self.line.setEnabled(True)
+            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                self.arrow.setEnabled(True)
+                self.trans.setEnabled(True)
         elif mode == "line":
             self.polygon.setEnabled(True)
             self.rect.setEnabled(True)
             self.circle.setEnabled(True)
             self.line.setEnabled(False)
+            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                self.arrow.setEnabled(True)
+                self.trans.setEnabled(True)
         else:
             self.polygon.setEnabled(True)
             self.rect.setEnabled(True)
             self.circle.setEnabled(True)
             self.line.setEnabled(True)
-            self.arrow.setEnabled(True)
+            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                self.arrow.setEnabled(True)
+                self.trans.setEnabled(True)

@@ -1259,72 +1259,6 @@ class MainWindow(QtWidgets.QMainWindow):
                 raise ValueError("Unsupported createMode: %s" % createMode)
         self.actions.editMode.setEnabled(not edit)
 
-    def toggleDrawMode_org(self, edit=True, createMode="polygon"):
-        self.canvas.setEditing(edit)
-        if self.actions.editMode.isEnabled() is False and self.canvas.createMode != createMode:
-            return
-        self.canvas.createMode = createMode
-        if edit:
-            self.actions.createMode.setEnabled(True)
-            self.actions.createRectangleMode.setEnabled(True)
-            self.actions.createCircleMode.setEnabled(True)
-            self.actions.createLineMode.setEnabled(True)
-            self.actions.createPointMode.setEnabled(True)
-            #self.actions.createLineStripMode.setEnabled(True)
-            self.topToolWidget.editmodeClick(True)
-        else:
-            if createMode == "polygon":
-                self.actions.createMode.setEnabled(False)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
-                #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "rectangle":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(False)
-                self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
-                #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "line":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(False)
-                self.actions.createPointMode.setEnabled(True)
-                #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "point":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(False)
-                #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "circle":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(False)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
-                #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "linestrip":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
-                #self.actions.createLineStripMode.setEnabled(False)
-                self.topToolWidget.eventFromMenu(createMode)
-            else:
-                raise ValueError("Unsupported createMode: %s" % createMode)
-        self.actions.editMode.setEnabled(not edit)
-
     def setEditMode(self):
         self.toggleDrawMode(True)
 
@@ -2557,7 +2491,12 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.togglePolygons(True)  # add ckd
         # add ckd
-        self.topToolWidget.editmodeClick(True)
+        ac = self.canvas.drawing()
+        if ac:
+            #self.toggleDrawMode(False, self.canvas.createMode)  # 이전의 모드로 하자면
+            self.toggleDrawMode(True)  # 에디트모드로 강제전환
+        #else:
+            #self.topToolWidget.editmodeClick(True)
 
     def LoadShapesSignalHandle(self, shapes):
         self._noSelectionSlot = True

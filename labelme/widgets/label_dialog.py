@@ -266,7 +266,7 @@ class DlgRowWidgetItem(QtWidgets.QWidget):
 
         label.setText(txt)
         label.setFont(appFont())
-        label.setStyleSheet("QLabel { padding: 2px; font-size:14px}")
+        #label.setStyleSheet("QLabel { padding: 2px; font-size:14px}")
 
         color_label = QtWidgets.QLabel(self)
         c_txt = self._shape["color"] if self._shape["color"] and self._shape["color"] != "" else "#808000"
@@ -456,30 +456,33 @@ class LabelSearchDialog(QtWidgets.QDialog):
 
         self.edit = LabelQLineEdit()
         self.edit.setFont(appFont())
-        font = self.edit.font()  # lineedit current font
-        font.setPointSize(11)  # change it's size
-        self.edit.setFont(font)  # set font
+        #font = self.edit.font()  # lineedit current font
+        #font.setPointSize(11)  # change it's size
+        #self.edit.setFont(font)  # set font
         self.edit.setPlaceholderText(text)
         self.edit.returnPressed.connect(self.searchProcess)
+        #self.edit.setFixedHeight(25)
+        self.edit.setStyleSheet("QWidget {padding: 2px;}")
 
         layout = QtWidgets.QVBoxLayout()
         layout_grade = QtWidgets.QHBoxLayout()
         layout.addLayout(layout_grade)
         static_grade = QtWidgets.QLabel("등급:" if self._app._config["local_lang"] == "ko_KR" else "Grade:")
-        static_grade.setStyleSheet("QLabel {font-size: 14px; font-weight: bold}")
+        #static_grade.setStyleSheet("QLabel {font-size: 14px; font-weight: bold}")
         self.dis_grade = QtWidgets.QLabel("등급" if self._app._config["local_lang"] == "ko_KR" else "Grade")
-        self.dis_grade.setStyleSheet("QLabel {color: red; font-size: 14px; font-weight: bold}")
+        self.dis_grade.setStyleSheet("QLabel {color: red;font-size: 13px;}")
+        #self.dis_grade.setStyleSheet("QLabel {color: red; font-size: 14px; font-weight: bold}")
 
         self.gradelist = QtWidgets.QComboBox()
         self.gradelist.setFixedHeight(22)
         self.gradelist.currentIndexChanged.connect(self.currentIndexChangedHandle)
-        self.gradelist.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 1px; padding: 3px; font-size: 14px;}")
+        self.gradelist.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 1px; padding: 3px; font-size: 13px;}")
+        #self.gradelist.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 1px; padding: 3px; font-size: 14px;}")
 
         layout_grade.addWidget(static_grade)
         layout_grade.addWidget(self.dis_grade)
         layout_grade.addSpacing(20)
         layout_grade.addWidget(self.gradelist, 1)
-        #layout_grade.addStretch()
 
         if show_text_field:
             layout_edit = QtWidgets.QHBoxLayout()
