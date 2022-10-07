@@ -536,8 +536,9 @@ class topToolWidget(QtWidgets.QWidget):
         
         self.editOrDraw = QLabel("")
         self.editOrDraw.setFont(appFont())
-        #self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
-        ##self.editOrDraw.setFixedHeight(18)
+        self.editOrDraw.setText("해제 모드")
+        self.editOrDraw.setStyleSheet(
+            "QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#ed7d31")  # 해제 #ed7d31
         
 
         hbox_layout.addSpacing(20)
