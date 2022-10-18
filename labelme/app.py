@@ -213,7 +213,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.topToolbar_dock = QtWidgets.QDockWidget(self.tr("Top bar"), self)
         self.topToolbar_dock.setWidget(self.topToolWidget)
         self.topToolbar_dock.setTitleBarWidget(QtWidgets.QWidget())
-        self.topToolWidget.setEnabled(False)
+        self.topToolWidget.setEnabled(True)
 
 
         self.fileSearch = QtWidgets.QLineEdit()
@@ -243,6 +243,7 @@ class MainWindow(QtWidgets.QMainWindow):
             epsilon=self._config["epsilon"],
             double_click=self._config["canvas"]["double_click"],
             num_backups=self._config["canvas"]["num_backups"],
+            lang=self._config["local_lang"],
         )
         self.canvas.zoomRequest.connect(self.zoomRequest)
 
@@ -424,6 +425,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tr("Start drawing circles"),
             enabled=False,
         )
+        """
         createLineMode = action(
             self.tr("Create Line"),
             lambda: self.toggleDrawMode(False, createMode="line"),
@@ -440,6 +442,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.tr("Start drawing points"),
             enabled=False,
         )
+        """
         # createLineStripMode = action(
         #     self.tr("Create LineStrip"),
         #     lambda: self.toggleDrawMode(False, createMode="linestrip"),
@@ -698,8 +701,8 @@ class MainWindow(QtWidgets.QMainWindow):
             editMode=editMode,
             createRectangleMode=createRectangleMode,
             createCircleMode=createCircleMode,
-            createLineMode=createLineMode,
-            createPointMode=createPointMode,
+            #createLineMode=createLineMode,
+            #createPointMode=createPointMode,
             #createLineStripMode=createLineStripMode,
 
             zoom=zoom,
@@ -734,8 +737,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 createMode,
                 createRectangleMode,
                 createCircleMode,
-                createLineMode,
-                createPointMode,
+                #createLineMode,
+                #createPointMode,
                 #createLineStripMode,
                 editMode,
                 edit,
@@ -752,8 +755,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 createMode,
                 createRectangleMode,
                 createCircleMode,
-                createLineMode,
-                createPointMode,
+                #createLineMode,
+                #createPointMode,
                 #createLineStripMode,
                 editMode,
                 brightnessContrast,
@@ -829,8 +832,8 @@ class MainWindow(QtWidgets.QMainWindow):
         utils.addActions(
             self.canvas.menus[1],
             (
-                action("&Copy here", self.copyShape),
-                action("&Move here", self.moveShape),
+                action("&Copy here" if self._config["local_lang"] != "ko_KR" else "여기에 복사", self.copyShape),
+                action("&Move here" if self._config["local_lang"] != "ko_KR" else "여기로 이동", self.moveShape),
             ),
         )
 
@@ -884,7 +887,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.brightnessContrast_values = {}
         self.polygonTrans_deta_value = 128
         self.polygonTrans_value = 0
-        self.lineweight_value = 2.0
+        self.lineweight_value = 0.0
         self.scroll_values = {
             Qt.Horizontal: {},
             Qt.Vertical: {},
@@ -1042,8 +1045,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.actions.createMode,
             self.actions.createRectangleMode,
             self.actions.createCircleMode,
-            self.actions.createLineMode,
-            self.actions.createPointMode,
+            #self.actions.createLineMode,
+            #self.actions.createPointMode,
             #self.actions.createLineStripMode,
             self.actions.editMode,
         )
@@ -1052,6 +1055,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def setvisibilityChange(self):
         print("setvisibilityChange")
+
+    def topToolbar_dockAction(self):
+        self.topToolbar_dock.hide()
 
     def setDirty(self):
         # Even if we autosave the file, we keep the ability to undo
@@ -1084,8 +1090,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.createMode.setEnabled(True)
         self.actions.createRectangleMode.setEnabled(True)
         self.actions.createCircleMode.setEnabled(True)
-        self.actions.createLineMode.setEnabled(True)
-        self.actions.createPointMode.setEnabled(True)
+        #self.actions.createLineMode.setEnabled(True)
+        #self.actions.createPointMode.setEnabled(True)
         #self.actions.createLineStripMode.setEnabled(True)
         title = __appname__
         if self.filename is not None:
@@ -1103,6 +1109,10 @@ class MainWindow(QtWidgets.QMainWindow):
             z.setEnabled(value)
         for action in self.actions.onLoadActive:
             action.setEnabled(value)
+
+        self.topToolWidget.setEnabled(value)
+        self.topToolWidget.trans.setEnabled(value)
+        self.topToolWidget.topbarHide.setEnabled(value)
 
     def queueEvent(self, function):
         QtCore.QTimer.singleShot(0, function)
@@ -1202,8 +1212,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.actions.createMode.setEnabled(True)
             self.actions.createRectangleMode.setEnabled(True)
             self.actions.createCircleMode.setEnabled(True)
-            self.actions.createLineMode.setEnabled(True)
-            self.actions.createPointMode.setEnabled(True)
+            #self.actions.createLineMode.setEnabled(True)
+            #self.actions.createPointMode.setEnabled(True)
             #self.actions.createLineStripMode.setEnabled(True)
             self.topToolWidget.editmodeClick(True)
         else:
@@ -1211,48 +1221,48 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.createMode.setEnabled(False)
                 self.actions.createRectangleMode.setEnabled(True)
                 self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineMode.setEnabled(True)
+                #self.actions.createPointMode.setEnabled(True)
                 # self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "rectangle":
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(False)
                 self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineMode.setEnabled(True)
+                #self.actions.createPointMode.setEnabled(True)
                 #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "line":
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
                 self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(False)
-                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineMode.setEnabled(False)
+                #self.actions.createPointMode.setEnabled(True)
                 #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "point":
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
                 self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(False)
+                #self.actions.createLineMode.setEnabled(True)
+                #self.actions.createPointMode.setEnabled(False)
                 #self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "circle":
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
                 self.actions.createCircleMode.setEnabled(False)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineMode.setEnabled(True)
+                #self.actions.createPointMode.setEnabled(True)
                 # self.actions.createLineStripMode.setEnabled(True)
                 self.topToolWidget.eventFromMenu(createMode)
             elif createMode == "linestrip":
                 self.actions.createMode.setEnabled(True)
                 self.actions.createRectangleMode.setEnabled(True)
                 self.actions.createCircleMode.setEnabled(True)
-                self.actions.createLineMode.setEnabled(True)
-                self.actions.createPointMode.setEnabled(True)
+                #self.actions.createLineMode.setEnabled(True)
+                #self.actions.createPointMode.setEnabled(True)
                 #self.actions.createLineStripMode.setEnabled(False)
                 self.topToolWidget.eventFromMenu(createMode)
             else:
@@ -1577,7 +1587,7 @@ class MainWindow(QtWidgets.QMainWindow):
             item = self.labelList.findItemByShape(shape)
             if item:
                 self.labelList.removeItem(item)
-
+        self.labelList.reDraw()
         self.labelList.reSort()
 
 
@@ -1721,7 +1731,7 @@ class MainWindow(QtWidgets.QMainWindow):
             label = s.label.encode("utf-8") if PY2 else s.label
 
             cColor = QtGui.QColor(s.color if s.color else "#808000")
-            lineweight = s.lineweight if s.lineweight else "2.0"
+            lineweight = s.lineweight if s.lineweight else "1.0"
             # r, g, b, a = cColor.red(), cColor.green(), cColor.blue(), cColor.alpha()
             #print("save shape", str(a))
             plen = len(s.points)
@@ -1953,31 +1963,43 @@ class MainWindow(QtWidgets.QMainWindow):
         #print("ending...Brightness")
 
     def brightnessContrast(self, value):
-        dialog = BrightnessContrastDialog(
-            utils.img_data_to_pil(self.imageData),
-            self.onNewBrightnessContrast,
-            parent=self,
-        )
+        if self.brightDialog is None:
+            self.brightDialog = BrightnessContrastDialog(
+                utils.img_data_to_pil(self.imageData),
+                self.onNewBrightnessContrast,
+                parent=self,
+            )
         brightness, contrast = self.brightnessContrast_values.get(
             self.filename, (None, None)
         )
         if brightness is not None:
-            dialog.slider_brightness.setValue(brightness)
+            self.brightDialog.slider_brightness.setValue(brightness)
         if contrast is not None:
-            dialog.slider_contrast.setValue(contrast)
-        dialog.exec_()
+            self.brightDialog.slider_contrast.setValue(contrast)
+        self.brightDialog.exec_()
 
-        brightness = dialog.slider_brightness.value()
-        contrast = dialog.slider_contrast.value()
+        brightness = self.brightDialog.slider_brightness.value()
+        contrast = self.brightDialog.slider_contrast.value()
         self.brightnessContrast_values[self.filename] = (brightness, contrast)
 
 
     def PolygonAlpha(self, transObj):
-        self.polygonAlphaDlg = PolygonTransDialog(
-            self.polygonTrans,
-            self.lineweight,
-            parent=self,
+        if self.polygonAlphaDlg is None:
+            self.polygonAlphaDlg = PolygonTransDialog(
+                utils.img_data_to_pil(self.imageData),
+                self.onNewBrightnessContrast,
+                self.polygonTrans,
+                self.lineweight,
+                parent=self,
+            )
+        brightness, contrast = self.brightnessContrast_values.get(
+            self.filename, (None, None)
         )
+        if brightness is not None:
+            self.polygonAlphaDlg.slider_brightness.setValue(brightness)
+        if contrast is not None:
+            self.polygonAlphaDlg.slider_contrast.setValue(contrast)
+
         if self.polygonTrans_value:
             self.polygonAlphaDlg.slider_trans.setValue(self.polygonTrans_value)
 
@@ -1986,6 +2008,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.polygonAlphaDlg.exec_()
 
+        #brightness = dialog.slider_brightness.value()
+        #contrast = dialog.slider_contrast.value()
+
+        brightness = self.polygonAlphaDlg.slider_brightness.value()
+        contrast = self.polygonAlphaDlg.slider_contrast.value()
+        self.brightnessContrast_values[self.filename] = (brightness, contrast)
+
         val = self.polygonAlphaDlg.slider_trans.value()
         self.polygonTrans_value = val
 
@@ -1993,7 +2022,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.lineweight_value = val_l
 
         transObj.setEnabled(True)
-        self.actions.save.setEnabled(True)
         self.setDirty()
 
     def viewAppVersion(self):
@@ -2043,7 +2071,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.labelList.checkStatus(1 if value else 0)
 
-
+    """ NO using."""
     def loadFile_(self, filename=None):
         """Load the specified file, or the last opened file if None."""
         # changing fileListWidget loads file
@@ -2423,11 +2451,19 @@ class MainWindow(QtWidgets.QMainWindow):
                     orientation, self.scroll_values[orientation][self.filename]
                 )
         # set brightness contrast values
-        dialog = BrightnessContrastDialog(
+        self.brightDialog = BrightnessContrastDialog(
             utils.img_data_to_pil(self.imageData),
             self.onNewBrightnessContrast,
             parent=self,
         )
+        self.polygonAlphaDlg = PolygonTransDialog(
+            utils.img_data_to_pil(self.imageData),
+            self.onNewBrightnessContrast,
+            self.polygonTrans,
+            self.lineweight,
+            parent=self,
+        )
+
         brightness, contrast = self.brightnessContrast_values.get(
             self.filename, (None, None)
         )
@@ -2440,13 +2476,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.recentFiles[0], (None, None)
             )
         if brightness is not None:
-            dialog.slider_brightness.setValue(brightness)
+            self.brightDialog.slider_brightness.setValue(brightness)
+            self.polygonAlphaDlg.slider_brightness.setValue(brightness)
         if contrast is not None:
-            dialog.slider_contrast.setValue(contrast)
+            self.brightDialog.slider_contrast.setValue(contrast)
+            self.polygonAlphaDlg.slider_contrast.setValue(contrast)
         self.brightnessContrast_values[self.filename] = (brightness, contrast)
         if brightness is not None or contrast is not None:
-            dialog.onNewValue(None)
+            self.brightDialog.onNewValue(None)
+            self.polygonAlphaDlg.onNewValue(None)
 
+        #self.topToolWidget.editmodeClick(True)
         threading.Timer(0.1, self.fileLoadedSignalThread).start()  # add 9/21/2022
         return True
 
@@ -2470,7 +2510,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     i = i + 1
                 else:
                     self.loadingLabelDlg.doAction()
-                    time.sleep(0.007)
+                    time.sleep(0.01)
                     i = 0
             self.loadingLabelDlg._isEnd = True
             self.loadingLabelDlg.close()
@@ -2512,7 +2552,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     i = i + 1
                 else:
                     self.loadingLabelDlg.doAction()
-                    time.sleep(0.007)
+                    time.sleep(0.01)
                     i = 0
             self.loadingLabelDlg._isEnd = True
             self.loadingLabelDlg.close()
@@ -2983,7 +3023,30 @@ class MainWindow(QtWidgets.QMainWindow):
         if yes == QtWidgets.QMessageBox.warning(
                 self, self.tr("Attention"), msg, yes | no, yes
         ):
-            self.remLabels(self.canvas.deleteSelected())
+            #self.remLabels(self.canvas.deleteSelected())
+
+            # add 2022.10.12 {
+            delshapes = self.canvas.deleteSelected()
+            shapes = self.canvas.shapes
+            slen = len(shapes) / 100
+            self.labelList.clear()
+            self.labelList._itemList.clear()
+            if slen > 3:
+                i = 0
+                for shape in shapes:
+                    self.addLabel(shape)
+                    if i < slen:
+                        i = i + 1
+                    else:
+                        time.sleep(0.007)
+                        i = 0
+            else:
+                for shape in shapes:
+                    self.addLabel(shape)
+
+            self.labelList.clearSelection()
+            # add 2022.10.12 }
+
             polyT = "Polygon Labels (Total %s)"
             if self._config["local_lang"] == "ko_KR":
                 polyT = "다각형 레이블 (총 %s)"

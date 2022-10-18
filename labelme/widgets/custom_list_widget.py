@@ -293,23 +293,26 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
 
 
     def addShape(self, shape):
-        if shape:
-            listitem = QListWidgetItem(self)
-            self.addItem(listitem)
-            row = MyCustomWidget(shape, self)
-            listitem.setSizeHint(row.minimumSizeHint())
-            self.setItemWidget(listitem, row)
+        try:
+            if shape:
+                listitem = QListWidgetItem(self)
+                self.addItem(listitem)
+                row = MyCustomWidget(shape, self)
+                listitem.setSizeHint(row.minimumSizeHint())
+                self.setItemWidget(listitem, row)
 
-            fnd = False
-            for i in range(len(self._itemList)):
-                itm = self._itemList[i]
-                if isinstance(itm, MyCustomWidget):
-                    if row._shape == itm._shape:
-                        fnd = True
-                        break
+                fnd = False
+                for i in range(len(self._itemList)):
+                    itm = self._itemList[i]
+                    if isinstance(itm, MyCustomWidget):
+                        if row._shape == itm._shape:
+                            fnd = True
+                            break
 
-            if fnd is False:
-                self._itemList.append(row)
+                if fnd is False:
+                    self._itemList.append(row)
+        except Exception as e:
+            pass
 
     def findItemByShape(self, shape):
         for i in range(self.count()):
@@ -361,7 +364,7 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
 
     def removeItem(self, item):
         wg, index = self.findWidgetItemByItem(item)
-        #index = self.indexFromItem(item)
+        # index = self.indexFromItem(item)
         self.takeItem(index)
         for i in range(len(self._itemList)):
             itm = self._itemList[i]
@@ -369,8 +372,6 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
                 if item._shape == itm._shape:
                     del self._itemList[i]
                     break
-
-
 
     def reSort(self):
         for i in range(self.count()):
@@ -510,14 +511,14 @@ class topToolWidget(QtWidgets.QWidget):
         self.circle.clicked.connect(self.circleClick)
         self.circle.setEnabled(False)
         self.circle.setToolTip("원 그리기" if self._app._config["local_lang"] == "ko_KR" else "Drawing circle")
-
+        """
         self.line = QToolButton()
         self.line.setIcon(utils.newIcon("line"))
         self.line.setIconSize(QtCore.QSize(20, 20))
         self.line.clicked.connect(self.lineClick)
         self.line.setEnabled(False)
         self.line.setToolTip("선 그리기" if self._app._config["local_lang"] == "ko_KR" else "Drawing line")
-
+        """
         self.arrow = QToolButton()
         self.arrow.setIcon(utils.newIcon("CursorArrow"))
         self.arrow.setIconSize(QtCore.QSize(20, 20))
@@ -539,6 +540,13 @@ class topToolWidget(QtWidgets.QWidget):
         self.editOrDraw.setText("해제 모드")
         self.editOrDraw.setStyleSheet(
             "QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#ed7d31")  # 해제 #ed7d31
+
+        self.topbarHide = QToolButton()
+        self.topbarHide.setFont(appFont())
+        self.topbarHide.clicked.connect(self.topbarHideClick)
+        self.topbarHide.setText("Top Bar 숨기기" if self._app._config["local_lang"] == "ko_KR" else "Hiden Top Bar")
+        self.topbarHide.setStyleSheet(
+            "QToolButton { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")
         
 
         hbox_layout.addSpacing(20)
@@ -548,13 +556,15 @@ class topToolWidget(QtWidgets.QWidget):
         hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.circle, 0, QtCore.Qt.AlignLeft)
         hbox_layout.addSpacing(20)
-        hbox_layout.addWidget(self.line, 0, QtCore.Qt.AlignLeft)
-        hbox_layout.addSpacing(20)
+        #hbox_layout.addWidget(self.line, 0, QtCore.Qt.AlignLeft)
+        #hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.arrow, 0, QtCore.Qt.AlignLeft)
         hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.trans, 0, QtCore.Qt.AlignLeft)
-        hbox_layout.addSpacing(40)
+        hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.editOrDraw, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.topbarHide, 0, QtCore.Qt.AlignLeft)
 
         hbox_layout.addStretch()
 
@@ -564,28 +574,28 @@ class topToolWidget(QtWidgets.QWidget):
         self.polygon.setEnabled(False)
         self.rect.setEnabled(True)
         self.circle.setEnabled(True)
-        self.line.setEnabled(True)
+        #self.line.setEnabled(True)
         self.appActionControll(False, createMode="polygon")
 
     def rectClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(False)
         self.circle.setEnabled(True)
-        self.line.setEnabled(True)
+        #self.line.setEnabled(True)
         self.appActionControll(False, createMode="rectangle")
 
     def circleClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(True)
         self.circle.setEnabled(False)
-        self.line.setEnabled(True)
+        #self.line.setEnabled(True)
         self.appActionControll(False, createMode="circle")
 
     def lineClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(True)
         self.circle.setEnabled(True)
-        self.line.setEnabled(False)
+        #self.line.setEnabled(False)
         self.appActionControll(False, createMode="line")
 
     def arrowClick(self):
@@ -600,6 +610,11 @@ class topToolWidget(QtWidgets.QWidget):
         self.trans.setEnabled(False)
         self._app.PolygonAlpha(self.trans)
 
+    def topbarHideClick(self):
+        if self.isEnabled() is False:
+            self.setEnabled(True)
+        self._app.topToolbar_dockAction()
+
     def editmodeClick(self, value):
         if self.isEnabled() is False:
             self.setEnabled(True)
@@ -611,7 +626,7 @@ class topToolWidget(QtWidgets.QWidget):
         self.polygon.setEnabled(value)
         self.rect.setEnabled(value)
         self.circle.setEnabled(value)
-        self.line.setEnabled(value)
+        #self.line.setEnabled(value)
         self.arrow.setEnabled(value)
         self.trans.setEnabled(value)
 
@@ -627,29 +642,29 @@ class topToolWidget(QtWidgets.QWidget):
             self._app.actions.createMode.setEnabled(False)
             self._app.actions.createRectangleMode.setEnabled(True)
             self._app.actions.createCircleMode.setEnabled(True)
-            self._app.actions.createLineMode.setEnabled(True)
-            self._app.actions.createPointMode.setEnabled(True)
+            #self._app.actions.createLineMode.setEnabled(True)
+            #self._app.actions.createPointMode.setEnabled(True)
             # self.actions.createLineStripMode.setEnabled(True)
         elif createMode == "rectangle":
             self._app.actions.createMode.setEnabled(True)
             self._app.actions.createRectangleMode.setEnabled(False)
             self._app.actions.createCircleMode.setEnabled(True)
-            self._app.actions.createLineMode.setEnabled(True)
-            self._app.actions.createPointMode.setEnabled(True)
+            #self._app.actions.createLineMode.setEnabled(True)
+            #self._app.actions.createPointMode.setEnabled(True)
             # self.actions.createLineStripMode.setEnabled(True)
         elif createMode == "line":
             self._app.actions.createMode.setEnabled(True)
             self._app.actions.createRectangleMode.setEnabled(True)
             self._app.actions.createCircleMode.setEnabled(True)
-            self._app.actions.createLineMode.setEnabled(False)
-            self._app.actions.createPointMode.setEnabled(True)
+            #self._app.actions.createLineMode.setEnabled(False)
+            #self._app.actions.createPointMode.setEnabled(True)
             # self.actions.createLineStripMode.setEnabled(True)
         elif createMode == "circle":
             self._app.actions.createMode.setEnabled(True)
             self._app.actions.createRectangleMode.setEnabled(True)
             self._app.actions.createCircleMode.setEnabled(False)
-            self._app.actions.createLineMode.setEnabled(True)
-            self._app.actions.createPointMode.setEnabled(True)
+            #self._app.actions.createLineMode.setEnabled(True)
+            #self._app.actions.createPointMode.setEnabled(True)
             # self.actions.createLineStripMode.setEnabled(True)
         self._app.actions.editMode.setEnabled(not edit)
 
@@ -666,7 +681,7 @@ class topToolWidget(QtWidgets.QWidget):
             self.polygon.setEnabled(False)
             self.rect.setEnabled(True)
             self.circle.setEnabled(True)
-            self.line.setEnabled(True)
+            #self.line.setEnabled(True)
             if self.arrow.isEnabled() is False:
                 self.arrow.setEnabled(True)
                 self.trans.setEnabled(True)
@@ -674,7 +689,7 @@ class topToolWidget(QtWidgets.QWidget):
             self.polygon.setEnabled(True)
             self.rect.setEnabled(False)
             self.circle.setEnabled(True)
-            self.line.setEnabled(True)
+            #self.line.setEnabled(True)
             if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
                 self.arrow.setEnabled(True)
                 self.trans.setEnabled(True)
@@ -682,7 +697,7 @@ class topToolWidget(QtWidgets.QWidget):
             self.polygon.setEnabled(True)
             self.rect.setEnabled(True)
             self.circle.setEnabled(False)
-            self.line.setEnabled(True)
+            #self.line.setEnabled(True)
             if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
                 self.arrow.setEnabled(True)
                 self.trans.setEnabled(True)
@@ -690,7 +705,7 @@ class topToolWidget(QtWidgets.QWidget):
             self.polygon.setEnabled(True)
             self.rect.setEnabled(True)
             self.circle.setEnabled(True)
-            self.line.setEnabled(False)
+            #self.line.setEnabled(False)
             if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
                 self.arrow.setEnabled(True)
                 self.trans.setEnabled(True)
@@ -698,7 +713,7 @@ class topToolWidget(QtWidgets.QWidget):
             self.polygon.setEnabled(True)
             self.rect.setEnabled(True)
             self.circle.setEnabled(True)
-            self.line.setEnabled(True)
+            #self.line.setEnabled(True)
             if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
                 self.arrow.setEnabled(True)
                 self.trans.setEnabled(True)

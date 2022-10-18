@@ -7,6 +7,8 @@ from qtpy import QtCore
 from qtpy.QtCore import Qt
 from qtpy import QtGui
 from qtpy import QtWidgets
+from qtpy.QtGui import QPalette
+from qtpy.QtWidgets import QStyle
 
 from labelme.logger import logger
 import labelme.utils
@@ -18,7 +20,66 @@ QT5 = QT_VERSION[0] == "5"
 
 # TODO(unknown):
 # - Calculate optimal position so as not to go out of screen area.
+class HTMLDelegate(QtWidgets.QStyledItemDelegate):
+    def __init__(self, parent=None):
+        super(HTMLDelegate, self).__init__()
+        self.doc = QtGui.QTextDocument(self)
+        font = appFont()
+        font.setPixelSize(13)
+        self.doc.setDefaultFont(font)
 
+    def paint(self, painter, option, index):
+        painter.save()
+        options = QtWidgets.QStyleOptionViewItem(option)
+        self.initStyleOption(options, index)
+        self.doc.setHtml(options.text)
+        options.text = ""
+
+        style = (
+            QtWidgets.QApplication.style()
+            if options.widget is None
+            else options.widget.style()
+        )
+
+        style.drawControl(QStyle.CE_ItemViewItem, options, painter)
+
+        ctx = QtGui.QAbstractTextDocumentLayout.PaintContext()
+
+        if option.state & QStyle.State_Selected:
+            ctx.palette.setColor(
+                QPalette.Text,
+                option.palette.color(
+                    QPalette.Active, QPalette.HighlightedText
+                ),
+            )
+        else:
+            ctx.palette.setColor(
+                QPalette.Text,
+                option.palette.color(QPalette.Active, QPalette.Text),
+            )
+
+        textRect = style.subElementRect(QStyle.SE_ItemViewItemText, options)
+
+        if index.column() != 0:
+            textRect.adjust(5, 0, 0, 0)
+
+        thefuckyourshitup_constant = 4
+        margin = (option.rect.height() - options.fontMetrics.height()) // 2
+        margin = margin - thefuckyourshitup_constant
+        textRect.setTop(textRect.top() + margin)
+
+        painter.translate(textRect.topLeft())
+        painter.setClipRect(textRect.translated(-textRect.topLeft()))
+        self.doc.documentLayout().draw(painter, ctx)
+
+        painter.restore()
+
+    def sizeHint(self, option, index):
+        thefuckyourshitup_constant = 4
+        return QtCore.QSize(
+            self.doc.idealWidth(),
+            self.doc.size().height() - thefuckyourshitup_constant,
+        )
 
 class LabelQLineEdit(QtWidgets.QLineEdit):
     def setListWidget(self, list_widget):
@@ -258,7 +319,7 @@ class DlgRowWidgetItem(QtWidgets.QWidget):
         self._parent = parent
 
         horizontal_layout = QtWidgets.QHBoxLayout(self)
-        horizontal_layout.setSpacing(1)
+        horizontal_layout.setSpacing(0)
         horizontal_layout.setContentsMargins(0, 0, 0, 0)
 
         label = QtWidgets.QLabel(self)
@@ -266,7 +327,7 @@ class DlgRowWidgetItem(QtWidgets.QWidget):
 
         label.setText(txt)
         label.setFont(appFont())
-        #label.setStyleSheet("QLabel { padding: 2px; font-size:14px}")
+        label.setStyleSheet("QLabel {padding-top:2px; padding-bottom: 2px}")
 
         color_label = QtWidgets.QLabel(self)
         c_txt = self._shape["color"] if self._shape["color"] and self._shape["color"] != "" else "#808000"
@@ -277,7 +338,7 @@ class DlgRowWidgetItem(QtWidgets.QWidget):
         #color_txt = self._shape["color"] if self._shape["color"] and self._shape["color"] != "" else "yellow"
 
         color_label.setText("")
-        color_label.setStyleSheet("QLabel{border: 1px soild #aaa; background: %s;}" % color_txt)
+        color_label.setStyleSheet("QLabel {border: 1px soild #aaa; background: %s;}" % color_txt)
         color_label.setFixedWidth(8)
 
         #self.check_box = QtWidgets.QCheckBox(self)
@@ -333,8 +394,9 @@ class SearchLabelListWidget(QtWidgets.QWidget):
         self._parent = parent
 
         self.vContent_layout = QtWidgets.QVBoxLayout(self)
-        self.vContent_layout.setContentsMargins(0, 5, 0, 5)
+        self.vContent_layout.setContentsMargins(0, 1, 0, 1)
         self.vContent_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+        #self.vContent_layout.addSpacing(2)
 
         # add here vContent_layout
 
@@ -462,7 +524,7 @@ class LabelSearchDialog(QtWidgets.QDialog):
         self.edit.setPlaceholderText(text)
         self.edit.returnPressed.connect(self.searchProcess)
         #self.edit.setFixedHeight(25)
-        self.edit.setStyleSheet("QWidget {padding: 2px;}")
+        self.edit.setStyleSheet("QLineEdit {padding: 2px;}")
 
         layout = QtWidgets.QVBoxLayout()
         layout_grade = QtWidgets.QHBoxLayout()
@@ -476,7 +538,9 @@ class LabelSearchDialog(QtWidgets.QDialog):
         self.gradelist = QtWidgets.QComboBox()
         self.gradelist.setFixedHeight(22)
         self.gradelist.currentIndexChanged.connect(self.currentIndexChangedHandle)
-        self.gradelist.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 1px; padding: 3px; font-size: 13px;}")
+        self.gradelist.setStyleSheet("QComboBox {border: 1px solid #aaa; border-radius: 1px; padding: 3px; font-size: 13px;}")
+        self.gradelist.setItemDelegate(HTMLDelegate())
+        self.gradelist.itemDelegate()
         #self.gradelist.setStyleSheet("QWidget {border: 1px solid #aaa; border-radius: 1px; padding: 3px; font-size: 14px;}")
 
         layout_grade.addWidget(static_grade)

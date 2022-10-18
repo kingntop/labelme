@@ -132,7 +132,7 @@ class LabelFile(object):
                     label_display=s["label_display"] if 'label_display' in s else s["label"],
                     color=s["color"] if 'color' in s else "#808000",
                     points=s["points"],
-                    lineweight=s["lineweight"] if 'lineweight' in s else "2.0",
+                    lineweight=s["lineweight"] if 'lineweight' in s else "1.0",
                     shape_type=s.get("shape_type", "polygon"),
                     group_id=s.get("group_id"),
                     other_data={

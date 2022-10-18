@@ -33,6 +33,8 @@ class Shape(object):
     # Flag for all other handles on the curent shape
     NEAR_VERTEX = 1
 
+    MOVE_VERTEX_1 = 2
+
     # The following class variables influence the drawing of all shape objects.
     line_color = DEFAULT_LINE_COLOR
     fill_color = DEFAULT_FILL_COLOR
@@ -43,7 +45,7 @@ class Shape(object):
     point_type = P_ROUND
     point_size = 8
     scale = 1.0
-    lineweight = 2.0
+    lineweight = 1.0
 
     def __init__(
         self,
@@ -52,7 +54,7 @@ class Shape(object):
         label=None,
         label_display=None,
         color=None,
-        lineweight=2.0,
+        lineweight=1.0,
         shape_type=None,
         group_id=None,
     ):
@@ -73,6 +75,7 @@ class Shape(object):
         self._highlightSettings = {
             self.NEAR_VERTEX: (4, self.P_ROUND),
             self.MOVE_VERTEX: (1.5, self.P_SQUARE),
+            self.MOVE_VERTEX_1: (2.0, self.P_ROUND),
         }
 
         self._closed = False
@@ -158,7 +161,10 @@ class Shape(object):
             )
             pen = QtGui.QPen(color)
             # Try using integer sizes for smoother drawing(?)
-            pen.setWidth(max(1, int(round(self.lineweight / self.scale))))
+            #pen.setWidth(max(1, int(round(2.0 / self.scale))))
+            #pen.setWidth(max(1, int(round(self.lineweight / self.scale))))
+            pen.setWidth(max(1, int(round(self.lineweight + self.scale))))
+
             painter.setPen(pen)
 
             line_path = QtGui.QPainterPath()
@@ -209,7 +215,9 @@ class Shape(object):
                 painter.fillPath(line_path, color)
 
     def drawVertex(self, path, i):
-        d = self.point_size / self.scale
+        #print(self.scale)
+        #d = self.point_size / self.scale
+        d = self.point_size + self.scale
         shape = self.point_type
         point = self.points[i]
         if i == self._highlightIndex:

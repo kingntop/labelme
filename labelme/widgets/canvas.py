@@ -48,6 +48,7 @@ class Canvas(QtWidgets.QWidget):
                 )
             )
         self.num_backups = kwargs.pop("num_backups", 10)
+        self.lang = kwargs.pop("lang", "ko_KR")
         super(Canvas, self).__init__(*args, **kwargs)
         # Initialise local state.
         self.mode = self.EDIT
@@ -117,7 +118,7 @@ class Canvas(QtWidgets.QWidget):
         for shape in self.shapes:
             shapesBackup.append(shape.copy())
         if len(self.shapesBackups) > self.num_backups:
-            self.shapesBackups = self.shapesBackups[-self.num_backups - 1 :]
+            self.shapesBackups = self.shapesBackups[-self.num_backups - 1:]
         self.shapesBackups.append(shapesBackup)
 
     @property
@@ -271,7 +272,9 @@ class Canvas(QtWidgets.QWidget):
         # - Highlight shapes
         # - Highlight vertex
         # Update shape/vertex fill and tooltip value accordingly.
-        self.setToolTip(self.tr("Image"))
+        
+        #self.setToolTip(self.tr("Image")) 2022 10 14 삭제
+        
         for shape in reversed([s for s in self.shapes if self.isVisible(s)]):
             # Look for a nearby vertex to highlight. If that fails,
             # check if we happen to be inside a shape.
@@ -284,9 +287,11 @@ class Canvas(QtWidgets.QWidget):
                 self.prevhShape = self.hShape = shape
                 self.prevhEdge = self.hEdge
                 self.hEdge = None
-                shape.highlightVertex(index, shape.MOVE_VERTEX)
+                #shape.highlightVertex(index, shape.MOVE_VERTEX) add 2022.10.14
+                shape.highlightVertex(index, shape.MOVE_VERTEX_1)
                 self.overrideCursor(CURSOR_POINT)
-                self.setToolTip(self.tr("Click & drag to move point"))
+                #self.setToolTip(self.tr("Click & drag to move point"))
+                self.setToolTip("Click & drag to move point" if self.lang != "ko_KR" else "점을 이동하려면 클릭하고 드래그합니다")
                 self.setStatusTip(self.toolTip())
                 self.update()
                 break
@@ -298,7 +303,7 @@ class Canvas(QtWidgets.QWidget):
                 self.prevhShape = self.hShape = shape
                 self.prevhEdge = self.hEdge = index_edge
                 self.overrideCursor(CURSOR_POINT)
-                self.setToolTip(self.tr("Click to create point"))
+                self.setToolTip("점을 생성하려면 클릭합니다" if self.lang == "ko_KR" else "Click to create point")
                 self.setStatusTip(self.toolTip())
                 self.update()
                 break
@@ -310,9 +315,13 @@ class Canvas(QtWidgets.QWidget):
                 self.prevhShape = self.hShape = shape
                 self.prevhEdge = self.hEdge
                 self.hEdge = None
+                """
                 self.setToolTip(
                     self.tr("Click & drag to move shape '%s'") % shape.label
                 )
+                """
+                self.setToolTip(("'%s' 오브젝트를 이동하려면 클릭 및 드래그" % shape.label) if self.lang == "ko_KR" else ("Click & drag to move shape '%s'" % shape.label))
+
                 self.setStatusTip(self.toolTip())
                 self.overrideCursor(CURSOR_GRAB)
                 self.update()
@@ -328,7 +337,7 @@ class Canvas(QtWidgets.QWidget):
         if shape is None or index is None or point is None:
             return
         shape.insertPoint(index, point)
-        shape.highlightVertex(index, shape.MOVE_VERTEX)
+        shape.highlightVertex(index, shape.MOVE_VERTEX_1)  # shape.MOVE_VERTEX
         self.hShape = shape
         self.hVertex = index
         self.hEdge = None
@@ -393,7 +402,6 @@ class Canvas(QtWidgets.QWidget):
                 #     self.removeSelectedPoint()
 
                 # // end
-
 
                 if (
                     self.selectedVertex()
@@ -498,7 +506,6 @@ class Canvas(QtWidgets.QWidget):
             self.repaint()
         # // end
 
-
         if (
             self.double_click == "close"
             and self.canCloseShape()
@@ -518,7 +525,7 @@ class Canvas(QtWidgets.QWidget):
         """Select the first shape created which contains this point."""
         if self.selectedVertex():  # A vertex is marked for selection.
             index, shape = self.hVertex, self.hShape
-            shape.highlightVertex(index, shape.MOVE_VERTEX)
+            shape.highlightVertex(index, shape.MOVE_VERTEX_1)  #  shape.MOVE_VERTEX
         else:
             for shape in reversed(self.shapes):
                 if self.isVisible(shape) and shape.containsPoint(point):

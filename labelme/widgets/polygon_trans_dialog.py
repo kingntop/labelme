@@ -1,5 +1,7 @@
+import math
 import PIL.Image
 import PIL.ImageEnhance
+import threading
 from qtpy.QtCore import Qt
 from qtpy import QtGui
 from qtpy import QtWidgets
@@ -9,7 +11,7 @@ from labelme.utils import appFont
 
 
 class PolygonTransDialog(QtWidgets.QDialog):
-    def __init__(self, callback, linecallback, parent=None):
+    def __init__(self, img, callback, transcallback, linecallback, parent=None):
         super(PolygonTransDialog, self).__init__(parent)
         self.setModal(True)
         self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
@@ -20,6 +22,12 @@ class PolygonTransDialog(QtWidgets.QDialog):
         if trans:
             self.move(trans.x() + 300, trans.y() + 50)
 
+        assert isinstance(img, PIL.Image.Image)
+        self.img = img
+        self.callback = callback
+
+        self.slider_brightness = self._create_slider()
+        self.slider_contrast = self._create_slider()
         self.slider_trans = self._create_slider_trans()
         self.slider_pen = self._create_slider_pen()
 
@@ -40,13 +48,22 @@ class PolygonTransDialog(QtWidgets.QDialog):
         hvox_layout_line.addWidget(self.label_line)
 
         formLayout = QtWidgets.QFormLayout()
+        formLayout.addRow("Brightness" if self._parent._config["local_lang"] != "ko_KR" else "밝기", self.slider_brightness)
+        formLayout.addRow("Contrast" if self._parent._config["local_lang"] != "ko_KR" else "대비", self.slider_contrast)
         formLayout.addRow(self.tr("Transparency"), hvox_layout_trans)
         formLayout.addRow("Line weight" if self._parent._config["local_lang"] != "ko_KR" else "선 굵기", hvox_layout_line)
 
         self.setLayout(formLayout)
         self.setMinimumWidth(250)
-        self.callback = callback
+        self.transcallback = transcallback
         self.linecallback = linecallback
+
+    def _create_slider(self):
+        slider = QtWidgets.QSlider(Qt.Horizontal)
+        slider.setRange(0, 150)
+        slider.setValue(50)
+        slider.valueChanged.connect(self.onNewValue)
+        return slider
 
     def _create_slider_trans(self):
         slider = QtWidgets.QSlider(Qt.Horizontal, self)
@@ -54,26 +71,48 @@ class PolygonTransDialog(QtWidgets.QDialog):
         slider.setValue(0)
         #slider.setTickInterval(10)
         #slider.setSingleStep(3)
-        slider.valueChanged.connect(self.onNewValue)
+        slider.valueChanged.connect(self.onNewValueTrans)
         return slider
 
     def _create_slider_pen(self):
         slider = QtWidgets.QSlider(Qt.Horizontal, self)
-        slider.setRange(2.0, 10.0)
+        slider.setRange(1.0, 20.0)
         slider.setValue(2.0)
         slider.setSingleStep(1.0)
         slider.valueChanged.connect(self.onNewValueLine)
         return slider
 
     def onNewValue(self, value):
+        brightness = self.slider_brightness.value() / 50.0
+        contrast = self.slider_contrast.value() / 50.0
+        # delta_b = math.fabs(self.slider_brightness.value() - self.pre_bright)
+        # delta_c = math.fabs(self.slider_contrast.value() - self.pre_cont)
+        #
+        # if delta_b < 5 and delta_c < 5:
+        #     return
+        img = self.img
+        img = PIL.ImageEnhance.Brightness(img).enhance(brightness)
+        img = PIL.ImageEnhance.Contrast(img).enhance(contrast)
+
+        threading.Timer(0.01, self.startShapeBright, [img]).start()
+
+    def onNewValueTrans(self, value):
         x = 100 * (self._parent.polygonTrans_deta_value - value) / self._parent.polygonTrans_deta_value
         self.label.setText("{}%".format(int(x)))
-        self.callback(value)
+        self.transcallback(value)
 
 
     def onNewValueLine(self, value):
         self.label_line.setText("{}".format(float(value)))
         self.linecallback(value)
+
+    def startShapeBright(self, *args):
+        img = args[0]
+        img_data = utils.img_pil_to_data(img)
+        qimage = QtGui.QImage.fromData(img_data)
+        self.callback(qimage)
+        # self.pre_bright = self.slider_brightness.value()
+        # self.pre_cont = self.slider_contrast.value()
 
 
 class AppVersionDialog(QtWidgets.QDialog):
