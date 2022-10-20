@@ -1187,7 +1187,7 @@ class MainWindow(QtWidgets.QMainWindow):
         #threading.Timer(0.01, self.LoadShapesThread, [self.canvas.shapes]).start()
 
     def tutorial(self):
-        url = self._config["api_url"] + 'ords/r/lm/labelme'  # NOQA
+        url = self._config["api_url"] + 'ords/r/lm/lm'  # NOQA
         webbrowser.open(url)
 
     def changePasswordAction(self):
