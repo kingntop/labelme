@@ -379,7 +379,8 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
             if isinstance(widgetitem, QListWidgetItem):
                 item = self.itemWidget(widgetitem)
                 if item and item.label:
-                    item.reDraw(i + 1)
+                    if isinstance(item, MyCustomWidget):
+                        item.reDraw(i + 1)
 
     def getShapeItems(self):
         s_items = []

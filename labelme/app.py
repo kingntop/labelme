@@ -1587,7 +1587,6 @@ class MainWindow(QtWidgets.QMainWindow):
             item = self.labelList.findItemByShape(shape)
             if item:
                 self.labelList.removeItem(item)
-        self.labelList.reDraw()
         self.labelList.reSort()
 
 
