@@ -152,7 +152,7 @@ class LoadingLabelProgress(QtWidgets.QWidget):
         super(LoadingLabelProgress, self).__init__(parent)
         self.setMinimumWidth(250)
         self.setMinimumHeight(150)
-        trans = parent.topToolWidget.trans.pos()
+        trans = parent.topToolWidget.topbarHide.pos()
         if trans:
             self.move(trans.x() + 300, trans.y() - 40)
         # qr = self.frameGeometry()

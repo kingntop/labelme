@@ -45,7 +45,7 @@ class Shape(object):
     point_type = P_ROUND
     point_size = 8
     scale = 1.0
-    lineweight = 1.0
+    lineweight = 2.0
 
     def __init__(
         self,
@@ -54,7 +54,7 @@ class Shape(object):
         label=None,
         label_display=None,
         color=None,
-        lineweight=1.0,
+        lineweight=2.0,
         shape_type=None,
         group_id=None,
     ):

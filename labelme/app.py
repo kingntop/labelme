@@ -887,7 +887,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.brightnessContrast_values = {}
         self.polygonTrans_deta_value = 128
         self.polygonTrans_value = 0
-        self.lineweight_value = 0.0
+        self.lineweight_value = 2.0
         self.scroll_values = {
             Qt.Horizontal: {},
             Qt.Vertical: {},

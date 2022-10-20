@@ -541,12 +541,19 @@ class topToolWidget(QtWidgets.QWidget):
         self.editOrDraw.setStyleSheet(
             "QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#ed7d31")  # 해제 #ed7d31
 
+        self.moveWeb = QToolButton()
+        self.moveWeb.setFont(appFont())
+        self.moveWeb.clicked.connect(self.moveWebClick)
+        self.moveWeb.setText("웹 이동" if self._app._config["local_lang"] == "ko_KR" else "Move to web")
+        self.moveWeb.setStyleSheet(
+            "QToolButton { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px; cursor: pointer;}" % "#6595ed")
+
         self.topbarHide = QToolButton()
         self.topbarHide.setFont(appFont())
         self.topbarHide.clicked.connect(self.topbarHideClick)
         self.topbarHide.setText("Top Bar 숨기기" if self._app._config["local_lang"] == "ko_KR" else "Hiden Top Bar")
         self.topbarHide.setStyleSheet(
-            "QToolButton { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")
+            "QToolButton { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px;  cursor: pointer;}" % "#4472c4")
         
 
         hbox_layout.addSpacing(20)
@@ -564,11 +571,16 @@ class topToolWidget(QtWidgets.QWidget):
         hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.editOrDraw, 0, QtCore.Qt.AlignLeft)
         hbox_layout.addSpacing(20)
+        hbox_layout.addWidget(self.moveWeb, 0, QtCore.Qt.AlignLeft)
+        hbox_layout.addSpacing(20)
         hbox_layout.addWidget(self.topbarHide, 0, QtCore.Qt.AlignLeft)
 
         hbox_layout.addStretch()
 
         self.setLayout(hbox_layout)
+
+    def moveWebClick(self):
+        self._app.tutorial()
 
     def polygonClick(self, arg):
         self.polygon.setEnabled(False)
