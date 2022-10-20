@@ -350,7 +350,7 @@ class PwdDlgWin(QWidget):
         #super().closeEvent(event)
 
     def changeSuccess(self):
-        config["login_state"] = 'endLogin'
+        self._config["login_state"] = 'endLogin'
         self._lb_alram.setText("")
         self.close()
 

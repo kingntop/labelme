@@ -75,7 +75,7 @@ class Shape(object):
         self._highlightSettings = {
             self.NEAR_VERTEX: (4, self.P_ROUND),
             self.MOVE_VERTEX: (1.5, self.P_SQUARE),
-            self.MOVE_VERTEX_1: (2.0, self.P_ROUND),
+            self.MOVE_VERTEX_1: (1.5, self.P_ROUND),
         }
 
         self._closed = False
@@ -162,8 +162,8 @@ class Shape(object):
             pen = QtGui.QPen(color)
             # Try using integer sizes for smoother drawing(?)
             #pen.setWidth(max(1, int(round(2.0 / self.scale))))
-            #pen.setWidth(max(1, int(round(self.lineweight / self.scale))))
-            pen.setWidth(max(1, int(round(self.lineweight + self.scale))))
+            pen.setWidth(max(1, int(round(self.lineweight / self.scale))))
+            #pen.setWidth(max(1, int(round(self.lineweight + self.scale))))
 
             painter.setPen(pen)
 
@@ -216,8 +216,8 @@ class Shape(object):
 
     def drawVertex(self, path, i):
         #print(self.scale)
-        #d = self.point_size / self.scale
-        d = self.point_size + self.scale
+        d = self.point_size / self.scale
+        #d = self.point_size + self.scale
         shape = self.point_type
         point = self.points[i]
         if i == self._highlightIndex:
