@@ -278,6 +278,7 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
         self._app = app
         self._selected_item = []
         self._itemList = []
+        self._initLoading = False
 
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
@@ -300,16 +301,18 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
                 row = MyCustomWidget(shape, self)
                 listitem.setSizeHint(row.minimumSizeHint())
                 self.setItemWidget(listitem, row)
+                if self._initLoading is False:
+                    fnd = False
+                    for i in range(len(self._itemList)):
+                        itm = self._itemList[i]
+                        if isinstance(itm, MyCustomWidget):
+                            if row._shape == itm._shape:
+                                fnd = True
+                                break
 
-                fnd = False
-                for i in range(len(self._itemList)):
-                    itm = self._itemList[i]
-                    if isinstance(itm, MyCustomWidget):
-                        if row._shape == itm._shape:
-                            fnd = True
-                            break
-
-                if fnd is False:
+                    if fnd is False:
+                        self._itemList.append(row)
+                else:
                     self._itemList.append(row)
         except Exception as e:
             pass

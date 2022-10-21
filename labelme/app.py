@@ -161,7 +161,6 @@ class MainWindow(QtWidgets.QMainWindow):
         #if self._config["grades"]:
         threading.Timer(0.3, self.gradeButtonEvent, args=(True,)).start()
         self.fileLoadedSignal.connect(self.fileLoadedSignalHandle)
-        self.LoadShapesSignal.connect(self.LoadShapesSignalHandle)
 
         # products part ckd
         self.selected_product = None
@@ -184,6 +183,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.polygonSearch = QtWidgets.QLineEdit()
         self.polygonSearch.setPlaceholderText(self.tr("Search label name"))
         self.polygonSearch.textChanged.connect(self.polygonSearchChanged)
+        self.polygonSearch.returnPressed.connect(self.polygonReturnSearchChanged)
 
         self.labelList = CustomLabelListWidget(self)
         self.lastOpenDir = None
@@ -1184,7 +1184,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
         self.labelList.clearSelection()
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
-        #threading.Timer(0.01, self.LoadShapesThread, [self.canvas.shapes]).start()
 
     def tutorial(self):
         url = self._config["api_url"] + 'ords/r/lm/lm'  # NOQA
@@ -1441,7 +1440,28 @@ class MainWindow(QtWidgets.QMainWindow):
             load=False,
         )
 
-    def polygonSearchChanged(self):
+    def polygonReturnSearchChanged(self):
+        pattern = self.polygonSearch.text()
+        polygonitems = self.labelList._itemList
+        grade = None
+        label = None
+        self.labelList.clear()
+        for item in polygonitems:
+            if isinstance(item, MyCustomWidget):
+                if item and item._shape:
+                    grade = item._shape.grade
+                    label = item._shape.label
+            if pattern and pattern not in grade and pattern not in label:
+                continue
+
+            self.labelList.addShape(item._shape)
+
+        prodT = "Polygon Labels (Total {})".format(self.labelList.count())
+        if self._config["local_lang"] == "ko_KR":
+            prodT = "다각형 레이블 (총 {})".format(self.labelList.count())
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
+
+    def polygonSearchChanged_org(self):
         pattern = self.polygonSearch.text()
         #polygonitems = self.labelList.getShapeItems()
         polygonitems = self.labelList._itemList
@@ -1457,6 +1477,30 @@ class MainWindow(QtWidgets.QMainWindow):
                 continue
 
             self.labelList.addShape(item._shape)
+
+    def polygonSearchChanged(self):
+        pattern = self.polygonSearch.text()
+        pattern = pattern.strip()
+        if len(pattern) > 0:
+            return
+        polygonitems = self.labelList._itemList
+        grade = None
+        label = None
+        self.labelList.clear()
+        for item in polygonitems:
+            if isinstance(item, MyCustomWidget):
+                if item and item._shape:
+                    grade = item._shape.grade
+                    label = item._shape.label
+            if pattern and pattern not in grade and pattern not in label:
+                continue
+
+            self.labelList.addShape(item._shape)
+
+        prodT = "Polygon Labels (Total {})".format(self.labelList.count())
+        if self._config["local_lang"] == "ko_KR":
+            prodT = "다각형 레이블 (총 {})".format(self.labelList.count())
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
 
     # no using
     def productsSelectionChanged(self):
@@ -1611,22 +1655,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelList.clearSelection()
         self._noSelectionSlot = False
         self.canvas.loadShapes(shapes, replace=replace)
-
-    def loadShapes_asyncio(self, shapes, replace=True):
-        self._noSelectionSlot = True
-        if platform.system().lower() == 'windows':
-            asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-        asyncio.run(self.drawListOfShape(shapes))
-
-        prodT = "Polygon Labels (Total %s)"
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
-
-        self.labelList.clearSelection()
-        self._noSelectionSlot = False
-        self.canvas.loadShapes(shapes, replace=replace)
-
 
     def loadLabels(self, shapes):
         s = []
@@ -1811,7 +1839,6 @@ class MainWindow(QtWidgets.QMainWindow):
             prodT = "다각형 레이블 (총 %s)"
         self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
         self.setDirty()
-        #threading.Timer(0.01, self.LoadShapesThread, [self._copied_shapes]).start()
 
     def copySelectedShape(self):
         self._copied_shapes = [s.copy() for s in self.canvas.selectedShapes]
@@ -2492,16 +2519,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def fileLoadedSignalThread(self):
         self.fileLoadedSignal.emit(self.canvas.shapes)  # add 9/21/2022
 
-    def LoadShapesThread(self, shapes):
-        self.LoadShapesSignal.emit(shapes)  # add 9/21/2022
-
     def fileLoadedSignalHandle(self, shapes):
         self._noSelectionSlot = True
         slen = len(shapes) / 100
+        self.labelList._initLoading = True
+        self.labelList._itemList.clear()
         if slen > 3:
             self.loadingLabelDlg = LoadingLabelProgress(parent=self, config=self._config, size=len(shapes))
             self.loadingLabelDlg.show()
-            self.labelList._itemList.clear()
             i = 0
             for shape in shapes:
                 self.addLabel(shape)
@@ -2518,6 +2543,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.addLabel(shape)
 
         self.labelList.clearSelection()
+        self.labelList._initLoading = False
         self._noSelectionSlot = False
 
         self.setClean()
@@ -2536,31 +2562,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.toggleDrawMode(True)  # 에디트모드로 강제전환
         #else:
             #self.topToolWidget.editmodeClick(True)
-
-    def LoadShapesSignalHandle(self, shapes):
-        self._noSelectionSlot = True
-        slen = len(shapes) / 100
-        if slen > 3:
-            self.loadingLabelDlg = LoadingLabelProgress(parent=self, config=self._config, size=len(shapes))
-            self.loadingLabelDlg.show()
-            self.labelList._itemList.clear()
-            i = 0
-            for shape in shapes:
-                self.addLabel(shape)
-                if i < slen:
-                    i = i + 1
-                else:
-                    self.loadingLabelDlg.doAction()
-                    time.sleep(0.01)
-                    i = 0
-            self.loadingLabelDlg._isEnd = True
-            self.loadingLabelDlg.close()
-        else:
-            for shape in shapes:
-                self.addLabel(shape)
-
-        self.labelList.clearSelection()
-        self._noSelectionSlot = False
 
     def resizeEvent(self, event):
         if (
@@ -3113,7 +3114,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 tuple(extensions)
             ):
                 continue
-            label_file = osp.splitext(file)[0] + ".json"
+            #label_file = osp.splitext(file)[0] + ".json"
+            label_file = osp.splitext(file)[0]
+            if label_file.find("meta") < 0:
+                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file) + ".json"
+            else:
+                label_file = osp.splitext(filename)[0] + ".json"
+
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
                 label_file = osp.join(self.output_dir, label_file_without_path)
@@ -3132,6 +3139,8 @@ class MainWindow(QtWidgets.QMainWindow):
             self.actions.openPrevImg.setEnabled(True)
 
         self.openNextImg()
+        flistname = "File List (Total {})".format(self.fileListWidget.count()) if self._config["local_lang"] != "ko_KR" else "파일 목록 (총 {})".format(self.fileListWidget.count())
+        self.file_dock.setWindowTitle(flistname)
 
     def importDirImages(self, dirpath, pattern=None, load=True):
         self.actions.openNextImg.setEnabled(True)
