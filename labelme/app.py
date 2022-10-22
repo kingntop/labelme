@@ -1463,7 +1463,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def polygonSearchChanged_org(self):
         pattern = self.polygonSearch.text()
-        #polygonitems = self.labelList.getShapeItems()
         polygonitems = self.labelList._itemList
         grade = None
         label = None
