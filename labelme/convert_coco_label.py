@@ -8,6 +8,7 @@ import copy
 from labelme import __version__
 from labelme.logger import logger
 from labelme import PY2
+from labelme.utils.qt import LogPrint
 
 @contextlib.contextmanager
 def open(name, mode):
@@ -81,9 +82,29 @@ class ConvertCoCOLabel(object):
                 shape = self.getShapeByCategoryID(cate_id)
                 if shape:
                     stype = shape["shape_type"]
+                    segmentation = anno["segmentation"][0]
+                    if hasattr(segmentation, "__len__"):
+                        list_len = len(segmentation) / 2
+                    else:
+                        LogPrint(self.cocofilename + "에서 segmentation 는 배열이여야 합니다.")
+                        segmentation = anno["segmentation"]
+                        list_len = len(segmentation) / 2
+
+                    ii = 0
+                    i = 0
+                    while i < list_len:
+                        one = segmentation[ii]
+                        two = segmentation[ii + 1]
+                        point = [one, two]
+                        shape["points"].append(point)
+                        ii = ii + 2
+                        i = i + 1
+
+
+                    """
                     if stype == "polygon":
                         segmentation = anno["segmentation"][0]
-                        list_len = len(segmentation) / 2
+                        list_len = len(float(segmentation)) / 2
                         ii = 0
                         i = 0
                         while i < list_len:
@@ -153,14 +174,17 @@ class ConvertCoCOLabel(object):
                             shape["points"].append(point)
                             ii = ii + 2
                             i = i + 1
+                    """
 
         except Exception as e:
-            raise CoCoFileError(e)
+            LogPrint("coco 파일이 정확하지 않습니다, " + e)
+            pass
+            #raise CoCoFileError(e)
 
 
     def getShapeByCategoryID(self, cid):
         for shape in self.shapes:
-            if shape["category_id"] == cid:
+            if int(shape["category_id"]) == cid:
                 return shape
 
         return None
