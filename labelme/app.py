@@ -1175,13 +1175,17 @@ class MainWindow(QtWidgets.QMainWindow):
     def undoShapeEdit(self):
         self.canvas.restoreShape()
         self.labelList.clear()
+        self.labelList._itemList.clear()
+        self.labelList._initLoading = True
         self.loadShapes(self.canvas.shapes)
         for shape in self.canvas.shapes:
             self.addLabel(shape)
+        """    
         prodT = "Polygon Labels (Total %s)"
         if self._config["local_lang"] == "ko_KR":
             prodT = "다각형 레이블 (총 %s)"
         self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+        """
         self.labelList.clearSelection()
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
 
@@ -1757,7 +1761,7 @@ class MainWindow(QtWidgets.QMainWindow):
             label = s.label.encode("utf-8") if PY2 else s.label
 
             cColor = QtGui.QColor(s.color if s.color else "#808000")
-            lineweight = s.lineweight if s.lineweight else "1.0"
+            lineweight = s.lineweight if s.lineweight else "2.0"
             # r, g, b, a = cColor.red(), cColor.green(), cColor.blue(), cColor.alpha()
             #print("save shape", str(a))
             plen = len(s.points)
@@ -3030,6 +3034,7 @@ class MainWindow(QtWidgets.QMainWindow):
             slen = len(shapes) / 100
             self.labelList.clear()
             self.labelList._itemList.clear()
+            self.labelList._initLoading = True
             if slen > 3:
                 i = 0
                 for shape in shapes:
@@ -3045,13 +3050,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
             self.labelList.clearSelection()
             # add 2022.10.12 }
-
+            """
             polyT = "Polygon Labels (Total %s)"
             if self._config["local_lang"] == "ko_KR":
                 polyT = "다각형 레이블 (총 %s)"
             if self.shape_dock:
                 self.shape_dock.titleBarWidget().titleLabel.setText(polyT % len(self.labelList))
-
+            """
             self.setDirty()
             if self.noShapes():
                 for action in self.actions.onShapesPresent:
