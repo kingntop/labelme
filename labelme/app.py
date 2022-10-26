@@ -1187,6 +1187,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
         """
         self.labelList.clearSelection()
+        self.labelList._initLoading = False
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
 
     def tutorial(self):
@@ -3049,6 +3050,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.addLabel(shape)
 
             self.labelList.clearSelection()
+            self.labelList._initLoading = False
             # add 2022.10.12 }
             """
             polyT = "Polygon Labels (Total %s)"
