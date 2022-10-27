@@ -1177,18 +1177,15 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelList.clear()
         self.labelList._itemList.clear()
         self.labelList._initLoading = True
-        self.loadShapes(self.canvas.shapes)
+        self._noSelectionSlot = True
         for shape in self.canvas.shapes:
             self.addLabel(shape)
-        """    
-        prodT = "Polygon Labels (Total %s)"
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
-        """
         self.labelList.clearSelection()
         self.labelList._initLoading = False
+        self.loadShapes(self.canvas.shapes)
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+
+        self.setDirty()  # add 10.27.2022
 
     def tutorial(self):
         url = self._config["api_url"] + 'ords/r/lm/lm'  # NOQA
@@ -1639,7 +1636,6 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def loadShapes(self, shapes, replace=True):
-        self._noSelectionSlot = True
         # for shape in shapes:
         #     self.addLabel(shape)
         # self.labelList.clearSelection()
