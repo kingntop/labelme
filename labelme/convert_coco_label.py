@@ -2,6 +2,7 @@ import base64
 import contextlib
 import io
 import json
+import os
 import os.path as osp
 import copy
 
@@ -86,7 +87,7 @@ class ConvertCoCOLabel(object):
                     if hasattr(segmentation, "__len__"):
                         list_len = len(segmentation) / 2
                     else:
-                        LogPrint(self.cocofilename + "에서 segmentation 는 배열이여야 합니다.")
+                        # LogPrint(self.cocofilename + "에서 segmentation 는 배열이여야 합니다.")
                         segmentation = anno["segmentation"]
                         list_len = len(segmentation) / 2
 
@@ -99,7 +100,6 @@ class ConvertCoCOLabel(object):
                         shape["points"].append(point)
                         ii = ii + 2
                         i = i + 1
-
 
                     """
                     if stype == "polygon":
@@ -203,6 +203,9 @@ class ConvertCoCOLabel(object):
             imageWidth=self.imageWidth,
         )
         try:
+            if osp.dirname(self.labelfilename) and not osp.exists(osp.dirname(self.labelfilename)):
+                os.makedirs(osp.dirname(self.labelfilename))
+
             with open(self.labelfilename, "w") as f:
                 json.dump(data, f, ensure_ascii=False, indent=2)
             self.shapes.clear()
@@ -216,6 +219,7 @@ class ConvertCoCOLabel(object):
             self.labelfilename = None
             return lfname
         except Exception as e:
+            LogPrint(e)
             raise CoCoFileError(e)
 
     @staticmethod

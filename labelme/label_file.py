@@ -112,7 +112,10 @@ class LabelFile(object):
                     imageData = utils.img_data_to_png_data(imageData)
             else:
                 # relative path from label file to relative path from cwd
-                dfilename = filename.replace("meta/", "")  # add ckd
+                dfilename = filename
+                if filename.find("meta/json/") > -1:
+                    dfilename = filename.replace("meta/json/", "")  # add ckd
+
                 imagePath = osp.join(osp.dirname(dfilename), data["imagePath"])
                 imageData = self.load_image_file(imagePath)
             imagePath = data["imagePath"]
@@ -142,6 +145,7 @@ class LabelFile(object):
                 for s in data["shapes"]
             ]
         except Exception as e:
+            LogPrint("e : %s" % e)
             raise LabelFileError(e)
 
         otherData = {}
@@ -206,6 +210,7 @@ class LabelFile(object):
                 json.dump(data, f, ensure_ascii=False, indent=2)
             self.filename = filename
         except Exception as e:
+            LogPrint("라벨파일 쓰기중 에러: %s " % e)
             raise LabelFileError(e)
 
     @staticmethod

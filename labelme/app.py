@@ -1070,11 +1070,18 @@ class MainWindow(QtWidgets.QMainWindow):
                 label_file = osp.join(self.output_dir, label_file_without_path)
             self.saveLabels(label_file)
 
-            if label_file.find("meta") < 0:
-                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file)
+            if label_file.find("meta/") > -1:
+                label_file = label_file.replace("meta/", "")
+            if label_file.find("json/") > -1:
+                label_file = label_file.replace("json/", "")
+            if label_file.find("coco/") > -1:
+                label_file = label_file.replace("coco/", "")
+
+            meta_dir = osp.dirname(label_file) + "/meta"
+            lbfilename = meta_dir + '/json/' + osp.basename(label_file)
 
             # run coco format
-            threading.Timer(0.005, self.putDownCocoFormat, [label_file]).start()
+            threading.Timer(0.005, self.putDownCocoFormat, [lbfilename]).start()
             return
 
         self.dirty = True
@@ -1783,10 +1790,22 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             if self.imagePath.find("meta/") > -1:
                 self.imagePath = self.imagePath.replace("meta/", "")
+            if self.imagePath.find("json/") > -1:
+                self.imagePath = self.imagePath.replace("json/", "")
+            if self.imagePath.find("coco/") > -1:
+                self.imagePath = self.imagePath.replace("coco/", "")
+
+            if filename.find("meta/") > -1:
+                filename = filename.replace("meta/", "")
+            if filename.find("json/") > -1:
+                filename = filename.replace("json/", "")
+            if filename.find("coco/") > -1:
+                filename = filename.replace("coco/", "")
+
             imagePath = osp.relpath(self.imagePath, osp.dirname(filename))
             #imageData = self.imageData if self._config["store_data"] else None # add ckd 9.28.2022
             imageData = None
-            meta_dir = osp.dirname(filename) + "/meta"
+            meta_dir = osp.dirname(filename) + "/meta/json"
             filename = meta_dir + '/' + osp.basename(filename)
             # if osp.dirname(filename) and not osp.exists(osp.dirname(filename)):
             #     os.makedirs(osp.dirname(filename))
@@ -2328,8 +2347,8 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         cocofile = False
         labelfile = False
-        meta_dir = osp.dirname(filename) + "/meta"
-        coco_file = meta_dir + '/{}_coco.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
+        coco_meta_dir = osp.dirname(filename) + "/meta/coco"
+        coco_file = coco_meta_dir + '/{}_coco.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
         #coco_file = "{}_coco.{}".format(osp.splitext(filename)[0], "json")
         if self.output_dir:
             coco_file_without_path = osp.basename(coco_file)
@@ -2340,6 +2359,7 @@ class MainWindow(QtWidgets.QMainWindow):
         ):
             cocofile = True
 
+        meta_dir = osp.dirname(filename) + "/meta/json"
         label_file = meta_dir + '/{}.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
         #label_file = osp.splitext(filename)[0] + ".json"
         if self.output_dir:
@@ -2367,8 +2387,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
             self.imageData = self.labelFile.imageData
             imgpath = label_file
-            if imgpath.find("meta/") > -1:
-                imgpath = imgpath.replace("meta/", "")
+            if imgpath.find("meta/json") > -1:
+                imgpath = imgpath.replace("meta/json", "")
+
             self.imagePath = osp.join(
                 osp.dirname(imgpath),
                 self.labelFile.imagePath,
@@ -2393,16 +2414,21 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
             self.imageData = self.labelFile.imageData
             imgpath = label_file
-            if imgpath.find("meta/") > -1:
-                imgpath = imgpath.replace("meta/", "")
+            if imgpath.find("meta/json") > -1:
+                imgpath = imgpath.replace("meta/json", "")
             self.imagePath = osp.join(
                 osp.dirname(imgpath),
                 self.labelFile.imagePath,
             )
             self.otherData = self.labelFile.otherData
         elif cocofile is True and labelfile is False:
-            ccls = ConvertCoCOLabel(coco_file, label_file)
-            label_file = ccls.save()
+            try:
+                ccls = ConvertCoCOLabel(coco_file, label_file)
+                label_file = ccls.save()
+            except Exception as e:
+                LogPrint("coco 파일로 라벨파일변환중 에러 , " + e)
+                pass
+
             if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
                     label_file
             ):
@@ -2423,8 +2449,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     return False
                 self.imageData = self.labelFile.imageData
                 imgpath = label_file
-                if imgpath.find("meta/") > -1:
-                    imgpath = imgpath.replace("meta/", "")
+                if imgpath.find("meta/json") > -1:
+                    imgpath = imgpath.replace("meta/json", "")
                 self.imagePath = osp.join(
                     osp.dirname(imgpath),
                     self.labelFile.imagePath,
@@ -2789,8 +2815,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.labelFile:
             # DL20180323 - overwrite when in directory
             filename = self.labelFile.filename
-            if self.labelFile.filename.find("meta/") > -1:
-                filename = self.labelFile.filename.replace("meta/", "")  # add ckd
             self._saveFile(filename)
         elif self.output_file:
             self._saveFile(self.output_file)
@@ -2805,8 +2829,6 @@ class MainWindow(QtWidgets.QMainWindow):
             if isinstance(filename, tuple):
                 filename, _ = filename
 
-            if filename.find("meta/") > -1:
-                filename = filename.replace("meta/", "")  # add ckd
             self._saveFile(filename)
 
 
@@ -2850,13 +2872,19 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _saveFile(self, filename):
         if filename and self.saveLabels(filename):
-            if filename.find("meta") < 0:
-                meta_dir = osp.dirname(filename) + "/meta"
-                filename = meta_dir + '/' + osp.basename(filename)
-            self.addRecentFile(filename)
+            if filename.find("meta/") > -1:
+                filename = filename.replace("meta/", "")
+            if filename.find("json/") > -1:
+                filename = filename.replace("json/", "")
+            if filename.find("coco/") > -1:
+                filename = filename.replace("coco/", "")
+
+            meta_dir = osp.dirname(filename) + "/meta"
+            lbfilename = meta_dir + '/json/' + osp.basename(filename)
+            self.addRecentFile(lbfilename)
             self.setClean()
             # run coco format
-            threading.Timer(0.1, self.putDownCocoFormat, [filename]).start()
+            threading.Timer(0.1, self.putDownCocoFormat, [lbfilename]).start()
 
     def putDownCocoFormat(self, arg):
         if arg is None:
@@ -2866,16 +2894,27 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             labelmefiles = []
             labelmefiles.append(arg)
-            basename = os.path.basename(arg)
+
+            if arg.find("meta/") > -1:
+                arg = arg.replace("meta/", "")
+            if arg.find("json/") > -1:
+                arg = arg.replace("json/", "")
+            if arg.find("coco/") > -1:
+                arg = arg.replace("coco/", "")
+
+            meta_dir = osp.dirname(arg) + "/meta"
+            cocofilename = meta_dir + '/coco/' + osp.basename(arg)
+            basename = os.path.basename(cocofilename)
             coco_fname = os.path.splitext(basename)[0]
-            dirname = os.path.dirname(arg)
+            dirname = os.path.dirname(cocofilename)
             cocofp = "{}/{}_coco.{}".format(dirname, coco_fname, "json")
             if osp.dirname(cocofp) and not osp.exists(osp.dirname(cocofp)):
                 os.makedirs(osp.dirname(cocofp))
 
             labelme2coco(labelmefiles, cocofp)
-            print("Success save coco json")
+            # print("Success save coco json")
         except LabelFileError as e:
+            LogPrint("라벨미파일을 코코파일로 보관중 에러:: %s" % e)
             self.errorMessage(
                 self.tr("Error creating coco file"),
                 self.tr(
@@ -3159,10 +3198,22 @@ class MainWindow(QtWidgets.QMainWindow):
                 continue
 
             label_file = osp.splitext(filename)[0]
-            if label_file.find("meta") < 0:
-                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file) + ".json"
+            if label_file.find("meta/json/") < 0:
+                label_file = osp.dirname(label_file) + "/meta/json/" + osp.basename(label_file) + ".json"
             else:
                 label_file = osp.splitext(filename)[0] + ".json"
+
+            coco_file = osp.splitext(filename)[0]
+            if coco_file.find("meta/coco/") < 0:
+                coco_file = osp.dirname(coco_file) + "/meta/coco/" + osp.basename(coco_file) + ".json"
+            else:
+                coco_file = osp.splitext(filename)[0] + ".json"
+
+            cocofile = False
+            if QtCore.QFile.exists(coco_file) and ConvertCoCOLabel.is_coco_file(
+                    coco_file
+            ):
+                cocofile = True
 
             if self.output_dir:
                 label_file_without_path = osp.basename(label_file)
@@ -3175,7 +3226,21 @@ class MainWindow(QtWidgets.QMainWindow):
             ):
                 item.setCheckState(Qt.Checked)
             else:
-                item.setCheckState(Qt.Unchecked)
+                if cocofile is True:
+                    try:
+                        ccls = ConvertCoCOLabel(coco_file, label_file)
+                        label_file = ccls.save()
+                    except Exception as e:
+                        LogPrint("coco 파일로 라벨파일 변환중 에러 , " + e)
+                        pass
+
+                if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
+                        label_file
+                ):
+                    item.setCheckState(Qt.Checked)
+                else:
+                    item.setCheckState(Qt.Unchecked)
+
             self.fileListWidget.addItem(item)
 
         self.openNextImg(load=load)
