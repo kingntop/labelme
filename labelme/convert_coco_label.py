@@ -71,7 +71,7 @@ class ConvertCoCOLabel(object):
                 shape["label_display"] = "{}-{}".format(cate["supercategory"], cate["name"])
                 shape["color"] = cate["color"] if "color" in cate else "#808000"
                 shape["points"] = []
-                shape["lineweight"] = cate["lineweight"] if "lineweight" in cate else "1.0"
+                shape["lineweight"] = cate["lineweight"] if "lineweight" in cate else "2.0"
                 shape["shape_type"] = cate["shape_type"] if "shape_type" in cate else "line"
                 shape["group_id"] = None
                 shape["category_id"] = cate["id"]

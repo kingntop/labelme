@@ -61,7 +61,6 @@ class Shape(object):
         self.grade = grade
         self.label = label
         self.label_display = label_display
-        #self.color = color
         self.group_id = group_id
         self.points = []
         self.lineweight = float(lineweight)
@@ -81,23 +80,29 @@ class Shape(object):
         self._closed = False
 
         if color is not None:
-            Qc = QtGui.QColor(color)
-            r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
+            if isinstance(color, QtGui.QColor):
+                r, g, b, a = color.red(), color.green(), color.blue(), color.alpha()
+            else:
+                Qc = QtGui.QColor(color)
+                r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
+
+            #assert parent is not None
             if parent:
                 sa = a if a < parent.polygonTrans_deta_value else parent.polygonTrans_deta_value
             else:
                 sa = a if a < 128 else 128
                 print("Error non parent in shape")
 
+            #self.color = QtGui.QColor(r, g, b, sa)
+            #parent._update_shape_color(self)
             self.color = QtGui.QColor(r, g, b, sa)
-            assert parent is not None
-            parent._update_shape_color(self)
-            # self.line_color = QtGui.QColor(r, g, b, sa + 50)
-            # self.hvertex_fill_color = QtGui.QColor(255, 255, 255)
-            # self.fill_color = QtGui.QColor(r, g, b, a)  # a=128
-            # self.vertex_fill_color = QtGui.QColor(r, g, b, sa + 50)
-            # self.select_line_color = QtGui.QColor(255, 255, 255, sa + 50)
-            # self.select_fill_color = QtGui.QColor(r, g, b, sa + 27)  # a = 155
+            la = int(sa * 255 / 128)
+            self.line_color = QtGui.QColor(r, g, b, la)
+            self.vertex_fill_color = QtGui.QColor(r, g, b, a)
+            self.hvertex_fill_color = QtGui.QColor(255, 255, 255)
+            self.fill_color = QtGui.QColor(r, g, b, a)  # a=128
+            self.select_line_color = QtGui.QColor(255, 255, 255, a + 80)
+            self.select_fill_color = QtGui.QColor(r, g, b, a + 27)  # a = 155
 
         self.shape_type = shape_type
 
@@ -159,11 +164,11 @@ class Shape(object):
             color = (
                 self.select_line_color if self.selected else self.line_color
             )
+
             pen = QtGui.QPen(color)
             # Try using integer sizes for smoother drawing(?)
             #pen.setWidth(max(1, int(round(2.0 / self.scale))))
             pen.setWidth(max(1, int(round(self.lineweight / self.scale))))
-            #pen.setWidth(max(1, int(round(self.lineweight + self.scale))))
 
             painter.setPen(pen)
 

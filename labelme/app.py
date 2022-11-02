@@ -366,7 +366,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         saveAuto = action(
             text=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
-            slot=self.saveAutoAction,
+            slot=lambda x: self.actions.saveAuto.setChecked(x),  #   slot=self.saveAutoAction,
             shortcut=shortcuts["saveAuto"],
             icon="save",
             tip=self.tr("Save &Automatically") if self._config["auto_save"] is False else self.tr("Turn off Save automatically"),
@@ -1070,18 +1070,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 label_file = osp.join(self.output_dir, label_file_without_path)
             self.saveLabels(label_file)
 
-            if label_file.find("meta/") > -1:
-                label_file = label_file.replace("meta/", "")
-            if label_file.find("json/") > -1:
-                label_file = label_file.replace("json/", "")
-            if label_file.find("coco/") > -1:
-                label_file = label_file.replace("coco/", "")
-
-            meta_dir = osp.dirname(label_file) + "/meta"
-            lbfilename = meta_dir + '/json/' + osp.basename(label_file)
+            if label_file.find("meta") < 0:
+                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file)
 
             # run coco format
-            threading.Timer(0.005, self.putDownCocoFormat, [lbfilename]).start()
+            threading.Timer(0.005, self.putDownCocoFormat, [label_file]).start()
             return
 
         self.dirty = True
@@ -1186,13 +1179,13 @@ class MainWindow(QtWidgets.QMainWindow):
         self.labelList._initLoading = True
         self._noSelectionSlot = True
         for shape in self.canvas.shapes:
-            self.addLabel(shape)
+            self.addLabel(shape, True)
+        self._noSelectionSlot = False
         self.labelList.clearSelection()
         self.labelList._initLoading = False
         self.loadShapes(self.canvas.shapes)
         self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
-
-        self.setDirty()  # add 10.27.2022
+        #self.setDirty()  # add 11.02.2022
 
     def tutorial(self):
         url = self._config["api_url"] + 'ords/r/lm/lm'  # NOQA
@@ -1589,7 +1582,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         #self._update_shape_color(shape) 이부분에선 불필요
 
-    def addLabel(self, shape):
+    def addLabel(self, shape, color):
         # Add polygon list 파일로딩때에만 호출됨
         self.labelList.addShape(shape)
         self.labelDialog.addLabelHistory(shape)
@@ -1602,21 +1595,30 @@ class MainWindow(QtWidgets.QMainWindow):
             prodT = "다각형 레이블 (총 {})".format(self.labelList.count())
         self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
         #self.shape_dock.titleBarWidget().titleLabel.sizeHint()
-        self._update_shape_color(shape)
+        if color is True:
+            self._update_shape_color(shape)
 
 
     def _update_shape_color(self, shape):
-        sc = shape.color if shape.color else "#808000"
-        Qc = QtGui.QColor(sc)
+        if shape.color:
+            if isinstance(shape.color, QtGui.QColor):
+                Qc = shape.color
+            else:
+                Qc = QtGui.QColor(shape.color)
+        else:
+            Qc = QtGui.QColor("#808000")
+
         r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
-        shape.color = QtGui.QColor(r, g, b, a)
-        la = int(a * 255 / 128)
+        sa = a if a < self.polygonTrans_deta_value else self.polygonTrans_deta_value
+        shape.color = QtGui.QColor(r, g, b, sa)
+        la = int(sa * 255 / 128)
         shape.line_color = QtGui.QColor(r, g, b, la)
         shape.vertex_fill_color = QtGui.QColor(r, g, b, a)
         shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
         shape.fill_color = QtGui.QColor(r, g, b, a)  # a=128
         shape.select_line_color = QtGui.QColor(255, 255, 255, a + 80)
         shape.select_fill_color = QtGui.QColor(r, g, b, a + 27)  # a = 155
+        shape.lineweight = self.lineweight_value
 
     def _get_rgb_by_label(self, label):
         if self._config["shape_color"] == "auto":
@@ -1685,7 +1687,7 @@ class MainWindow(QtWidgets.QMainWindow):
             group_id = shape["group_id"]
             other_data = shape["other_data"]
 
-            Qc = QtGui.QColor(color)
+            Qc = QtGui.QColor(color if color else "#808000")
             r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
             # print("load shape", str(a))
             if inval is False:
@@ -1697,8 +1699,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.lineweight_value = float(lineweight)
                 inval = True
 
-            color = QtGui.QColor(r, g, b, a if a < self.polygonTrans_deta_value else self.polygonTrans_deta_value)
-
+            #color = QtGui.QColor(r, g, b, a if a < self.polygonTrans_deta_value else self.polygonTrans_deta_value)
             if not points:
                 # skip point-empty shape
                 continue
@@ -1708,7 +1709,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 grade=grade,
                 label=label,
                 label_display=label_display,
-                color=color,
+                color=color if color else "#808000",
                 lineweight=lineweight,
                 shape_type=shape_type,
                 group_id=group_id,
@@ -1790,22 +1791,10 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             if self.imagePath.find("meta/") > -1:
                 self.imagePath = self.imagePath.replace("meta/", "")
-            if self.imagePath.find("json/") > -1:
-                self.imagePath = self.imagePath.replace("json/", "")
-            if self.imagePath.find("coco/") > -1:
-                self.imagePath = self.imagePath.replace("coco/", "")
-
-            if filename.find("meta/") > -1:
-                filename = filename.replace("meta/", "")
-            if filename.find("json/") > -1:
-                filename = filename.replace("json/", "")
-            if filename.find("coco/") > -1:
-                filename = filename.replace("coco/", "")
-
             imagePath = osp.relpath(self.imagePath, osp.dirname(filename))
             #imageData = self.imageData if self._config["store_data"] else None # add ckd 9.28.2022
             imageData = None
-            meta_dir = osp.dirname(filename) + "/meta/json"
+            meta_dir = osp.dirname(filename) + "/meta"
             filename = meta_dir + '/' + osp.basename(filename)
             # if osp.dirname(filename) and not osp.exists(osp.dirname(filename)):
             #     os.makedirs(osp.dirname(filename))
@@ -1842,7 +1831,7 @@ class MainWindow(QtWidgets.QMainWindow):
         added_shapes = self.canvas.duplicateSelectedShapes()
         self.labelList.clearSelection()
         for shape in added_shapes:
-            self.addLabel(shape)
+            self.addLabel(shape, False)
         prodT = "Polygon Labels (Total %s)"
         if self._config["local_lang"] == "ko_KR":
             prodT = "다각형 레이블 (총 %s)"
@@ -1852,7 +1841,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def pasteSelectedShape(self):
         self.loadShapes(self._copied_shapes, replace=False)
         for shape in self._copied_shapes:
-            self.addLabel(shape)
+            self.addLabel(shape, False)
         prodT = "Polygon Labels (Total %s)"
         if self._config["local_lang"] == "ko_KR":
             prodT = "다각형 레이블 (총 %s)"
@@ -1928,7 +1917,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape.lineweight = self.lineweight_value
             # print("new shape", str(a))
 
-            self.addLabel(shape)
+            self.addLabel(shape, True)
             self.actions.editMode.setEnabled(True)
             self.actions.undoLastPoint.setEnabled(False)
             self.actions.undo.setEnabled(True)
@@ -2347,8 +2336,8 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         cocofile = False
         labelfile = False
-        coco_meta_dir = osp.dirname(filename) + "/meta/coco"
-        coco_file = coco_meta_dir + '/{}_coco.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
+        meta_dir = osp.dirname(filename) + "/meta"
+        coco_file = meta_dir + '/{}_coco.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
         #coco_file = "{}_coco.{}".format(osp.splitext(filename)[0], "json")
         if self.output_dir:
             coco_file_without_path = osp.basename(coco_file)
@@ -2359,7 +2348,6 @@ class MainWindow(QtWidgets.QMainWindow):
         ):
             cocofile = True
 
-        meta_dir = osp.dirname(filename) + "/meta/json"
         label_file = meta_dir + '/{}.{}'.format(osp.splitext(osp.basename(filename))[0], "json")
         #label_file = osp.splitext(filename)[0] + ".json"
         if self.output_dir:
@@ -2387,9 +2375,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
             self.imageData = self.labelFile.imageData
             imgpath = label_file
-            if imgpath.find("meta/json") > -1:
-                imgpath = imgpath.replace("meta/json", "")
-
+            if imgpath.find("meta/") > -1:
+                imgpath = imgpath.replace("meta/", "")
             self.imagePath = osp.join(
                 osp.dirname(imgpath),
                 self.labelFile.imagePath,
@@ -2414,8 +2401,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 return False
             self.imageData = self.labelFile.imageData
             imgpath = label_file
-            if imgpath.find("meta/json") > -1:
-                imgpath = imgpath.replace("meta/json", "")
+            if imgpath.find("meta/") > -1:
+                imgpath = imgpath.replace("meta/", "")
             self.imagePath = osp.join(
                 osp.dirname(imgpath),
                 self.labelFile.imagePath,
@@ -2449,8 +2436,8 @@ class MainWindow(QtWidgets.QMainWindow):
                     return False
                 self.imageData = self.labelFile.imageData
                 imgpath = label_file
-                if imgpath.find("meta/json") > -1:
-                    imgpath = imgpath.replace("meta/json", "")
+                if imgpath.find("meta/") > -1:
+                    imgpath = imgpath.replace("meta/", "")
                 self.imagePath = osp.join(
                     osp.dirname(imgpath),
                     self.labelFile.imagePath,
@@ -2555,7 +2542,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.loadingLabelDlg.show()
             i = 0
             for shape in shapes:
-                self.addLabel(shape)
+                self.addLabel(shape, False)
                 if i < slen:
                     i = i + 1
                 else:
@@ -2566,7 +2553,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.loadingLabelDlg.close()
         else:
             for shape in shapes:
-                self.addLabel(shape)
+                self.addLabel(shape, False)
 
         self.labelList.clearSelection()
         self.labelList._initLoading = False
@@ -2643,6 +2630,9 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.actions.saveAuto.setText(self.tr("Turn off Save automatically"))
             self.actions.saveAuto.setToolTip(self.tr("Turn off Save automatically"))
+            self.setDirty()  # add 11/02/2022
+
+        self.actions.save.setEnabled(not enabled)  # add 11/02/2022
         self.actions.saveAuto.setChecked(enabled)
 
     def closeEvent(self, event):
@@ -2815,6 +2805,8 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.labelFile:
             # DL20180323 - overwrite when in directory
             filename = self.labelFile.filename
+            if self.labelFile.filename.find("meta/") > -1:
+                filename = self.labelFile.filename.replace("meta/", "")  # add ckd
             self._saveFile(filename)
         elif self.output_file:
             self._saveFile(self.output_file)
@@ -2829,6 +2821,8 @@ class MainWindow(QtWidgets.QMainWindow):
             if isinstance(filename, tuple):
                 filename, _ = filename
 
+            if filename.find("meta/") > -1:
+                filename = filename.replace("meta/", "")  # add ckd
             self._saveFile(filename)
 
 
@@ -2872,19 +2866,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _saveFile(self, filename):
         if filename and self.saveLabels(filename):
-            if filename.find("meta/") > -1:
-                filename = filename.replace("meta/", "")
-            if filename.find("json/") > -1:
-                filename = filename.replace("json/", "")
-            if filename.find("coco/") > -1:
-                filename = filename.replace("coco/", "")
-
-            meta_dir = osp.dirname(filename) + "/meta"
-            lbfilename = meta_dir + '/json/' + osp.basename(filename)
-            self.addRecentFile(lbfilename)
+            if filename.find("meta") < 0:
+                meta_dir = osp.dirname(filename) + "/meta"
+                filename = meta_dir + '/' + osp.basename(filename)
+            self.addRecentFile(filename)
             self.setClean()
             # run coco format
-            threading.Timer(0.1, self.putDownCocoFormat, [lbfilename]).start()
+            threading.Timer(0.1, self.putDownCocoFormat, [filename]).start()
 
     def putDownCocoFormat(self, arg):
         if arg is None:
@@ -2894,25 +2882,15 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             labelmefiles = []
             labelmefiles.append(arg)
-
-            if arg.find("meta/") > -1:
-                arg = arg.replace("meta/", "")
-            if arg.find("json/") > -1:
-                arg = arg.replace("json/", "")
-            if arg.find("coco/") > -1:
-                arg = arg.replace("coco/", "")
-
-            meta_dir = osp.dirname(arg) + "/meta"
-            cocofilename = meta_dir + '/coco/' + osp.basename(arg)
-            basename = os.path.basename(cocofilename)
+            basename = os.path.basename(arg)
             coco_fname = os.path.splitext(basename)[0]
-            dirname = os.path.dirname(cocofilename)
+            dirname = os.path.dirname(arg)
             cocofp = "{}/{}_coco.{}".format(dirname, coco_fname, "json")
             if osp.dirname(cocofp) and not osp.exists(osp.dirname(cocofp)):
                 os.makedirs(osp.dirname(cocofp))
 
             labelme2coco(labelmefiles, cocofp)
-            # print("Success save coco json")
+            print("Success save coco json")
         except LabelFileError as e:
             LogPrint("라벨미파일을 코코파일로 보관중 에러:: %s" % e)
             self.errorMessage(
@@ -3074,7 +3052,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if slen > 3:
                 i = 0
                 for shape in shapes:
-                    self.addLabel(shape)
+                    self.addLabel(shape, False)
                     if i < slen:
                         i = i + 1
                     else:
@@ -3082,7 +3060,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         i = 0
             else:
                 for shape in shapes:
-                    self.addLabel(shape)
+                    self.addLabel(shape, False)
 
             self.labelList.clearSelection()
             self.labelList._initLoading = False
@@ -3104,7 +3082,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def copyShape(self):
         self.canvas.endMove(copy=True)
         for shape in self.canvas.selectedShapes:
-            self.addLabel(shape)
+            self.addLabel(shape, False)
         self.labelList.clearSelection()
         self.setDirty()
 
@@ -3198,16 +3176,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 continue
 
             label_file = osp.splitext(filename)[0]
-            if label_file.find("meta/json/") < 0:
-                label_file = osp.dirname(label_file) + "/meta/json/" + osp.basename(label_file) + ".json"
+            if label_file.find("meta") < 0:
+                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file) + ".json"
             else:
                 label_file = osp.splitext(filename)[0] + ".json"
 
             coco_file = osp.splitext(filename)[0]
-            if coco_file.find("meta/coco/") < 0:
-                coco_file = osp.dirname(coco_file) + "/meta/coco/" + osp.basename(coco_file) + ".json"
+            if coco_file.find("meta") < 0:
+                coco_file = osp.dirname(coco_file) + "/meta/" + osp.basename(coco_file) + "_coco.json"
             else:
-                coco_file = osp.splitext(filename)[0] + ".json"
+                coco_file = osp.splitext(filename)[0] + "_coco.json"
 
             cocofile = False
             if QtCore.QFile.exists(coco_file) and ConvertCoCOLabel.is_coco_file(

@@ -2579,7 +2579,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def copyShape(self):
         self.canvas.endMove(copy=True)
         for shape in self.canvas.selectedShapes:
-            self.addLabel(shape)
+            self.addLabel(shape, False)
         self.labelList.clearSelection()
         self.setDirty()
 

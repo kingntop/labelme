@@ -6,7 +6,6 @@ from labelme import QT5
 from labelme.shape import Shape
 import labelme.utils
 
-
 # TODO(unknown):
 # - [maybe] Find optimal epsilon value.
 
@@ -117,6 +116,7 @@ class Canvas(QtWidgets.QWidget):
         shapesBackup = []
         for shape in self.shapes:
             shapesBackup.append(shape.copy())
+            #shapesBackup.append(copy.deepcopy(shape))
         if len(self.shapesBackups) > self.num_backups:
             self.shapesBackups = self.shapesBackups[-self.num_backups - 1:]
         self.shapesBackups.append(shapesBackup)
