@@ -1070,6 +1070,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 label_file = osp.join(self.output_dir, label_file_without_path)
             self.saveLabels(label_file)
 
+            # blen = len(self.canvas.shapesBackups) # add ckd 11/03
+            saveShapes = self.labelList.getShapes()
+            self.canvas.shapes = []
+            self.canvas.shapesBackups = []
+            self.loadShapes(saveShapes)
+            self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+            # add ckd 11/03
+
+
             if label_file.find("meta") < 0:
                 label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file)
 
@@ -1122,7 +1131,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def resetState(self):
         self.labelList.clear()  # this block now when polygon list is deleted
-        # update polygon count ckd
+         # update polygon count ckd
         prodT = "Polygon Labels (Total %s)"
         if self._config["local_lang"] == "ko_KR":
             prodT = "다각형 레이블 (총 %s)"
@@ -1903,7 +1912,6 @@ class MainWindow(QtWidgets.QMainWindow):
         if item:
             self.labelList.clearSelection()
             shape = self.canvas.setLastLabel(item)
-
             shape.group_id = group_id
             sc = shape.color if shape.color else "#808000"
             Qc = QtGui.QColor(sc)
@@ -2824,6 +2832,15 @@ class MainWindow(QtWidgets.QMainWindow):
             if filename.find("meta/") > -1:
                 filename = filename.replace("meta/", "")  # add ckd
             self._saveFile(filename)
+
+        #blen = len(self.canvas.shapesBackups) # add ckd 11/03
+        saveShapes = self.labelList.getShapes()  # add ckd 11/03
+        self.canvas.shapes = []
+        self.canvas.shapesBackups = []
+        self.loadShapes(saveShapes)
+        self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+        # add ckd 11/03
+
 
 
     def saveFileAs(self, _value=False):

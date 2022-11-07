@@ -394,6 +394,15 @@ class CustomLabelListWidget(QtWidgets.QListWidget):
                     s_items.append(itm)
         return s_items
 
+    def getShapes(self):
+        s_items = []
+        for i in range(len(self._itemList)):
+            itm = self._itemList[i]
+            if isinstance(itm, MyCustomWidget):
+                if itm._shape:
+                    s_items.append(itm._shape)
+        return s_items
+
     def getShapeItems_org(self):
         s_items = []
         for i in range(self.count()):
