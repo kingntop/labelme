@@ -221,7 +221,7 @@ class Shape(object):
 
     def drawVertex(self, path, i):
         #print(self.scale)
-        d = self.point_size / self.scale
+        d = self.point_size / self.scale * 0.5
         #d = self.point_size + self.scale
         shape = self.point_type
         point = self.points[i]

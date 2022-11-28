@@ -205,6 +205,10 @@ class Canvas(QtWidgets.QWidget):
             self.line.shape_type = self.createMode
 
             self.overrideCursor(CURSOR_DRAW)
+
+            self.setToolTip("")
+            self.setStatusTip(self.toolTip())
+
             if not self.current:
                 return
 
@@ -240,6 +244,7 @@ class Canvas(QtWidgets.QWidget):
                 self.line.close()
             self.repaint()
             self.current.highlightClear()
+
             return
 
         # Polygon copy moving.
@@ -303,7 +308,7 @@ class Canvas(QtWidgets.QWidget):
                 self.prevhShape = self.hShape = shape
                 self.prevhEdge = self.hEdge = index_edge
                 self.overrideCursor(CURSOR_POINT)
-                self.setToolTip("점을 생성하려면 클릭합니다" if self.lang == "ko_KR" else "Click to create point")
+                self.setToolTip("점을 생성하려면 더블 클릭합니다" if self.lang == "ko_KR" else "Double Click to create point")
                 self.setStatusTip(self.toolTip())
                 self.update()
                 break
@@ -321,7 +326,6 @@ class Canvas(QtWidgets.QWidget):
                 )
                 """
                 self.setToolTip(("'%s' 오브젝트를 이동하려면 클릭 및 드래그" % shape.label) if self.lang == "ko_KR" else ("Click & drag to move shape '%s'" % shape.label))
-
                 self.setStatusTip(self.toolTip())
                 self.overrideCursor(CURSOR_GRAB)
                 self.update()

@@ -75,7 +75,7 @@ fit_to_content:
   row: false
 
 # canvas
-epsilon: 10.0
+epsilon: 8.0
 canvas:
   # None: do nothing
   # close: close polygon
@@ -128,4 +128,4 @@ shortcuts:
   trans: Ctrl+X
   cursorArrow: Ctrl+7
 
-app_version: 20221107
+app_version: 20221128
