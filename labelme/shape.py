@@ -254,8 +254,9 @@ class Shape(object):
         post_i = None
         for i in range(len(self.points)):
             line = [self.points[i - 1], self.points[i]]
+            line_dist = labelme.utils.distance(self.points[i - 1] - self.points[i])  #add this line ckd 12/18/2022
             dist = labelme.utils.distancetoline(point, line)
-            if dist <= epsilon and dist < min_distance:
+            if line_dist > 0 and dist <= epsilon and dist < min_distance:  #add line_dist > 0 12/18/2022
                 min_distance = dist
                 post_i = i
         return post_i
@@ -301,7 +302,6 @@ class Shape(object):
 
     def highlightVertex(self, i, action):
         """Highlight a vertex appropriately based on the current action
-
         Args:
             i (int): The vertex index
             action (int): The action
