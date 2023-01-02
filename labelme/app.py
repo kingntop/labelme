@@ -402,7 +402,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
         createMode = action(
             self.tr("Create Polygons"),
-            lambda: self.toggleDrawMode(False, createMode="polygon"),
+            lambda: self.toggleDrawMode(False, createmode="polygon"),
             shortcuts["create_polygon"],
             "objects",
             self.tr("Start drawing polygons"),
@@ -410,7 +410,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         createRectangleMode = action(
             self.tr("Create Rectangle"),
-            lambda: self.toggleDrawMode(False, createMode="rectangle"),
+            lambda: self.toggleDrawMode(False, createmode="rectangle"),
             shortcuts["create_rectangle"],
             "objects",
             self.tr("Start drawing rectangles"),
@@ -418,7 +418,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         createCircleMode = action(
             self.tr("Create Circle"),
-            lambda: self.toggleDrawMode(False, createMode="circle"),
+            lambda: self.toggleDrawMode(False, createmode="circle"),
             shortcuts["create_circle"],
             "objects",
             self.tr("Start drawing circles"),
@@ -427,7 +427,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         createLineMode = action(
             self.tr("Create Line"),
-            lambda: self.toggleDrawMode(False, createMode="line"),
+            lambda: self.toggleDrawMode(False, createmode="line"),
             shortcuts["create_line"],
             "objects",
             self.tr("Start drawing lines"),
@@ -435,7 +435,7 @@ class MainWindow(QtWidgets.QMainWindow):
         )
         createPointMode = action(
             self.tr("Create Point"),
-            lambda: self.toggleDrawMode(False, createMode="point"),
+            lambda: self.toggleDrawMode(False, createmode="point"),
             shortcuts["create_point"],
             "objects",
             self.tr("Start drawing points"),
@@ -444,7 +444,7 @@ class MainWindow(QtWidgets.QMainWindow):
         """
         # createLineStripMode = action(
         #     self.tr("Create LineStrip"),
-        #     lambda: self.toggleDrawMode(False, createMode="linestrip"),
+        #     lambda: self.toggleDrawMode(False, createmode="linestrip"),
         #     shortcuts["create_linestrip"],
         #     "objects",
         #     self.tr("Start drawing linestrip. Ctrl+LeftClick ends creation."),

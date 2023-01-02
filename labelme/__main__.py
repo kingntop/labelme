@@ -21,7 +21,6 @@ from labelme.widgets.loginDlg import LoginDLG
 from labelme.widgets.pwdDlg import PwdDlgWin
 from labelme.utils import newLang
 from labelme.utils import appFont
-from labelme.utils.qt import LogPrint
 
 
 def main():
@@ -162,18 +161,15 @@ def main():
     output = config_from_args.pop("output")
     config_file_or_yaml = config_from_args.pop("config")
 
-    try:
-        o_app_version = get_app_origin_val(config_file_or_yaml, 'app_version')
-        if o_app_version is not None and o_app_version != "":
-            r_app_version = get_app_version()
-            if r_app_version != o_app_version:
-                copy_to_version()
-        elif o_app_version is None:
-            copy_to_version()
-        else:
-            pass
-    except Exception as e:
-        LogPrint("앱버젼확인에서 오류가 발생하였습니다.")
+    o_app_version = get_app_origin_val(config_file_or_yaml, 'app_version')
+    if o_app_version is not None and o_app_version != "":
+        r_app_version = get_app_version()
+        if r_app_version != o_app_version:
+            cody_to_version()
+    elif o_app_version is None:
+        copy_to_version()
+    else:
+        pass
 
     config = get_config(config_file_or_yaml, config_from_args)
     config['app_version'] = get_app_version()
@@ -215,13 +211,22 @@ def main():
         else:
             output_dir = output
 
+
+    config['app_version'] = get_app_version()
+
     local_lang = config["local_lang"] if config["local_lang"] is not None else QtCore.QLocale.system().name()
     # start get lang of UI
-    # 언어를 변경하지 않는다.
-    #config["local_lang"] = local_lang
-    config["local_lang"] = 'ko_KR'  # 고정시킨다.
+    config["local_lang"] = local_lang
+    #run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config)
 
-    run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config)
+
+    config["login_state"] = True
+    config["grade_yn"] = "N"
+    config["product_yn"] = "N"
+    config["label_yn"] = "N"
+    config["user_id"] = "grade_yn"
+    config["net"] = ""
+    run_mainApp(config, default_config_file, filename, output_file, output_dir, reset_config)
 
 def run_loginWin(config, default_config_file, filename, output_file, output_dir, reset_config):
     log_translator = QtCore.QTranslator()
@@ -241,8 +246,7 @@ def run_loginWin(config, default_config_file, filename, output_file, output_dir,
     config["net"] = ""
 
     login_win = LoginDLG(
-        config=config,
-        default_config_file=default_config_file,
+        config=config
     )
     login_win.show()
     ret = login_app.exec_()
@@ -259,9 +263,8 @@ def run_pwdWin(config, default_config_file, filename, output_file, output_dir, r
     lang = config["local_lang"]
     lang = str(lang).replace('.qm', '')
 
-    # 언어를 변경하지 않는다.
-    #appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
-    #appinfo_file.saveValue()
+    appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
+    appinfo_file.saveValue()
 
     pwd_translator = QtCore.QTranslator()
     mlang = newLang(lang)
@@ -289,10 +292,8 @@ def run_mainApp(config, default_config_file, filename, output_file, output_dir, 
     lang = str(lang).replace('.qm', '')
 
     # save new lang to labelme.spec //
-    orign_lang = get_app_origin_val(default_config_file, 'local_lang')
-    if orign_lang is None or orign_lang != lang:
-        appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
-        appinfo_file.saveValue()
+    appinfo_file = AppInfoFile(default_config_file, "local_lang", lang)
+    appinfo_file.saveValue()
     # // end save
 
     mlang = newLang(lang)

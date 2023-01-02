@@ -850,3 +850,5 @@
 [2022.11.25/19:01:29] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
 [2022.11.25/19:04:03] - 컴맨드 (net use z: /delete /yes) 실행되였습니다.
 [2022.12.18/10:59:08] - 컴맨드 (net use z: \\192.168.10.100\homes  "demo00" /user:root) 실행되였습니다.
+[2023.01.02/15:16:35] - 라벨추가중 'str' object has no attribute 'getRgb'
+[2023.01.02/15:16:41] - 라벨추가중 'str' object has no attribute 'getRgb'
