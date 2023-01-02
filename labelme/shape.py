@@ -256,7 +256,8 @@ class Shape(object):
             line = [self.points[i - 1], self.points[i]]
             line_dist = labelme.utils.distance(self.points[i - 1] - self.points[i])  #add this line ckd 12/18/2022
             dist = labelme.utils.distancetoline(point, line)
-            if line_dist > 0 and dist <= epsilon and dist < min_distance:  #add line_dist > 0 12/18/2022
+            #if dist <= epsilon and dist < min_distance:  #old
+            if line_dist > 0 and dist <= epsilon and dist < min_distance:  # add line_dist > 0 12/18/2022
                 min_distance = dist
                 post_i = i
         return post_i

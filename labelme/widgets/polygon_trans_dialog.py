@@ -144,7 +144,7 @@ class AppVersionDialog(QtWidgets.QDialog):
 
 
 class LoadingLabelProgress(QtWidgets.QWidget):
-    def __init__(self, parent=None, config=None, size=None):
+    def __init__(self, parent=None, config=None, size=None, splt=100):
         self._config = config
         self._isEnd = False
         self.step = 0
@@ -162,16 +162,18 @@ class LoadingLabelProgress(QtWidgets.QWidget):
         self.pbar = QtWidgets.QProgressBar(self)
         self.pbar.setMinimum(0)
         #self.pbar.setMaximum(self.size)
-        self.pbar.setMaximum(self.size)
+        self.pbar.setMaximum(100)
         self.pbar.setValue(0)
         self.pbar.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+        self.mdelta = 100 / (self.size / splt)
         hvox_layout = QtWidgets.QHBoxLayout()
         hvox_layout.addWidget(self.pbar)
         self.setLayout(hvox_layout)
 
     def doAction(self):
-        self.step = self.step + self.size / 100
-        if self.step < self.size:
+        self.step = self.step + self.mdelta
+        if self.step < 100:
             self.pbar.setValue(self.step)
 
     def closeEvent(self, event):

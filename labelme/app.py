@@ -57,8 +57,8 @@ from labelme.utils.qt import httpReq
 from labelme.widgets import DockInPutTitleBar
 from labelme.widgets import DockCheckBoxTitleBar
 from labelme.widgets import CustomListWidget
-from labelme.widgets import MyCustomWidget
 from labelme.widgets import CustomLabelListWidget
+from labelme.widgets import CustomLabelListWidgetItem
 from labelme.widgets import topToolWidget
 from labelme.widgets.pwdDlg import PwdDlg
 from labelme.widgets import labelme2coco
@@ -76,8 +76,6 @@ LABEL_COLORMAP = imgviz.label_colormap()
 # os.environ['HTTPS_PROXY'] = "https://127.0.0.1:3213"
 
 class MainWindow(QtWidgets.QMainWindow):
-    fileLoadedSignal = QtCore.Signal(list)
-    LoadShapesSignal = QtCore.Signal(list)
     FIT_WINDOW, FIT_WIDTH, MANUAL_ZOOM = 0, 1, 2
     selected_grade = None
     userInfo = {}
@@ -137,6 +135,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.dirty = False
         self._noSelectionSlot = False
         self._copied_shapes = None
+        self._itemList = []
 
         # Main widgets and related state.
         self.labelDialog = LabelSearchDialog(
@@ -160,7 +159,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.grades_dock.setWidget(self.grades_widget)
         #if self._config["grades"]:
         threading.Timer(0.3, self.gradeButtonEvent, args=(True,)).start()
-        self.fileLoadedSignal.connect(self.fileLoadedSignalHandle)
 
         # products part ckd
         self.selected_product = None
@@ -182,21 +180,22 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.polygonSearch = QtWidgets.QLineEdit()
         self.polygonSearch.setPlaceholderText(self.tr("Search label name"))
-        self.polygonSearch.textChanged.connect(self.polygonSearchChanged)
+        #self.polygonSearch.textChanged.connect(self.polygonSearchChanged)
         self.polygonSearch.returnPressed.connect(self.polygonReturnSearchChanged)
 
-        self.labelList = CustomLabelListWidget(self)
+        self.labelList = CustomLabelListWidget()
         self.lastOpenDir = None
         self.labelList.itemSelectionChanged.connect(self.labelSelectionChanged)
+        self.labelList.itemDoubleClicked.connect(self.editLabel)
+        self.labelList.itemChanged.connect(self.labelItemChanged)
+        self.labelList.itemDropped.connect(self.labelOrderChanged)
 
         polygonListLayout = QtWidgets.QVBoxLayout()
         polygonListLayout.setContentsMargins(0, 0, 0, 0)
         polygonListLayout.setSpacing(0)
         polygonListLayout.addWidget(self.polygonSearch)
         polygonListLayout.addWidget(self.labelList)
-        #self.labelList.itemChanged.connect(self.labelItemChanged)
-        #self.labelList.itemDoubleClicked.connect(self.editLabel)
-        #self.labelList.itemDropped.connect(self.labelOrderChanged)
+
         self.shape_dock = QtWidgets.QDockWidget(
             self.tr("Polygon Labels"), self
 
@@ -953,9 +952,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 # arg = self.subprocess.args
                 #print(subproc)
             except subprocess.CalledProcessError as e:
-                LogPrint("Error subprocess : %s" % e)
+                LogPrint("Net 드라이브에 접속중 : %s" % e)
             except Exception as e:
-                LogPrint("Error subprocess : %s" % e)
+                LogPrint("Net 드라이브에 접속중 : %s" % e)
             finally:
                 LogPrint("컴맨드 (%s) 실행되였습니다." % cmd)
 
@@ -969,9 +968,9 @@ class MainWindow(QtWidgets.QMainWindow):
                 subproc = subprocess.run(cmd, shell=True)
                 #print(subproc)
             except subprocess.CalledProcessError as e:
-                LogPrint("Error subprocess : %s" % e)
+                LogPrint("Net 드라이브 해체중 : %s" % e)
             except Exception as e:
-                LogPrint("Error subprocess : %s" % e)
+                LogPrint("Net 드라이브 해체중 : %s" % e)
             finally:
                 LogPrint("컴맨드 (%s) 실행되였습니다." % cmd)
 
@@ -1015,12 +1014,14 @@ class MainWindow(QtWidgets.QMainWindow):
     def toptoolbar(self, title, actions=None):
         toolbar = ToolBar(title)
         toolbar.setObjectName("%sToolBar" % title)
-        # toolbar.setOrientation(Qt.Vertical)
-        toolbar.setToolButtonStyle(Qt.ToolButtonIconOnly)
-        if actions:
-            utils.addActions(toolbar, actions)
-
-        #self.addToolBar(Qt.TopToolBarArea, toolbar)
+        try:
+            # toolbar.setOrientation(Qt.Vertical)
+            toolbar.setToolButtonStyle(Qt.ToolButtonIconOnly)
+            if actions:
+                utils.addActions(toolbar, actions)
+            #self.addToolBar(Qt.TopToolBarArea, toolbar)
+        except Exception as e:
+            LogPrint("Top 틀바액션중 : %s" % e)
         return toolbar
 
     # Support Functions
@@ -1069,19 +1070,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 label_file_without_path = osp.basename(label_file)
                 label_file = osp.join(self.output_dir, label_file_without_path)
             self.saveLabels(label_file)
-
-            # blen = len(self.canvas.shapesBackups) # add ckd 11/03
-            saveShapes = self.labelList.getShapes()
-            self.canvas.shapes = []
-            self.canvas.shapesBackups = []
-            self.loadShapes(saveShapes)
-            self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
-            # add ckd 11/03
-
-
             if label_file.find("meta") < 0:
                 label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file)
-
             # run coco format
             threading.Timer(0.005, self.putDownCocoFormat, [label_file]).start()
             return
@@ -1131,11 +1121,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def resetState(self):
         self.labelList.clear()  # this block now when polygon list is deleted
-         # update polygon count ckd
+        # update polygon count ckd
         prodT = "Polygon Labels (Total %s)"
         if self._config["local_lang"] == "ko_KR":
             prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % len(self.labelList))
 
         self.filename = None
         self.imagePath = None
@@ -1151,7 +1141,7 @@ class MainWindow(QtWidgets.QMainWindow):
         prodT = "Polygon Labels (Total %s)"
         if self._config["local_lang"] == "ko_KR":
             prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % len(self.labelList))
         self.labelFile = None
         self.otherData = None
         self.canvas.shapes = []
@@ -1165,40 +1155,47 @@ class MainWindow(QtWidgets.QMainWindow):
                 action.setEnabled(False)
 
     def currentItem(self):
-        items = self.labelList.selectedItems()
-        if items:
-            return items[0]
+        try:
+            items = self.labelList.selectedItems()
+            if items:
+                return items[0]
+        except Exception as e:
+            LogPrint("선택한 아이템 %s" % e)
         return None
 
     def addRecentFile(self, filename):
-        if osp.splitext(filename)[1] == ".json":  # don't save json file
-            return
-        if filename in self.recentFiles:
-            self.recentFiles.remove(filename)
-        elif len(self.recentFiles) >= self.maxRecent:
-            self.recentFiles.pop()
-        self.recentFiles.insert(0, filename)
+        try:
+            if osp.splitext(filename)[1] == ".json":  # don't save json file
+                return
+            if filename in self.recentFiles:
+                self.recentFiles.remove(filename)
+            elif len(self.recentFiles) >= self.maxRecent:
+                self.recentFiles.pop()
+            self.recentFiles.insert(0, filename)
+        except Exception as e:
+            LogPrint("최신 파일 추가중 : %s" % e)
+            pass
 
     # Callbacks
 
     def undoShapeEdit(self):
-        self.canvas.restoreShape()
-        self.labelList.clear()
-        self.labelList._itemList.clear()
-        self.labelList._initLoading = True
-        self._noSelectionSlot = True
-        for shape in self.canvas.shapes:
-            self.addLabel(shape, True)
-        self._noSelectionSlot = False
-        self.labelList.clearSelection()
-        self.labelList._initLoading = False
-        self.loadShapes(self.canvas.shapes)
-        self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
-        #self.setDirty()  # add 11.02.2022
+        try:
+            self.canvas.restoreShape()
+            self.labelList.clear()
+            self.loadShapes(self.canvas.shapes)
+            self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+            #self.setDirty()  # add 11.02.2022
+        except Exception as e:
+            LogPrint("undoShapeEdit 실행중 %s" % e)
+            pass
 
     def tutorial(self):
-        url = self._config["api_url"] + 'ords/r/lm/lm'  # NOQA
-        webbrowser.open(url)
+        try:
+            url = self._config["api_url"] + 'ords/r/lm/lm'  # NOQA
+            webbrowser.open(url)
+        except Exception as e:
+            LogPrint("웹브라우져열기중 %s" % e)
+            pass
 
     def changePasswordAction(self):
         status = self._pwdDlg.popUpDlg()
@@ -1215,69 +1212,73 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.undo.setEnabled(not drawing)
         self.actions.delete.setEnabled(not drawing)
 
-    def toggleDrawMode(self, edit=True, createMode="polygon"):
-        self.canvas.setEditing(edit)
-        self.canvas.createMode = createMode
-        if edit:
-            self.actions.createMode.setEnabled(True)
-            self.actions.createRectangleMode.setEnabled(True)
-            self.actions.createCircleMode.setEnabled(True)
-            #self.actions.createLineMode.setEnabled(True)
-            #self.actions.createPointMode.setEnabled(True)
-            #self.actions.createLineStripMode.setEnabled(True)
-            self.topToolWidget.editmodeClick(True)
-        else:
-            if createMode == "polygon":
-                self.actions.createMode.setEnabled(False)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                #self.actions.createLineMode.setEnabled(True)
-                #self.actions.createPointMode.setEnabled(True)
-                # self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "rectangle":
+    def toggleDrawMode(self, edit=True, createmode="polygon"):
+        try:
+            self.canvas.setEditing(edit)
+            self.canvas.createMode = createmode
+            if edit:
                 self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(False)
+                self.actions.createRectangleMode.setEnabled(True)
                 self.actions.createCircleMode.setEnabled(True)
                 #self.actions.createLineMode.setEnabled(True)
                 #self.actions.createPointMode.setEnabled(True)
                 #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "line":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                #self.actions.createLineMode.setEnabled(False)
-                #self.actions.createPointMode.setEnabled(True)
-                #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "point":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                #self.actions.createLineMode.setEnabled(True)
-                #self.actions.createPointMode.setEnabled(False)
-                #self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "circle":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(False)
-                #self.actions.createLineMode.setEnabled(True)
-                #self.actions.createPointMode.setEnabled(True)
-                # self.actions.createLineStripMode.setEnabled(True)
-                self.topToolWidget.eventFromMenu(createMode)
-            elif createMode == "linestrip":
-                self.actions.createMode.setEnabled(True)
-                self.actions.createRectangleMode.setEnabled(True)
-                self.actions.createCircleMode.setEnabled(True)
-                #self.actions.createLineMode.setEnabled(True)
-                #self.actions.createPointMode.setEnabled(True)
-                #self.actions.createLineStripMode.setEnabled(False)
-                self.topToolWidget.eventFromMenu(createMode)
+                self.topToolWidget.editmodeClick(True)
             else:
-                raise ValueError("Unsupported createMode: %s" % createMode)
-        self.actions.editMode.setEnabled(not edit)
+                if createmode == "polygon":
+                    self.actions.createMode.setEnabled(False)
+                    self.actions.createRectangleMode.setEnabled(True)
+                    self.actions.createCircleMode.setEnabled(True)
+                    #self.actions.createLineMode.setEnabled(True)
+                    #self.actions.createPointMode.setEnabled(True)
+                    # self.actions.createLineStripMode.setEnabled(True)
+                    self.topToolWidget.eventFromMenu(createmode)
+                elif createmode == "rectangle":
+                    self.actions.createMode.setEnabled(True)
+                    self.actions.createRectangleMode.setEnabled(False)
+                    self.actions.createCircleMode.setEnabled(True)
+                    #self.actions.createLineMode.setEnabled(True)
+                    #self.actions.createPointMode.setEnabled(True)
+                    #self.actions.createLineStripMode.setEnabled(True)
+                    self.topToolWidget.eventFromMenu(createmode)
+                elif createmode == "line":
+                    self.actions.createMode.setEnabled(True)
+                    self.actions.createRectangleMode.setEnabled(True)
+                    self.actions.createCircleMode.setEnabled(True)
+                    #self.actions.createLineMode.setEnabled(False)
+                    #self.actions.createPointMode.setEnabled(True)
+                    #self.actions.createLineStripMode.setEnabled(True)
+                    self.topToolWidget.eventFromMenu(createmode)
+                elif createmode == "point":
+                    self.actions.createMode.setEnabled(True)
+                    self.actions.createRectangleMode.setEnabled(True)
+                    self.actions.createCircleMode.setEnabled(True)
+                    #self.actions.createLineMode.setEnabled(True)
+                    #self.actions.createPointMode.setEnabled(False)
+                    #self.actions.createLineStripMode.setEnabled(True)
+                    self.topToolWidget.eventFromMenu(createmode)
+                elif createmode == "circle":
+                    self.actions.createMode.setEnabled(True)
+                    self.actions.createRectangleMode.setEnabled(True)
+                    self.actions.createCircleMode.setEnabled(False)
+                    #self.actions.createLineMode.setEnabled(True)
+                    #self.actions.createPointMode.setEnabled(True)
+                    # self.actions.createLineStripMode.setEnabled(True)
+                    self.topToolWidget.eventFromMenu(createmode)
+                elif createmode == "linestrip":
+                    self.actions.createMode.setEnabled(True)
+                    self.actions.createRectangleMode.setEnabled(True)
+                    self.actions.createCircleMode.setEnabled(True)
+                    #self.actions.createLineMode.setEnabled(True)
+                    #self.actions.createPointMode.setEnabled(True)
+                    #self.actions.createLineStripMode.setEnabled(False)
+                    self.topToolWidget.eventFromMenu(createmode)
+                else:
+                    raise ValueError("Unsupported createMode: %s" % createmode)
+            self.actions.editMode.setEnabled(not edit)
+        except Exception as e:
+            LogPrint("도글모드 전환중 %s" % e)
+            pass
 
     def setEditMode(self):
         self.toggleDrawMode(True)
@@ -1310,139 +1311,121 @@ class MainWindow(QtWidgets.QMainWindow):
         return False
 
     def editLabels(self):
-        if len(self._polyonList) < 1:
-            return self.errorMessage(self.tr("Wrong Empty label"),
-                                     self.tr("please select one grade for label in Grade list"))
-        if not self.canvas.editing():
-            return
+        try:
+            if len(self._polyonList) < 1:
+                return self.errorMessage(self.tr("Wrong Empty label"),
+                                         self.tr("please select one grade for label in Grade list"))
+            if not self.canvas.editing():
+                return
 
-        polyitems = copy.deepcopy(self._polyonList)
+            f_item = self.labelList.selectedItems()[0]
+            if f_item and not isinstance(f_item, CustomLabelListWidgetItem):
+                LogPrint("item must be CustomLabelListWidgetItem type")
+                raise TypeError("item must be CustomLabelListWidgetItem type")
+            f_shape = f_item.shape()
+            if f_shape is None:
+                return
+            old_color = f_shape.color
+            assert isinstance(old_color, QtGui.QColor)
 
-        f_item = self.labelList.selectedItems()[0]
-        f_shape = None
-        if isinstance(f_item, QListWidgetItem):
-            f_shape_item = self.labelList.itemWidget(f_item)
-            if f_shape_item:
-                f_shape = f_shape_item._shape
+            polyitems = copy.deepcopy(self._polyonList)
+            ritem = self.labelDialog.popUpLabelDlg(polyitems, f_shape, "edit")
+            if ritem is None:
+                return
+            if not self.validateLabel(ritem["label"]):
+                self.errorMessage(
+                    self.tr("Invalid label"),
+                    self.tr("Invalid label '{}' with validation type '{}'").format(
+                        ritem["label"], self._config["validate_label"]
+                    ),
+                )
+                return
 
-        if f_shape is None:
-            return
+            for item in self.labelList.selectedItems():
+                if not isinstance(item, CustomLabelListWidgetItem):
+                    raise TypeError("item must be CustomLabelListWidgetItem type")
+                shape = item.shape()
+                shape.label = ritem["label"]
+                shape.label_display = ritem["label_display"]
+                shape.grade = ritem["grade"]
+                shape.color = ritem["color"]
 
-        old_color = f_shape.color
-        assert isinstance(old_color, QtGui.QColor)
+                old_a = old_color.alpha()
+                sc = shape.color if shape.color else "#808000"
+                Qc = QtGui.QColor(sc)
+                r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
+                shape.color = QtGui.QColor(r, g, b, old_a)
+                self._update_shape_color(shape)
+                item.setText(
+                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
+                        *shape.color.getRgb()[:3], html.escape(shape.label_display)
+                    )
+                )
 
-        ritem = self.labelDialog.popUpLabelDlg(polyitems, f_shape, "edit")
-        if ritem is None:
-            return
-        if not self.validateLabel(ritem["label"]):
-            self.errorMessage(
-                self.tr("Invalid label"),
-                self.tr("Invalid label '{}' with validation type '{}'").format(
-                    ritem["label"], self._config["validate_label"]
-                ),
-            )
-            return
-
-        label = ritem["label"]
-        label_display = ritem["label_display"]
-        grade = ritem["grade"]
-        color = ritem["color"]
-
-
-        for item in self.labelList.selectedItems():
-            if isinstance(item, QListWidgetItem):
-                shape_item = self.labelList.itemWidget(item)
-                if shape_item:
-                    shape = shape_item._shape
-                    if shape is None:
-                        continue
-                    shape.label = label
-                    shape.label_display = label_display
-                    shape.grade = grade
-                    #shape.color = color
-                    old_a = old_color.alpha()
-
-                    sc = color if color else "#808000"
-                    Qc = QtGui.QColor(sc)
-                    r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
-                    shape.color = QtGui.QColor(r, g, b, old_a)
-
-                    self._update_shape_color(shape)
-                    if shape_item:
-                        if shape_item.label:
-                            shape_item.label.setText("#{}  {}".format(shape_item._id, shape.label_display))
-                            cls_txt = shape.color.name(QtGui.QColor.HexRgb)
-                            shape_item.clrlabel.setStyleSheet(
-                                "QLabel{border: 1px soild #aaa; background: %s;}" % cls_txt)
-
-        self.setDirty()
+            self.setDirty()
+        except Exception as e:
+            LogPrint("멀티라벨 변경중 %s" % e)
+            pass
 
 
     def editLabel(self, item=None):
+
         if len(self.labelList.selectedItems()) > 1:
             self.editLabels()
             return
+        try:
+            if item and not isinstance(item, CustomLabelListWidgetItem):
+                raise TypeError("item must be CustomLabelListWidgetItem type")
 
-        if item and not isinstance(item, CustomLabelListWidget):
-            raise TypeError("item must be CustomLabelListWidget type")
+            if not self.canvas.editing():
+                return
+            if not item:
+                item = self.currentItem()
+            if item is None:
+                return
 
-        if len(self._polyonList) < 1:
-            return self.errorMessage(self.tr("Wrong Empty label"),
-                                     self.tr("please select one grade for label in Grade list"))
+            shape = item.shape()
+            if shape is None:
+                return
+            old_color = shape.color
+            assert isinstance(old_color, QtGui.QColor)
 
-        if not self.canvas.editing():
-            return
-        if not item:
-            item = self.currentItem()
-        if item is None:
-            return
-        shape = None
-        shape_item = None
-        if isinstance(item, QListWidgetItem):
-            shape_item = self.labelList.itemWidget(item)
-            if shape_item:
-                shape = shape_item._shape
-        if shape is None:
-            return
-        old_color = shape.color
-        assert isinstance(old_color, QtGui.QColor)
+            polyitems = copy.deepcopy(self._polyonList)
+            ritem = self.labelDialog.popUpLabelDlg(polyitems, shape, "edit")
+            if ritem is None:
+                return
+            if not self.validateLabel(ritem["label"]):
+                self.errorMessage(
+                    self.tr("Invalid label"),
+                    self.tr("Invalid label '{}' with validation type '{}'").format(
+                        ritem["label"], self._config["validate_label"]
+                    ),
+                )
+                return
 
-        polyitems = copy.deepcopy(self._polyonList)
-        ritem = self.labelDialog.popUpLabelDlg(polyitems, shape, "edit")
-        if ritem is None:
-            return
-        if not self.validateLabel(ritem["label"]):
-            self.errorMessage(
-                self.tr("Invalid label"),
-                self.tr("Invalid label '{}' with validation type '{}'").format(
-                    ritem["label"], self._config["validate_label"]
-                ),
+            shape.label = ritem["label"]
+            shape.label_display = ritem["label_display"]
+            shape.grade = ritem["grade"]
+            shape.color = ritem["color"]
+
+            old_a = old_color.alpha()
+            sc = shape.color if shape.color else "#808000"
+            Qc = QtGui.QColor(sc)
+            r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
+            shape.color = QtGui.QColor(r, g, b, old_a)
+            self._update_shape_color(shape)
+
+            # update label
+            item.setText(
+                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
+                    *shape.color.getRgb()[:3], html.escape(shape.label_display)
+                )
             )
-            return
 
-        shape.label = ritem["label"]
-        shape.label_display = ritem["label_display"]
-        shape.grade = ritem["grade"]
-        shape.color = ritem["color"]
-
-        old_a = old_color.alpha()
-
-        sc = shape.color if shape.color else "#808000"
-        Qc = QtGui.QColor(sc)
-        r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
-        shape.color = QtGui.QColor(r, g, b, old_a)
-
-        self._update_shape_color(shape)
-        # update label
-        if shape_item:
-            if shape_item.label:
-                shape_item.label.setText("#{}  {}".format(shape_item._id, shape.label_display))
-                cls_txt = shape.color.name(QtGui.QColor.HexRgb)
-                shape_item.clrlabel.setStyleSheet(
-                    "QLabel{border: 1px soild #aaa; background: %s;}" % cls_txt)
-
-
-        self.setDirty()
+            self.setDirty()
+        except Exception as e:
+            LogPrint("라벨 변경중 %s" % e)
+            pass
 
     def fileSearchChanged(self):
         self.importDirImages(
@@ -1452,227 +1435,268 @@ class MainWindow(QtWidgets.QMainWindow):
         )
 
     def polygonReturnSearchChanged(self):
-        pattern = self.polygonSearch.text()
-        polygonitems = self.labelList._itemList
-        grade = None
-        label = None
-        self.labelList.clear()
-        for item in polygonitems:
-            if isinstance(item, MyCustomWidget):
-                if item and item._shape:
-                    grade = item._shape.grade
-                    label = item._shape.label
-            if pattern and pattern not in grade and pattern not in label:
-                continue
+        try:
+            pattern = self.polygonSearch.text()
+            temp_items = self._itemList
+            self.labelList.clear()
+            for shape in temp_items:
+                grade = shape.grade
+                label = shape.label
+                if pattern and pattern not in grade and pattern not in label:
+                    continue
 
-            self.labelList.addShape(item._shape)
+                if shape.label_display is None:
+                    text = shape.label
+                else:
+                    text = shape.label_display
 
-        prodT = "Polygon Labels (Total {})".format(self.labelList.count())
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 {})".format(self.labelList.count())
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
+                list_item = CustomLabelListWidgetItem(text, shape)
+                self.labelList.addItem(list_item)
+                list_item.setText(
+                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
+                        *shape.color.getRgb()[:3], html.escape(text)
+                    )
+                )
 
-    def polygonSearchChanged_org(self):
-        pattern = self.polygonSearch.text()
-        polygonitems = self.labelList._itemList
-        grade = None
-        label = None
-        self.labelList.clear()
-        for item in polygonitems:
-            if isinstance(item, MyCustomWidget):
-                if item and item._shape:
-                    grade = item._shape.grade
-                    label = item._shape.label
-            if pattern and pattern not in grade and pattern not in label:
-                continue
+            prodT = "Polygon Labels (Total {})".format(self.labelList.__len__())
+            if self._config["local_lang"] == "ko_KR":
+                prodT = "다각형 레이블 (총 {})".format(self.labelList.__len__())
+            self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
+        except Exception as e:
+            LogPrint("라벨검색중 %s" % e)
+            pass
 
-            self.labelList.addShape(item._shape)
 
-    def polygonSearchChanged(self):
+    def polygonSearchChanged_No(self):
         pattern = self.polygonSearch.text()
         pattern = pattern.strip()
         if len(pattern) > 0:
             return
-        polygonitems = self.labelList._itemList
+
         grade = None
         label = None
         self.labelList.clear()
-        for item in polygonitems:
-            if isinstance(item, MyCustomWidget):
-                if item and item._shape:
-                    grade = item._shape.grade
-                    label = item._shape.label
+        for item in self._itemList:
+            if isinstance(item, CustomLabelListWidgetItem):
+                shape = item.shape()
+                if shape:
+                    grade = shape.grade
+                    label = shape.label
             if pattern and pattern not in grade and pattern not in label:
                 continue
 
-            self.labelList.addShape(item._shape)
+            self.labelList.addItem(item)
+            item.setText(
+                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
+                    *shape.color.getRgb()[:3], html.escape(text)
+                )
+            )
 
-        prodT = "Polygon Labels (Total {})".format(self.labelList.count())
+        prodT = "Polygon Labels (Total {})".format(self.labelList.__len__())
         if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 {})".format(self.labelList.count())
+            prodT = "다각형 레이블 (총 {})".format(self.labelList.__len__())
         self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
 
     # no using
     def productsSelectionChanged(self):
-        items = self.products_widget.selectedItems()
-        if not items:
-            return
-        item = items[0]
-        #print(str(item.text()))
-        self.selected_product = item.text()
+        try:
+            items = self.products_widget.selectedItems()
+            if not items:
+                return
+            item = items[0]
+            #print(str(item.text()))
+            self.selected_product = item.text()
+        except Exception as e:
+            LogPrint("품명 선택 변경중 %s" % e)
+            pass
 
     def fileSelectionChanged(self):
-        items = self.fileListWidget.selectedItems()
-        if not items:
-            return
-        item = items[0]
+        try:
+            items = self.fileListWidget.selectedItems()
+            if not items:
+                return
+            item = items[0]
 
-        if not self.mayContinue():
-            return
+            if not self.mayContinue():
+                return
 
-        currIndex = self.imageList.index(str(item.text()))
-        if currIndex < len(self.imageList):
-            filename = self.imageList[currIndex]
-            if filename:
-                self.loadFile(filename)
+            currIndex = self.imageList.index(str(item.text()))
+            if currIndex < len(self.imageList):
+                filename = self.imageList[currIndex]
+                if filename:
+                    self.loadFile(filename)
+        except Exception as e:
+            LogPrint("선택한 파일로딩중 %s" % e)
+            pass
 
     # React to canvas signals.
     def shapeSelectionChanged(self, selected_shapes):
-        self._noSelectionSlot = True
-        for shape in self.canvas.selectedShapes:
-            shape.selected = False
-        self.labelList.clearSelection()
-        self.canvas.selectedShapes = selected_shapes
-        for shape in self.canvas.selectedShapes:
-            shape.selected = True
-            item = self.labelList.findItemByShape(shape)
-            if item:
-                self.labelList.selectItem(item)
-                self.labelList.scrollTooItem(item)
-        self._noSelectionSlot = False
-        n_selected = len(selected_shapes)
-        self.actions.delete.setEnabled(n_selected)
-        self.actions.duplicate.setEnabled(n_selected)
-        self.actions.copy.setEnabled(n_selected)
-        # self.actions.edit.setEnabled(n_selected == 1) # edit for single
-        self.actions.edit.setEnabled(n_selected)  # add ckd 9/7/2022
+        try:
+            self._noSelectionSlot = True
+            for shape in self.canvas.selectedShapes:
+                shape.selected = False
+            self.labelList.clearSelection()
+            self.canvas.selectedShapes = selected_shapes
+            for shape in self.canvas.selectedShapes:
+                shape.selected = True
+                item = self.labelList.findItemByShape(shape)
+                if item:
+                    self.labelList.selectItem(item)
+                    self.labelList.scrollToItem(item)
 
-    def addLabel_(self, shape, fileloading=False):
-        ##Add polygon list 파일로딩때에만 호출됨
-        listitem = QListWidgetItem(self.labelList)
-        self.labelList.addItem(listitem)
-        row = MyCustomWidget(shape, self.labelList)
-        listitem.setSizeHint(row.minimumSizeHint())
-        self.labelList.setItemWidget(listitem, row)
+            self._noSelectionSlot = False
+            n_selected = len(selected_shapes)
+            self.actions.delete.setEnabled(n_selected)
+            self.actions.duplicate.setEnabled(n_selected)
+            self.actions.copy.setEnabled(n_selected)
+            # self.actions.edit.setEnabled(n_selected == 1) # edit for single
+            self.actions.edit.setEnabled(n_selected)  # add ckd 9/7/2022
+        except Exception as e:
+            LogPrint("선택한 shape 변경중 %s" % e)
+            pass
 
-        if fileloading is True:
-            self.labelList._itemList.append(row)
-        else:
-            fnd = False
-            for i in range(len(self.labelList._itemList)):
-                itm = self.labelList._itemList[i]
-                if isinstance(itm, MyCustomWidget):
-                    if row._shape == itm._shape:
-                        fnd = True
-                        break
+    def addLabel(self, shape):
+        try:
+            if shape.label_display is None:
+                text = shape.label
+            else:
+                text = shape.label_display
 
-            if fnd is False:
-                self.labelList._itemList.append(row)
+            list_item = CustomLabelListWidgetItem(text, shape)
+            self.labelList.addItem(list_item)
+            self._itemList.append(shape)
 
-        self.labelDialog.addLabelHistory(shape)
-        for action in self.actions.onShapesPresent:
-            action.setEnabled(True)
+            self.labelDialog.addLabelHistory(shape)
+            for action in self.actions.onShapesPresent:
+                action.setEnabled(True)
 
-        if fileloading is False:
+            list_item.setText(
+                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
+                    *shape.color.getRgb()[:3], html.escape(text)
+                )
+            )
+
             prodT = "Polygon Labels (Total %s)"
             if self._config["local_lang"] == "ko_KR":
                 prodT = "다각형 레이블 (총 %s)"
-            self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
-
-        #self._update_shape_color(shape) 이부분에선 불필요
-
-    def addLabel(self, shape, color):
-        # Add polygon list 파일로딩때에만 호출됨
-        self.labelList.addShape(shape)
-        self.labelDialog.addLabelHistory(shape)
-        for action in self.actions.onShapesPresent:
-            action.setEnabled(True)
-
-        # # update polygon count ckd
-        prodT = "Polygon Labels (Total {})".format(self.labelList.count())
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 {})".format(self.labelList.count())
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
-        #self.shape_dock.titleBarWidget().titleLabel.sizeHint()
-        if color is True:
-            self._update_shape_color(shape)
+            self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.__len__())
+            #self._update_shape_color(shape) 이부분에선 불필요
+        except Exception as e:
+            LogPrint("라벨추가중 %s" % e)
+            pass
 
 
     def _update_shape_color(self, shape):
-        if shape.color:
-            if isinstance(shape.color, QtGui.QColor):
-                Qc = shape.color
+        try:
+            if shape.color:
+                if isinstance(shape.color, QtGui.QColor):
+                    Qc = shape.color
+                else:
+                    Qc = QtGui.QColor(shape.color)
             else:
-                Qc = QtGui.QColor(shape.color)
-        else:
-            Qc = QtGui.QColor("#808000")
+                Qc = QtGui.QColor("#808000")
 
-        r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
-        sa = a if a < self.polygonTrans_deta_value else self.polygonTrans_deta_value
-        shape.color = QtGui.QColor(r, g, b, sa)
-        la = int(sa * 255 / 128)
-        shape.line_color = QtGui.QColor(r, g, b, la)
-        shape.vertex_fill_color = QtGui.QColor(r, g, b, a)
-        shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
-        shape.fill_color = QtGui.QColor(r, g, b, a)  # a=128
-        shape.select_line_color = QtGui.QColor(255, 255, 255, a + 80)
-        shape.select_fill_color = QtGui.QColor(r, g, b, a + 27)  # a = 155
-        shape.lineweight = self.lineweight_value
+            r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
+            sa = a if a < self.polygonTrans_deta_value else self.polygonTrans_deta_value
+            shape.color = QtGui.QColor(r, g, b, sa)
+            la = int(sa * 255 / 128)
+            shape.line_color = QtGui.QColor(r, g, b, la)
+            shape.vertex_fill_color = QtGui.QColor(r, g, b, a)
+            shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
+            shape.fill_color = QtGui.QColor(r, g, b, a)  # a=128
+            shape.select_line_color = QtGui.QColor(255, 255, 255, a + 80)
+            shape.select_fill_color = QtGui.QColor(r, g, b, a + 27)  # a = 155
+            shape.lineweight = self.lineweight_value
+        except Exception as e:
+            LogPrint("shape 색깔 변경중 %s" % e)
+            pass
 
     def _get_rgb_by_label(self, label):
-        if self._config["shape_color"] == "auto":
-            item = self.uniqLabelList.findItemsByLabel(label)[0]
-            label_id = self.uniqLabelList.indexFromItem(item).row() + 1
-            label_id += self._config["shift_auto_shape_color"]
-            return LABEL_COLORMAP[label_id % len(LABEL_COLORMAP)]
-        elif (
-            self._config["shape_color"] == "manual"
-            and self._config["label_colors"]
-            and label in self._config["label_colors"]
-        ):
-            return self._config["label_colors"][label]
-        elif self._config["default_shape_color"]:
-            return self._config["default_shape_color"]
-        return (0, 255, 0)
+        try:
+            if self._config["shape_color"] == "auto":
+                item = self.uniqLabelList.findItemsByLabel(label)[0]
+                label_id = self.uniqLabelList.indexFromItem(item).row() + 1
+                label_id += self._config["shift_auto_shape_color"]
+                return LABEL_COLORMAP[label_id % len(LABEL_COLORMAP)]
+            elif (
+                self._config["shape_color"] == "manual"
+                and self._config["label_colors"]
+                and label in self._config["label_colors"]
+            ):
+                return self._config["label_colors"][label]
+            elif self._config["default_shape_color"]:
+                return self._config["default_shape_color"]
+            return (0, 255, 0)
+        except Exception as e:
+            LogPrint("shape 색설정 얻는중 %s" % e)
+        return (0, 0, 0)
 
     def remLabels(self, shapes):
-        for shape in shapes:
-            item = self.labelList.findItemByShape(shape)
-            if item:
-                self.labelList.removeItem(item)
-        self.labelList.reSort()
+        try:
+            for shape in shapes:
+                item = self.labelList.findItemByShape(shape)
+                if item:
+                    self.labelList.removeItem(item)
+                    """
+                    for i in range(len(self._itemList)):
+                        itm_shape = self._itemList[i]
+                        if itm_shape == shape:
+                            del self._itemList[i]
+                            break
+                    """
+            threading.Timer(0.005, self.removeitemListShapesWithThread, [shapes]).start()
+        except Exception as e:
+            LogPrint("라벨리스트에서 삭제중 %s" % e)
 
+
+    def removeitemListShapesWithThread(self, shapes):
+        try:
+            for shape in shapes:
+                for i in range(len(self._itemList)):
+                    itm_shape = self._itemList[i]
+                    if itm_shape == shape:
+                        del self._itemList[i]
+                        break
+        except Exception as e:
+            LogPrint("아이템 리스트에서 아이템삭제중 : %s" % e)
+            pass
 
     def loadShapes(self, shapes, replace=True):
-        # for shape in shapes:
-        #     self.addLabel(shape)
-        # self.labelList.clearSelection()
-        # self._noSelectionSlot = False
-        self.canvas.loadShapes(shapes, replace=replace)
+        try:
+            self._noSelectionSlot = True
 
-    def loadShapes_(self, shapes, replace=True):
-        self._noSelectionSlot = True
-        for shape in shapes:
-            self.addLabel(shape)
-        # update polygon count ckd
-        prodT = "Polygon Labels (Total %s)"
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
+            for shape in shapes:
+                self.addLabel(shape)
 
-        self.labelList.clearSelection()
-        self._noSelectionSlot = False
-        self.canvas.loadShapes(shapes, replace=replace)
+            self.labelList.clearSelection()
+            self._noSelectionSlot = False
+            self.canvas.loadShapes(shapes, replace=replace)
+        except Exception as e:
+            LogPrint("shape 오브젝트들을 로딩중 : %s" % e)
+            pass
+
+        ##threading.Timer(0.005, self.addLabelWithThread, [shapes]).start()
+
+    def addLabelWithThread(self, shapes):
+        splt = 500
+        slen = len(shapes) / splt
+        if slen > 2:
+            self.loadingLabelDlg = LoadingLabelProgress(parent=self, config=self._config, size=len(shapes), splt=splt)
+            self.loadingLabelDlg.show()
+            i = 0
+            for shape in shapes:
+                self.addLabel(shape)
+                if i < splt:
+                    i = i + 1
+                else:
+                    self.loadingLabelDlg.doAction()
+                    time.sleep(0.001)
+                    i = 0
+            self.loadingLabelDlg._isEnd = True
+            self.loadingLabelDlg.close()
+        else:
+            for shape in shapes:
+                self.addLabel(shape)
 
     def loadLabels(self, shapes):
         s = []
@@ -1682,11 +1706,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 grade = shape["grade"]
             except AttributeError:
                 grade = shape["label"]
+                LogPrint("shape 에 grade 속성이 없습니다")
 
             try:
                 label_display = shape["label_display"]
             except AttributeError:
                 label_display = shape["label"]
+                LogPrint("shape 에 label 속성이 없습니다")
 
             label = shape["label"]
             color = shape["color"]
@@ -1713,56 +1739,71 @@ class MainWindow(QtWidgets.QMainWindow):
                 # skip point-empty shape
                 continue
 
-            shape = Shape(
-                self,
-                grade=grade,
-                label=label,
-                label_display=label_display,
-                color=color if color else "#808000",
-                lineweight=lineweight,
-                shape_type=shape_type,
-                group_id=group_id,
-            )
-            for x, y in points:
-                shape.addPoint(QtCore.QPointF(x, y))
-            shape.close()
+            try:
+                shape = Shape(
+                    self,
+                    grade=grade,
+                    label=label,
+                    label_display=label_display,
+                    color=color if color else "#808000",
+                    lineweight=lineweight,
+                    shape_type=shape_type,
+                    group_id=group_id,
+                )
+                for x, y in points:
+                    shape.addPoint(QtCore.QPointF(x, y))
+                shape.close()
+                shape.other_data = other_data
+            except Exception as e:
+                LogPrint("shape 생성중 %s" % e)
 
-            shape.other_data = other_data
             s.append(shape)
         self.loadShapes(s)
 
     def loadGrades(self, items):
-        self.grades_widget.clear()
-        for i in range(len(items)):
-            itm = items[i]
-            item = QtWidgets.QListWidgetItem(itm["grade"])
-            # item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            # item.setCheckState(Qt.Checked if flag else Qt.Unchecked)
-            self.grades_widget.addItem(item)
+        try:
+            self.grades_widget.clear()
+            for i in range(len(items)):
+                itm = items[i]
+                item = QtWidgets.QListWidgetItem(itm["grade"])
+                # item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+                # item.setCheckState(Qt.Checked if flag else Qt.Unchecked)
+                self.grades_widget.addItem(item)
+        except Exception as e:
+            LogPrint("grade 로딩중 %s" % e)
+            pass
 
     def loadProducts(self, items):
-        self.products_widget.clear()
-        for i in range(len(items)):
-            itm = items[i]
-            item = QtWidgets.QListWidgetItem(itm["product"])
-            item.setFont(appFont())
-            # item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
-            # item.setCheckState(Qt.Checked if flag else Qt.Unchecked)
-            self.products_widget.addItem(item)
-        if self._config["local_lang"] == "ko_KR":
-            self.products_title_bar.titleLabel.setText("대표 품목 (총 %s)" % self.products_widget.__len__())
-        else:
-            self.products_title_bar.titleLabel.setText("Products (Total %s)" % self.products_widget.__len__())
+        try:
+            self.products_widget.clear()
+            for i in range(len(items)):
+                itm = items[i]
+                item = QtWidgets.QListWidgetItem(itm["product"])
+                item.setFont(appFont())
+                # item.setFlags(item.flags() | Qt.ItemIsUserCheckable)
+                # item.setCheckState(Qt.Checked if flag else Qt.Unchecked)
+                self.products_widget.addItem(item)
+            if self._config["local_lang"] == "ko_KR":
+                self.products_title_bar.titleLabel.setText("대표 품목 (총 %s)" % self.products_widget.__len__())
+            else:
+                self.products_title_bar.titleLabel.setText("Products (Total %s)" % self.products_widget.__len__())
+        except Exception as e:
+            LogPrint("대표품목 로딩중: %s" %e)
+            pass
 
 
     def addProduct(self, new_str):
-        item = QtWidgets.QListWidgetItem(new_str)
-        item.setFont(appFont())
-        self.products_widget.insertItem(0, item)
-        if self._config["local_lang"] == "ko_KR":
-            self.products_title_bar.titleLabel.setText("대표 품목 (총 %s)" % self.products_widget.__len__())
-        else:
-            self.products_title_bar.titleLabel.setText("Products (Total %s)" % self.products_widget.__len__())
+        try:
+            item = QtWidgets.QListWidgetItem(new_str)
+            item.setFont(appFont())
+            self.products_widget.insertItem(0, item)
+            if self._config["local_lang"] == "ko_KR":
+                self.products_title_bar.titleLabel.setText("대표 품목 (총 %s)" % self.products_widget.__len__())
+            else:
+                self.products_title_bar.titleLabel.setText("Products (Total %s)" % self.products_widget.__len__())
+        except Exception as e:
+            LogPrint("대표품목 추가중 %s" % e)
+            pass
 
 
     def saveLabels(self, filename):
@@ -1796,7 +1837,7 @@ class MainWindow(QtWidgets.QMainWindow):
             )
             return data
 
-        shapes = [format_shape(item._shape) for item in self.labelList.getShapeItems()]
+        shapes = [format_shape(item.shape()) for item in self.labelList]
         try:
             if self.imagePath.find("meta/") > -1:
                 self.imagePath = self.imagePath.replace("meta/", "")
@@ -1834,105 +1875,140 @@ class MainWindow(QtWidgets.QMainWindow):
             self.errorMessage(
                 self.tr("Error saving label data"), self.tr("<b>%s</b>") % e
             )
+            LogPrint("labelFile에 오브젝트를 보관하는중 : %s" % e)
             return False
 
     def duplicateSelectedShape(self):
-        added_shapes = self.canvas.duplicateSelectedShapes()
-        self.labelList.clearSelection()
-        for shape in added_shapes:
-            self.addLabel(shape, False)
-        prodT = "Polygon Labels (Total %s)"
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
-        self.setDirty()
+        try:
+            added_shapes = self.canvas.duplicateSelectedShapes()
+            self.labelList.clearSelection()
+            for shape in added_shapes:
+                self.addLabel(shape)
+            prodT = "Polygon Labels (Total %s)"
+            if self._config["local_lang"] == "ko_KR":
+                prodT = "다각형 레이블 (총 %s)"
+            self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.__len__())
+            self.setDirty()
+        except Exception as e:
+            LogPrint("duplicateSelectedShape %s" % e)
+            pass
 
     def pasteSelectedShape(self):
-        self.loadShapes(self._copied_shapes, replace=False)
-        for shape in self._copied_shapes:
-            self.addLabel(shape, False)
-        prodT = "Polygon Labels (Total %s)"
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.count())
-        self.setDirty()
+        try:
+            self.loadShapes(self._copied_shapes, replace=False)
+            prodT = "Polygon Labels (Total %s)"
+            if self._config["local_lang"] == "ko_KR":
+                prodT = "다각형 레이블 (총 %s)"
+            self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.__len__())
+            self.setDirty()
+        except Exception as e:
+            LogPrint("pasteSelectedShape %s" % e)
+            pass
 
     def copySelectedShape(self):
         self._copied_shapes = [s.copy() for s in self.canvas.selectedShapes]
         self.actions.paste.setEnabled(len(self._copied_shapes) > 0)
 
     def labelSelectionChanged(self):
-        if self._noSelectionSlot:
-            return
-        if self.canvas.editing():
-            selected_shapes = []
-            for item in self.labelList.selectedItems():
-                if isinstance(item, QListWidgetItem):
-                    _item = self.labelList.itemWidget(item)
-                    selected_shapes.append(_item._shape)
-            if selected_shapes:
-                self.canvas.selectShapes(selected_shapes)
-            else:
-                self.canvas.deSelectShape()
+        try:
+            if self._noSelectionSlot:
+                return
+            if self.canvas.editing():
+                selected_shapes = []
+                for item in self.labelList.selectedItems():
+                    selected_shapes.append(item.shape())
+                if selected_shapes:
+                    self.canvas.selectShapes(selected_shapes)
+                else:
+                    self.canvas.deSelectShape()
+        except Exception as e:
+            LogPrint("labelSelectionChanged %s" % e)
+            pass
 
     def labelItemChanged(self, item):
-        shape = item._shape
-        if shape:
-            self.canvas.setShapeVisible(shape, item._checked)
+        try:
+            shape = item.shape()
+            if shape:
+                self.canvas.setShapeVisible(shape, item.checkState() == Qt.Checked)
+        except Exception as e:
+            LogPrint("labelItemChanged %s" % e)
+            pass
 
     def labelOrderChanged(self):
-        self.setDirty()
-        self.canvas.loadShapes([item._shape for item in self.labelList.getItems()])
+        try:
+            self.setDirty()
+            self.canvas.loadShapes([item.shape() for item in self.labelList])
+        except Exception as e:
+            LogPrint("labelOrderChanged %s" % e)
+            pass
     # Callback functions:
 
+    def labelItemsChecked(self, flag):
+        try:
+            for item in self.labelList:
+                shape = item.shape()
+                if shape:
+                    if flag is True:
+                        item.setCheckState(Qt.Checked)
+                        self.canvas.setShapeVisible(shape, Qt.Checked)
+                    else:
+                        item.setCheckState(Qt.Unchecked)
+                        self.canvas.setShapeVisible(shape, Qt.Unchecked)
+        except Exception as e:
+            LogPrint("labelItemsChecked %s" % e)
+            pass
+
     def newShape(self):
-        #items = self._polyonList[:]
-        items = copy.deepcopy(self._polyonList)
-        if len(items) < 1:
-            self.canvas.shapes.pop()
-            self.canvas.repaint()
-            return self.errorMessage(self.tr("Wrong Empty label"), self.tr("please select one grade for label in Grade list"))
-
-        group_id = None
-        item = None
-        if self._config["display_label_popup"]:
-            previous_text = self.labelDialog.edit.text()
-            item = self.labelDialog.popUpLabelDlg(items)
-            if not item:
-                self.labelDialog.edit.setText(previous_text)
-
-        if item and not self.validateLabel(item["label"]):
-            self.errorMessage(
-                self.tr("Invalid label"),
-                self.tr("Invalid label '{}' with validation type '{}'").format(
-                    item["label"], self._config["validate_label"]
-                ),
-            )
+        try:
+            #items = self._polyonList[:]
+            items = copy.deepcopy(self._polyonList)
+            if len(items) < 1:
+                self.canvas.shapes.pop()
+                self.canvas.repaint()
+                return self.errorMessage(self.tr("Wrong Empty label"), self.tr("please select one grade for label in Grade list"))
+    
+            group_id = None
             item = None
-        if item:
-            self.labelList.clearSelection()
-            shape = self.canvas.setLastLabel(item)
-            shape.group_id = group_id
-            sc = shape.color if shape.color else "#808000"
-            Qc = QtGui.QColor(sc)
-            r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
-            shape.color = QtGui.QColor(r, g, b, a)
-            if self.polygonTrans_value > 0:
-                a = self.polygonTrans_deta_value - self.polygonTrans_value
+            if self._config["display_label_popup"]:
+                previous_text = self.labelDialog.edit.text()
+                item = self.labelDialog.popUpLabelDlg(items)
+                if not item:
+                    self.labelDialog.edit.setText(previous_text)
+    
+            if item and not self.validateLabel(item["label"]):
+                self.errorMessage(
+                    self.tr("Invalid label"),
+                    self.tr("Invalid label '{}' with validation type '{}'").format(
+                        item["label"], self._config["validate_label"]
+                    ),
+                )
+                item = None
+            if item:
+                self.labelList.clearSelection()
+                shape = self.canvas.setLastLabel(item)
+                shape.group_id = group_id
+                sc = shape.color if shape.color else "#808000"
+                Qc = QtGui.QColor(sc)
+                r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
+                shape.color = QtGui.QColor(r, g, b, a)
+                if self.polygonTrans_value > 0:
+                    a = self.polygonTrans_deta_value - self.polygonTrans_value
+                else:
+                    a = self.polygonTrans_deta_value
+                shape.color = QtGui.QColor(r, g, b, a)
+                shape.lineweight = self.lineweight_value
+                # print("new shape", str(a))
+                self.addLabel(shape)
+                self.actions.editMode.setEnabled(True)
+                self.actions.undoLastPoint.setEnabled(False)
+                self.actions.undo.setEnabled(True)
+                self.setDirty()
             else:
-                a = self.polygonTrans_deta_value
-            shape.color = QtGui.QColor(r, g, b, a)
-            shape.lineweight = self.lineweight_value
-            # print("new shape", str(a))
-
-            self.addLabel(shape, True)
-            self.actions.editMode.setEnabled(True)
-            self.actions.undoLastPoint.setEnabled(False)
-            self.actions.undo.setEnabled(True)
-            self.setDirty()
-        else:
-            self.canvas.undoLastLine()
-            self.canvas.shapesBackups.pop()
+                self.canvas.undoLastLine()
+                self.canvas.shapesBackups.pop()
+        except Exception as e:
+            LogPrint("shape 추가중 %s" % e)
+            pass
 
     def scrollRequest(self, delta, orientation):
         units = -delta * 0.1  # natural scroll
@@ -1999,72 +2075,83 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.keepPrevScale.setChecked(enabled)
 
     def onNewBrightnessContrast(self, qimage):
-        self.canvas.loadPixmap(
-            QtGui.QPixmap.fromImage(qimage), clear_shapes=False
-        )
+        try:
+            self.canvas.loadPixmap(
+                QtGui.QPixmap.fromImage(qimage), clear_shapes=False
+            )
         #print("ending...Brightness")
+        except Exception as e:
+            LogPrint("onNewBrightnessContrast %s" % e)
+            pass
 
     def brightnessContrast(self, value):
-        if self.brightDialog is None:
-            self.brightDialog = BrightnessContrastDialog(
-                utils.img_data_to_pil(self.imageData),
-                self.onNewBrightnessContrast,
-                parent=self,
+        try:
+            if self.brightDialog is None:
+                self.brightDialog = BrightnessContrastDialog(
+                    utils.img_data_to_pil(self.imageData),
+                    self.onNewBrightnessContrast,
+                    parent=self,
+                )
+            brightness, contrast = self.brightnessContrast_values.get(
+                self.filename, (None, None)
             )
-        brightness, contrast = self.brightnessContrast_values.get(
-            self.filename, (None, None)
-        )
-        if brightness is not None:
-            self.brightDialog.slider_brightness.setValue(brightness)
-        if contrast is not None:
-            self.brightDialog.slider_contrast.setValue(contrast)
-        self.brightDialog.exec_()
+            if brightness is not None:
+                self.brightDialog.slider_brightness.setValue(brightness)
+            if contrast is not None:
+                self.brightDialog.slider_contrast.setValue(contrast)
+            self.brightDialog.exec_()
 
-        brightness = self.brightDialog.slider_brightness.value()
-        contrast = self.brightDialog.slider_contrast.value()
-        self.brightnessContrast_values[self.filename] = (brightness, contrast)
+            brightness = self.brightDialog.slider_brightness.value()
+            contrast = self.brightDialog.slider_contrast.value()
+            self.brightnessContrast_values[self.filename] = (brightness, contrast)
+        except Exception as e:
+            LogPrint("brightnessContrast %s" % e)
+            pass
 
-
-    def PolygonAlpha(self, transObj):
-        if self.polygonAlphaDlg is None:
-            self.polygonAlphaDlg = PolygonTransDialog(
-                utils.img_data_to_pil(self.imageData),
-                self.onNewBrightnessContrast,
-                self.polygonTrans,
-                self.lineweight,
-                parent=self,
+    def PolygonAlpha(self, transobj):
+        try:
+            if self.polygonAlphaDlg is None:
+                self.polygonAlphaDlg = PolygonTransDialog(
+                    utils.img_data_to_pil(self.imageData),
+                    self.onNewBrightnessContrast,
+                    self.polygonTrans,
+                    self.lineweight,
+                    parent=self,
+                )
+            brightness, contrast = self.brightnessContrast_values.get(
+                self.filename, (None, None)
             )
-        brightness, contrast = self.brightnessContrast_values.get(
-            self.filename, (None, None)
-        )
-        if brightness is not None:
-            self.polygonAlphaDlg.slider_brightness.setValue(brightness)
-        if contrast is not None:
-            self.polygonAlphaDlg.slider_contrast.setValue(contrast)
+            if brightness is not None:
+                self.polygonAlphaDlg.slider_brightness.setValue(brightness)
+            if contrast is not None:
+                self.polygonAlphaDlg.slider_contrast.setValue(contrast)
 
-        if self.polygonTrans_value:
-            self.polygonAlphaDlg.slider_trans.setValue(self.polygonTrans_value)
+            if self.polygonTrans_value:
+                self.polygonAlphaDlg.slider_trans.setValue(self.polygonTrans_value)
 
-        if self.lineweight_value:
-            self.polygonAlphaDlg.slider_pen.setValue(self.lineweight_value)
+            if self.lineweight_value:
+                self.polygonAlphaDlg.slider_pen.setValue(self.lineweight_value)
 
-        self.polygonAlphaDlg.exec_()
+            self.polygonAlphaDlg.exec_()
 
-        #brightness = dialog.slider_brightness.value()
-        #contrast = dialog.slider_contrast.value()
+            #brightness = dialog.slider_brightness.value()
+            #contrast = dialog.slider_contrast.value()
 
-        brightness = self.polygonAlphaDlg.slider_brightness.value()
-        contrast = self.polygonAlphaDlg.slider_contrast.value()
-        self.brightnessContrast_values[self.filename] = (brightness, contrast)
+            brightness = self.polygonAlphaDlg.slider_brightness.value()
+            contrast = self.polygonAlphaDlg.slider_contrast.value()
+            self.brightnessContrast_values[self.filename] = (brightness, contrast)
 
-        val = self.polygonAlphaDlg.slider_trans.value()
-        self.polygonTrans_value = val
+            val = self.polygonAlphaDlg.slider_trans.value()
+            self.polygonTrans_value = val
 
-        val_l = self.polygonAlphaDlg.slider_pen.value()
-        self.lineweight_value = val_l
+            val_l = self.polygonAlphaDlg.slider_pen.value()
+            self.lineweight_value = val_l
 
-        transObj.setEnabled(True)
-        self.setDirty()
+            transobj.setEnabled(True)
+            self.setDirty()
+        except Exception as e:
+            LogPrint("알파적용중 %s" % e)
+            pass
 
     def viewAppVersion(self):
         self.appVersionDialog = AppVersionDialog(
@@ -2074,33 +2161,36 @@ class MainWindow(QtWidgets.QMainWindow):
         self.appVersionDialog.exec_()
 
     def polygonTrans(self, value):
-        if self.canvas.shapes and len(self.canvas.shapes) < 1:
-            return
-
-        for shape in self.canvas.shapes:
-            Qc = QtGui.QColor(shape.color)
-            r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
-            alpha = self.polygonTrans_deta_value - value
-            shape.color = QtGui.QColor(r, g, b, alpha)
-            # shape.line_color = QtGui.QColor(r, g, b, alpha + 50)
-            # shape.fill_color = QtGui.QColor(r, g, b, alpha)
-            # shape.vertex_fill_color = QtGui.QColor(r, g, b, alpha + 50)
-            # shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
-            # shape.select_line_color = QtGui.QColor(255, 255, 255, alpha + 50)
-            # shape.select_fill_color = QtGui.QColor(r, g, b, alpha + 27)  # a = 155
-            self._update_shape_color(shape)
-
-        self.canvas.update()
-
+        try:
+            if self.canvas.shapes and len(self.canvas.shapes) < 1:
+                return
+            for shape in self.canvas.shapes:
+                Qc = QtGui.QColor(shape.color)
+                r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
+                alpha = self.polygonTrans_deta_value - value
+                shape.color = QtGui.QColor(r, g, b, alpha)
+                # shape.line_color = QtGui.QColor(r, g, b, alpha + 50)
+                # shape.fill_color = QtGui.QColor(r, g, b, alpha)
+                # shape.vertex_fill_color = QtGui.QColor(r, g, b, alpha + 50)
+                # shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
+                # shape.select_line_color = QtGui.QColor(255, 255, 255, alpha + 50)
+                # shape.select_fill_color = QtGui.QColor(r, g, b, alpha + 27)  # a = 155
+                self._update_shape_color(shape)
+            self.canvas.update()
+        except Exception as e:
+            LogPrint("폴리곤 색변경중 %s" % e)
+            pass
 
     def lineweight(self, value):
-        if self.canvas.shapes and len(self.canvas.shapes) < 1:
-            return
-
-        for shape in self.canvas.shapes:
-            shape.lineweight = value
-
-        self.canvas.update()
+        try:
+            if self.canvas.shapes and len(self.canvas.shapes) < 1:
+                return
+            for shape in self.canvas.shapes:
+                shape.lineweight = value
+            self.canvas.update()
+        except Exception as e:
+            LogPrint("라인굵기적용중 %s" % e)
+            pass
 
 
     def togglePolygons(self, value):
@@ -2111,211 +2201,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.actions.tool[9].setEnabled(False)
             self.actions.tool[10].setEnabled(True)
 
-        self.labelList.checkStatus(1 if value else 0)
-
-    """ NO using."""
-    def loadFile_(self, filename=None):
-        """Load the specified file, or the last opened file if None."""
-        # changing fileListWidget loads file
-        if filename in self.imageList and (
-            self.fileListWidget.currentRow() != self.imageList.index(filename)
-        ):
-            self.fileListWidget.setCurrentRow(self.imageList.index(filename))
-            self.fileListWidget.repaint()
-            return
-
-        self.resetState()
-        self.canvas.setEnabled(False)
-        if filename is None:
-            filename = self.settings.value("filename", "")
-        filename = str(filename)
-        if not QtCore.QFile.exists(filename):
-            self.errorMessage(
-                self.tr("Error opening file"),
-                self.tr("No such file: <b>%s</b>") % filename,
-            )
-            return False
-        # assumes same name, but json extension
-        self.status(
-            str(self.tr("Loading %s...")) % osp.basename(str(filename))
-        )
-        cocofile = False
-        labelfile = False
-        coco_file = "{}_coco.{}".format(osp.splitext(filename)[0], "json")
-        if self.output_dir:
-            coco_file_without_path = osp.basename(coco_file)
-            coco_file = osp.join(self.output_dir, coco_file_without_path)
-
-        if QtCore.QFile.exists(coco_file) and ConvertCoCOLabel.is_coco_file(
-            coco_file
-        ):
-            cocofile = True
-
-        label_file = osp.splitext(filename)[0] + ".json"
-        if self.output_dir:
-            label_file_without_path = osp.basename(label_file)
-            label_file = osp.join(self.output_dir, label_file_without_path)
-        if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
-            label_file
-        ):
-            labelfile = True
-
-        if cocofile is True and labelfile is True:
-            try:
-                self.labelFile = LabelFile(label_file)
-            except LabelFileError as e:
-                self.errorMessage(
-                    self.tr("Error opening file"),
-                    self.tr(
-                        "<p><b>%s</b></p>"
-                        "<p>Make sure <i>%s</i> is a valid label file."
-                    )
-                    % (e, label_file),
-                )
-                # LogPrint("e : %s" % e)
-                self.status(self.tr("Error reading %s") % label_file)
-                return False
-            self.imageData = self.labelFile.imageData
-            self.imagePath = osp.join(
-                osp.dirname(label_file),
-                self.labelFile.imagePath,
-            )
-            self.otherData = self.labelFile.otherData
-        elif cocofile is False and labelfile is True:
-            try:
-                self.labelFile = LabelFile(label_file)
-            except LabelFileError as e:
-                self.errorMessage(
-                    self.tr("Error opening file"),
-                    self.tr(
-                        "<p><b>%s</b></p>"
-                        "<p>Make sure <i>%s</i> is a valid label file."
-                    )
-                    % (e, label_file),
-                )
-                # LogPrint("e : %s" % e)
-                self.status(self.tr("Error reading %s") % label_file)
-                return False
-            self.imageData = self.labelFile.imageData
-            self.imagePath = osp.join(
-                osp.dirname(label_file),
-                self.labelFile.imagePath,
-            )
-            self.otherData = self.labelFile.otherData
-        elif cocofile is True and labelfile is False:
-            ccls = ConvertCoCOLabel(coco_file, label_file)
-            label_file = ccls.save()
-            if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
-                    label_file
-            ):
-                try:
-                    self.labelFile = LabelFile(label_file)
-                except LabelFileError as e:
-                    self.errorMessage(
-                        self.tr("Error opening file"),
-                        self.tr(
-                            "<p><b>%s</b></p>"
-                            "<p>Make sure <i>%s</i> is a valid label file."
-                        )
-                        % (e, label_file),
-                    )
-                    # LogPrint("e : %s" % e)
-                    self.status(self.tr("Error reading %s") % label_file)
-                    return False
-                self.imageData = self.labelFile.imageData
-                self.imagePath = osp.join(
-                    osp.dirname(label_file),
-                    self.labelFile.imagePath,
-                )
-                self.otherData = self.labelFile.otherData
-        else:
-            self.imageData = LabelFile.load_image_file(filename)
-            if self.imageData:
-                self.imagePath = filename
-            self.labelFile = None
-
-        image = QtGui.QImage.fromData(self.imageData)
-
-        if image.isNull():
-            formats = [
-                "*.{}".format(fmt.data().decode())
-                for fmt in QtGui.QImageReader.supportedImageFormats()
-            ]
-            self.errorMessage(
-                self.tr("Error opening file"),
-                self.tr(
-                    "<p>Make sure <i>{0}</i> is a valid image file.<br/>"
-                    "Supported image formats: {1}</p>"
-                ).format(filename, ",".join(formats)),
-            )
-            self.status(self.tr("Error reading %s") % filename)
-            return False
-
-        self.image = image
-        self.filename = filename
-        if self._config["keep_prev"]:
-            prev_shapes = self.canvas.shapes
-        self.canvas.loadPixmap(QtGui.QPixmap.fromImage(image))
-
-        if self.labelFile:
-            self.loadLabels(self.labelFile.shapes)
-        # part grades of here ckd
-        if self._config["keep_prev"] and self.noShapes():
-            self.loadShapes(prev_shapes, replace=False)
-            self.setDirty()
-        else:
-            self.setClean()
-        self.canvas.setEnabled(True)
-
-        # set zoom values
-        is_initial_load = not self.zoom_values
-        if self.filename in self.zoom_values:
-            self.zoomMode = self.zoom_values[self.filename][0]
-            self.setZoom(self.zoom_values[self.filename][1])
-        elif is_initial_load or not self._config["keep_prev_scale"]:
-            self.adjustScale(initial=True)
-        # set scroll values
-        for orientation in self.scroll_values:
-            if self.filename in self.scroll_values[orientation]:
-                self.setScroll(
-                    orientation, self.scroll_values[orientation][self.filename]
-                )
-        # set brightness contrast values
-        dialog = BrightnessContrastDialog(
-            utils.img_data_to_pil(self.imageData),
-            self.onNewBrightnessContrast,
-            parent=self,
-        )
-        brightness, contrast = self.brightnessContrast_values.get(
-            self.filename, (None, None)
-        )
-        if self._config["keep_prev_brightness"] and self.recentFiles:
-            brightness, _ = self.brightnessContrast_values.get(
-                self.recentFiles[0], (None, None)
-            )
-        if self._config["keep_prev_contrast"] and self.recentFiles:
-            _, contrast = self.brightnessContrast_values.get(
-                self.recentFiles[0], (None, None)
-            )
-        if brightness is not None:
-            dialog.slider_brightness.setValue(brightness)
-        if contrast is not None:
-            dialog.slider_contrast.setValue(contrast)
-        self.brightnessContrast_values[self.filename] = (brightness, contrast)
-        if brightness is not None or contrast is not None:
-            dialog.onNewValue(None)
-        self.paintCanvas()
-        self.addRecentFile(self.filename)
-        self.toggleActions(True)
-        self.canvas.setFocus()
-        self.status(str(self.tr("Loaded %s")) % osp.basename(str(filename)))
-
-        self.togglePolygons(True)  # add ckd
-        # add ckd
-        self.topToolWidget.editmodeClick(True)
-
-        return True
-
+        #self.labelList.checkStatus(1 if value else 0)
 
     def loadFile(self, filename=None):
         """Load the specified file, or the last opened file if None."""
@@ -2328,6 +2214,7 @@ class MainWindow(QtWidgets.QMainWindow):
             return
 
         self.resetState()
+        self._itemList.clear()
         self.canvas.setEnabled(False)
         if filename is None:
             filename = self.settings.value("filename", "")
@@ -2378,7 +2265,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     ).format(e, label_file),
                     #% (e, label_file),
                 )
-                # LogPrint("e : %s" % e)
+                LogPrint("레이블파일읽기중 %s" % e)
                 self.status(self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 읽기중 오류').format(label_file))
                 return False
             self.imageData = self.labelFile.imageData
@@ -2402,7 +2289,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     ).format(e, label_file),
                     # % (e, label_file),
                 )
-                # LogPrint("e : %s" % e)
+                LogPrint("레이블파일읽기중 %s" % e)
                 self.status(
                     self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 읽기중 오류').format(
                         label_file))
@@ -2431,14 +2318,14 @@ class MainWindow(QtWidgets.QMainWindow):
                     self.labelFile = LabelFile(label_file)
                 except LabelFileError as e:
                     self.errorMessage(
-                        self.tr("Error opening file" if self._config['local_lang'] != 'ko_KR' else '레벨파일 열기중 오류'),
+                        self.tr("Error opening file" if self._config['local_lang'] != 'ko_KR' else '레이블 열기중 오류'),
                         self.tr(
                             "<p><b>{}</b></p>"
                             "<p>Make sure <i>{}</i> is a valid label file." if self._config['local_lang'] != 'ko_KR' else '<i>{}</i> 이 유효한 레벨파일인가를 확인하세요'
                         ).format(e, label_file),
                         # % (e, label_file),
                     )
-                    # LogPrint("e : %s" % e)
+                    LogPrint("레이블 파일 읽기중 %s" % e)
                     self.status(
                         self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레벨파일 읽기중 오류').format(label_file))
                     return False
@@ -2470,6 +2357,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.tr("Error opening file" if self._config['local_lang'] != 'ko_KR' else '파일 열기중 오류'),
                 ermsg.format(filename, ",".join(formats)),
             )
+            LogPrint("레이블파일의 이미지형식 오류")
             self.status(self.tr("Error reading {}" if self._config['local_lang'] != 'ko_KR' else '레이블 파일 읽기중 오류').format(filename))
             return False
 
@@ -2483,6 +2371,12 @@ class MainWindow(QtWidgets.QMainWindow):
         if self.labelFile:
             self.loadLabels(self.labelFile.shapes)
 
+        if self._config["keep_prev"] and self.noShapes():
+            self.loadShapes(prev_shapes, replace=False)
+            self.setDirty()
+        else:
+            self.setClean()
+        self.canvas.setEnabled(True)
 
         # set zoom values
         is_initial_load = not self.zoom_values
@@ -2533,42 +2427,6 @@ class MainWindow(QtWidgets.QMainWindow):
             self.brightDialog.onNewValue(None)
             self.polygonAlphaDlg.onNewValue(None)
 
-        #self.topToolWidget.editmodeClick(True)
-        threading.Timer(0.1, self.fileLoadedSignalThread).start()  # add 9/21/2022
-        return True
-
-    def fileLoadedSignalThread(self):
-        self.fileLoadedSignal.emit(self.canvas.shapes)  # add 9/21/2022
-
-    def fileLoadedSignalHandle(self, shapes):
-        self._noSelectionSlot = True
-        slen = len(shapes) / 100
-        self.labelList._initLoading = True
-        self.labelList._itemList.clear()
-        if slen > 3:
-            self.loadingLabelDlg = LoadingLabelProgress(parent=self, config=self._config, size=len(shapes))
-            self.loadingLabelDlg.show()
-            i = 0
-            for shape in shapes:
-                self.addLabel(shape, False)
-                if i < slen:
-                    i = i + 1
-                else:
-                    self.loadingLabelDlg.doAction()
-                    time.sleep(0.01)
-                    i = 0
-            self.loadingLabelDlg._isEnd = True
-            self.loadingLabelDlg.close()
-        else:
-            for shape in shapes:
-                self.addLabel(shape, False)
-
-        self.labelList.clearSelection()
-        self.labelList._initLoading = False
-        self._noSelectionSlot = False
-
-        self.setClean()
-        self.canvas.setEnabled(True)
         self.paintCanvas()
         self.addRecentFile(self.filename)
         self.toggleActions(True)
@@ -2579,10 +2437,10 @@ class MainWindow(QtWidgets.QMainWindow):
         # add ckd
         ac = self.canvas.drawing()
         if ac:
-            #self.toggleDrawMode(False, self.canvas.createMode)  # 이전의 모드로 하자면
+            # self.toggleDrawMode(False, self.canvas.createMode)  # 이전의 모드로 하자면
             self.toggleDrawMode(True)  # 에디트모드로 강제전환
-        #else:
-            #self.topToolWidget.editmodeClick(True)
+        return True
+
 
     def resizeEvent(self, event):
         if (
@@ -2594,10 +2452,14 @@ class MainWindow(QtWidgets.QMainWindow):
         super(MainWindow, self).resizeEvent(event)
 
     def paintCanvas(self):
-        assert not self.image.isNull(), "cannot paint null image"
-        self.canvas.scale = 0.01 * self.zoomWidget.value()
-        self.canvas.adjustSize()
-        self.canvas.update()
+        try:
+            assert not self.image.isNull(), "cannot paint null image"
+            self.canvas.scale = 0.01 * self.zoomWidget.value()
+            self.canvas.adjustSize()
+            self.canvas.update()
+        except Exception as e:
+            LogPrint("캔버스에 그릴 이미지가 null 이다 %s" % e)
+            pass
 
     def adjustScale(self, initial=False):
         value = self.scalers[self.FIT_WINDOW if initial else self.zoomMode]()
@@ -2644,208 +2506,236 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.saveAuto.setChecked(enabled)
 
     def closeEvent(self, event):
-        if not self.mayContinue():
-            event.ignore()
-        self.settings.setValue(
-            "filename", self.filename if self.filename else ""
-        )
-        self.settings.setValue("window/size", self.size())
-        self.settings.setValue("window/position", self.pos())
-        self.settings.setValue("window/state", self.saveState())
-        self.settings.setValue("recentFiles", self.recentFiles)
-        # ask the use for where to save the labels
-        # self.settings.setValue('window/geometry', self.saveGeometry())
+        try:
+            if not self.mayContinue():
+                event.ignore()
+            self.settings.setValue(
+                "filename", self.filename if self.filename else ""
+            )
+            self.settings.setValue("window/size", self.size())
+            self.settings.setValue("window/position", self.pos())
+            self.settings.setValue("window/state", self.saveState())
+            self.settings.setValue("recentFiles", self.recentFiles)
+            # ask the use for where to save the labels
+            # self.settings.setValue('window/geometry', self.saveGeometry())
 
-        #self.labelList._selected_item.clear()
-        #self.labelList._itemList.clear()
-        self.labelList.clear()
-        self._polyonList.clear()
-        ##threading.Timer(0.01, self.deConnetNetDriver).start()
-        self.deConnetNetDriver()
+            self.labelList.clear()
+            self._itemList.clear()
+            self._polyonList.clear()
+            ##threading.Timer(0.01, self.deConnetNetDriver).start()
+            self.deConnetNetDriver()
+        except Exception as e:
+            LogPrint("Error in closeEvent %s" % e)
+            pass
 
     def dragEnterEvent(self, event):
-        extensions = [
-            ".%s" % fmt.data().decode().lower()
-            for fmt in QtGui.QImageReader.supportedImageFormats()
-        ]
-        if event.mimeData().hasUrls():
-            items = [i.toLocalFile() for i in event.mimeData().urls()]
-            if any([i.lower().endswith(tuple(extensions)) for i in items]):
-                event.accept()
-        else:
-            event.ignore()
+        try:
+            extensions = [
+                ".%s" % fmt.data().decode().lower()
+                for fmt in QtGui.QImageReader.supportedImageFormats()
+            ]
+            if event.mimeData().hasUrls():
+                items = [i.toLocalFile() for i in event.mimeData().urls()]
+                if any([i.lower().endswith(tuple(extensions)) for i in items]):
+                    event.accept()
+            else:
+                event.ignore()
+        except Exception as e:
+            LogPrint("Error in dragEnterEvent %s" % e)
+            pass
 
     def dropEvent(self, event):
-        if not self.mayContinue():
-            event.ignore()
-            return
-        items = [i.toLocalFile() for i in event.mimeData().urls()]
-        self.importDroppedImageFiles(items)
-
+        try:
+            if not self.mayContinue():
+                event.ignore()
+                return
+            items = [i.toLocalFile() for i in event.mimeData().urls()]
+            self.importDroppedImageFiles(items)
+        except Exception as e:
+            LogPrint("Error in dropEvent %s" % e)
+            pass
     # User Dialogs #
 
     def loadRecent(self, filename):
-        if self.mayContinue():
-            self.loadFile(filename)
+        try:
+            if self.mayContinue():
+                self.loadFile(filename)
+        except Exception as e:
+            LogPrint("Error in loadRecent %s" % e)
+            pass
 
     def openPrevImg(self, _value=False):
-        keep_prev = self._config["keep_prev"]
-        if QtWidgets.QApplication.keyboardModifiers() == (
-            Qt.ControlModifier | Qt.ShiftModifier
-        ):
-            self._config["keep_prev"] = True
+        try:
+            keep_prev = self._config["keep_prev"]
+            if QtWidgets.QApplication.keyboardModifiers() == (
+                Qt.ControlModifier | Qt.ShiftModifier
+            ):
+                self._config["keep_prev"] = True
 
-        if not self.mayContinue():
-            return
+            if not self.mayContinue():
+                return
 
-        if len(self.imageList) <= 0:
-            return
+            if len(self.imageList) <= 0:
+                return
 
-        if self.filename is None:
-            return
+            if self.filename is None:
+                return
 
-        currIndex = self.imageList.index(self.filename)
-        if currIndex - 1 >= 0:
-            filename = self.imageList[currIndex - 1]
-            if filename:
-                self.loadFile(filename)
+            currIndex = self.imageList.index(self.filename)
+            if currIndex - 1 >= 0:
+                filename = self.imageList[currIndex - 1]
+                if filename:
+                    self.loadFile(filename)
 
-        self._config["keep_prev"] = keep_prev
+            self._config["keep_prev"] = keep_prev
+        except Exception as e:
+            LogPrint("Error in openPrevImg %s" % e)
+            pass
 
     def openNextImg(self, _value=False, load=True):
-        keep_prev = self._config["keep_prev"]
-        if QtWidgets.QApplication.keyboardModifiers() == (
-            Qt.ControlModifier | Qt.ShiftModifier
-        ):
-            self._config["keep_prev"] = True
+        try:
+            keep_prev = self._config["keep_prev"]
+            if QtWidgets.QApplication.keyboardModifiers() == (
+                Qt.ControlModifier | Qt.ShiftModifier
+            ):
+                self._config["keep_prev"] = True
 
-        if not self.mayContinue():
-            return
+            if not self.mayContinue():
+                return
 
-        if len(self.imageList) <= 0:
-            return
+            if len(self.imageList) <= 0:
+                return
 
-        filename = None
-        if self.filename is None:
-            filename = self.imageList[0]
-        else:
-            currIndex = self.imageList.index(self.filename)
-            if currIndex + 1 < len(self.imageList):
-                filename = self.imageList[currIndex + 1]
+            filename = None
+            if self.filename is None:
+                filename = self.imageList[0]
             else:
-                filename = self.imageList[-1]
-        self.filename = filename
+                currIndex = self.imageList.index(self.filename)
+                if currIndex + 1 < len(self.imageList):
+                    filename = self.imageList[currIndex + 1]
+                else:
+                    filename = self.imageList[-1]
+            self.filename = filename
 
-        if self.filename and load:
-            self.loadFile(self.filename)
+            if self.filename and load:
+                self.loadFile(self.filename)
 
-        self._config["keep_prev"] = keep_prev
+            self._config["keep_prev"] = keep_prev
+        except Exception as e:
+            LogPrint("Error in openNextImg %s" % e)
+            pass
 
     def openFile(self, _value=False):
-        if not self.mayContinue():
-            return
-        path = osp.dirname(str(self.filename)) if self.filename else "."
-        formats = [
-            "*.{}".format(fmt.data().decode())
-            for fmt in QtGui.QImageReader.supportedImageFormats()
-        ]
-        # filters = self.tr("Image & Label files (%s)") % " ".join(
-        #     formats + ["*%s" % LabelFile.suffix]
-        # )
-        stt = "Image (%s)" if self._config['local_lang'] != 'ko_KR' else "이미지 (%s)"
-        filters = stt % " ".join(
-            formats
-        )
+        try:
+            if not self.mayContinue():
+                return
+            path = osp.dirname(str(self.filename)) if self.filename else "."
+            formats = [
+                "*.{}".format(fmt.data().decode())
+                for fmt in QtGui.QImageReader.supportedImageFormats()
+            ]
+            # filters = self.tr("Image & Label files (%s)") % " ".join(
+            #     formats + ["*%s" % LabelFile.suffix]
+            # )
+            stt = "Image (%s)" if self._config['local_lang'] != 'ko_KR' else "이미지 (%s)"
+            filters = stt % " ".join(
+                formats
+            )
 
-
-        fileDialog = FileDialogPreview(self)
-        fileDialog.setFileMode(FileDialogPreview.ExistingFile)
-        fileDialog.setNameFilter(filters)
-        fileDialog.setWindowTitle(
-            self.tr("%s - Choose Image or Label file") % __appname__,
-        )
-        fileDialog.setWindowFilePath(path)
-        fileDialog.setViewMode(FileDialogPreview.Detail)
-        if fileDialog.exec_():
-            fileName = fileDialog.selectedFiles()[0]
-            if fileName:
-                self.loadFile(fileName)
+            fileDialog = FileDialogPreview(self)
+            fileDialog.setFileMode(FileDialogPreview.ExistingFile)
+            fileDialog.setNameFilter(filters)
+            fileDialog.setWindowTitle(
+                self.tr("%s - Choose Image or Label file") % __appname__,
+            )
+            fileDialog.setWindowFilePath(path)
+            fileDialog.setViewMode(FileDialogPreview.Detail)
+            if fileDialog.exec_():
+                fileName = fileDialog.selectedFiles()[0]
+                if fileName:
+                    self.loadFile(fileName)
+        except Exception as e:
+            LogPrint("Error in openFile %s" % e)
+            pass
 
     def changeOutputDirDialog(self, _value=False):
-        default_output_dir = self.output_dir
-        if default_output_dir is None and self.filename:
-            default_output_dir = osp.dirname(self.filename)
-        if default_output_dir is None:
-            default_output_dir = self.currentPath()
+        try:
+            default_output_dir = self.output_dir
+            if default_output_dir is None and self.filename:
+                default_output_dir = osp.dirname(self.filename)
+            if default_output_dir is None:
+                default_output_dir = self.currentPath()
 
-        output_dir = QtWidgets.QFileDialog.getExistingDirectory(
-            self,
-            self.tr("%s - Save/Load Annotations in Directory") % __appname__,
-            default_output_dir,
-            QtWidgets.QFileDialog.ShowDirsOnly
-            | QtWidgets.QFileDialog.DontResolveSymlinks,
-        )
-        output_dir = str(output_dir)
-
-        if not output_dir:
-            return
-
-        self.output_dir = output_dir
-
-        self.statusBar().showMessage(
-            self.tr("%s . Annotations will be saved/loaded in %s")
-            % ("Change Annotations Dir", self.output_dir)
-        )
-        self.statusBar().show()
-
-        current_filename = self.filename
-        self.importDirImages(self.lastOpenDir, load=False)
-
-        if current_filename in self.imageList:
-            # retain currently selected file
-            self.fileListWidget.setCurrentRow(
-                self.imageList.index(current_filename)
+            output_dir = QtWidgets.QFileDialog.getExistingDirectory(
+                self,
+                self.tr("%s - Save/Load Annotations in Directory") % __appname__,
+                default_output_dir,
+                QtWidgets.QFileDialog.ShowDirsOnly
+                | QtWidgets.QFileDialog.DontResolveSymlinks,
             )
-            self.fileListWidget.repaint()
+            output_dir = str(output_dir)
+
+            if not output_dir:
+                return
+
+            self.output_dir = output_dir
+
+            self.statusBar().showMessage(
+                self.tr("%s . Annotations will be saved/loaded in %s")
+                % ("Change Annotations Dir", self.output_dir)
+            )
+            self.statusBar().show()
+
+            current_filename = self.filename
+            self.importDirImages(self.lastOpenDir, load=False)
+
+            if current_filename in self.imageList:
+                # retain currently selected file
+                self.fileListWidget.setCurrentRow(
+                    self.imageList.index(current_filename)
+                )
+                self.fileListWidget.repaint()
+        except Exception as e:
+            LogPrint("Error in changeOutputDirDialog %s" % e)
+            pass
 
     def saveFile(self, _value=False):
-        assert not self.image.isNull(), "cannot save empty image"
-        if self.labelFile:
-            # DL20180323 - overwrite when in directory
-            filename = self.labelFile.filename
-            if self.labelFile.filename.find("meta/") > -1:
-                filename = self.labelFile.filename.replace("meta/", "")  # add ckd
-            self._saveFile(filename)
-        elif self.output_file:
-            self._saveFile(self.output_file)
-            self.close()
-        else:
-            #self._saveFile(self.saveFileDialog())
-            assert len(self.filename) > 3, "cannot save empty file"
-            basename = osp.basename(osp.splitext(self.filename)[0])
-            filename = osp.join(
-                self.currentPath(), basename + LabelFile.suffix
-            )
-            if isinstance(filename, tuple):
-                filename, _ = filename
+        try:
+            assert not self.image.isNull(), "cannot save empty image"
+            if self.labelFile:
+                # DL20180323 - overwrite when in directory
+                filename = self.labelFile.filename
+                if self.labelFile.filename.find("meta/") > -1:
+                    filename = self.labelFile.filename.replace("meta/", "")  # add ckd
+                self._saveFile(filename)
+            elif self.output_file:
+                self._saveFile(self.output_file)
+                self.close()
+            else:
+                #self._saveFile(self.saveFileDialog())
+                assert len(self.filename) > 3, "cannot save empty file"
+                basename = osp.basename(osp.splitext(self.filename)[0])
+                filename = osp.join(
+                    self.currentPath(), basename + LabelFile.suffix
+                )
+                if isinstance(filename, tuple):
+                    filename, _ = filename
 
-            if filename.find("meta/") > -1:
-                filename = filename.replace("meta/", "")  # add ckd
-            self._saveFile(filename)
-
-        #blen = len(self.canvas.shapesBackups) # add ckd 11/03
-        saveShapes = self.labelList.getShapes()  # add ckd 11/03
-        self.canvas.shapes = []
-        self.canvas.shapesBackups = []
-        self.loadShapes(saveShapes)
-        self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
-        # add ckd 11/03
-
+                if filename.find("meta/") > -1:
+                    filename = filename.replace("meta/", "")  # add ckd
+                self._saveFile(filename)
+        except Exception as e:
+            LogPrint("Error in saveFile %s" % e)
+            pass
 
 
     def saveFileAs(self, _value=False):
-        assert not self.image.isNull(), "cannot save empty image"
-        self._saveFile(self.saveFileDialog())
+        try:
+            assert not self.image.isNull(), "cannot save empty image"
+            self._saveFile(self.saveFileDialog())
+        except Exception as e:
+            LogPrint("Error in saveFileAs %s" % e)
+            pass
 
     def saveFileDialog(self):
         caption = self.tr("%s - Choose File") % __appname__
@@ -2882,14 +2772,18 @@ class MainWindow(QtWidgets.QMainWindow):
         return filename
 
     def _saveFile(self, filename):
-        if filename and self.saveLabels(filename):
-            if filename.find("meta") < 0:
-                meta_dir = osp.dirname(filename) + "/meta"
-                filename = meta_dir + '/' + osp.basename(filename)
-            self.addRecentFile(filename)
-            self.setClean()
-            # run coco format
-            threading.Timer(0.1, self.putDownCocoFormat, [filename]).start()
+        try:
+            if filename and self.saveLabels(filename):
+                if filename.find("meta") < 0:
+                    meta_dir = osp.dirname(filename) + "/meta"
+                    filename = meta_dir + '/' + osp.basename(filename)
+                self.addRecentFile(filename)
+                self.setClean()
+                # run coco format
+                threading.Timer(0.1, self.putDownCocoFormat, [filename]).start()
+        except Exception as e:
+            LogPrint("Error in _saveFile %s" % e)
+            pass
 
     def putDownCocoFormat(self, arg):
         if arg is None:
@@ -2907,7 +2801,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 os.makedirs(osp.dirname(cocofp))
 
             labelme2coco(labelmefiles, cocofp)
-            print("Success save coco json")
+            #print("Success save coco json")
         except LabelFileError as e:
             LogPrint("라벨미파일을 코코파일로 보관중 에러:: %s" % e)
             self.errorMessage(
@@ -2920,16 +2814,16 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
 
-
-
     def closeFile(self, _value=False):
         if not self.mayContinue():
             return
         self.resetState()
+        self._itemList.clear()
+
         self.setClean()
         self.toggleActions(False)
         self.canvas.setEnabled(False)
-        #self.actions.saveAs.setEnabled(False)
+        ##self.actions.saveAs.setEnabled(False)
 
         self.topToolWidget.editmodeClick(False)
         self.polygonTrans_value = 0
@@ -2938,7 +2832,8 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.polygonAlphaDlg.label.setText("100%")
                 self.polygonAlphaDlg.label_line.setText("2.0")
             self.polygonAlphaDlg = None
-        except AttributeError as a:
+        except AttributeError as e:
+            LogPrint("Error in closeFile %s" % e)
             pass
 
 
@@ -2947,36 +2842,40 @@ class MainWindow(QtWidgets.QMainWindow):
             label_file = self.filename
         else:
             label_file = osp.splitext(self.filename)[0] + ".json"
-
         return label_file
 
     def deleteFile(self):
-        mb = QtWidgets.QMessageBox
-        msg = self.tr(
-            "You are about to permanently delete this label file, "
-            "proceed anyway?"
-        )
-        answer = mb.warning(self, self.tr("Attention"), msg, mb.Yes | mb.No)
-        if answer != mb.Yes:
-            return
+        try:
+            mb = QtWidgets.QMessageBox
+            msg = self.tr(
+                "You are about to permanently delete this label file, "
+                "proceed anyway?"
+            )
+            answer = mb.warning(self, self.tr("Attention"), msg, mb.Yes | mb.No)
+            if answer != mb.Yes:
+                return
 
-        label_file = self.getLabelFile()
-        if osp.exists(label_file):
-            os.remove(label_file)
-            logger.info("Label file is removed: {}".format(label_file))
-        # delete coco file > add ckd
-            basename = os.path.basename(label_file)
-            coco_fname = os.path.splitext(basename)[0]
-            dirname = os.path.dirname(label_file)
-            cocofp = "{}/{}_coco.{}".format(dirname, coco_fname, "json")
-            if osp.exists(cocofp):
-                os.remove(cocofp)
+            label_file = self.getLabelFile()
+            if osp.exists(label_file):
+                os.remove(label_file)
+                logger.info("Label file is removed: {}".format(label_file))
+            # delete coco file > add ckd
+                basename = os.path.basename(label_file)
+                coco_fname = os.path.splitext(basename)[0]
+                dirname = os.path.dirname(label_file)
+                cocofp = "{}/{}_coco.{}".format(dirname, coco_fname, "json")
+                if osp.exists(cocofp):
+                    os.remove(cocofp)
 
-            item = self.fileListWidget.currentItem()
-            if item:
-                item.setCheckState(Qt.Unchecked)
-            #self.resetState()
-            self.resetSimplyState()  # add ckd
+                item = self.fileListWidget.currentItem()
+                if item:
+                    item.setCheckState(Qt.Unchecked)
+                self.resetState()
+                self._itemList.clear()
+                #self.resetSimplyState()  # add ckd
+        except Exception as e:
+            LogPrint("Error in deleteFile %s" % e)
+            pass
 
     # Message Dialogs.
     def hasLabels(self):
@@ -3030,82 +2929,74 @@ class MainWindow(QtWidgets.QMainWindow):
         self._config["keep_prev"] = not self._config["keep_prev"]
 
     def removeSelectedPoint(self):
-        self.canvas.removeSelectedPoint()
-        self.canvas.update()
-        if not self.canvas.hShape.points:
-            self.canvas.deleteShape(self.canvas.hShape)
-            self.remLabels([self.canvas.hShape])
-            polyT = "Polygon Labels (Total %s)"
-            if self._config["local_lang"] == "ko_KR":
-                polyT = "다각형 레이블 (총 %s)"
-            if self.shape_dock:
-                self.shape_dock.titleBarWidget().titleLabel.setText(polyT % len(self.labelList))
+        try:
+            self.canvas.removeSelectedPoint()
+            self.canvas.update()
+            if not self.canvas.hShape.points:
+                self.canvas.deleteShape(self.canvas.hShape)
+                self.remLabels([self.canvas.hShape])
+                polyT = "Polygon Labels (Total %s)"
+                if self._config["local_lang"] == "ko_KR":
+                    polyT = "다각형 레이블 (총 %s)"
+                if self.shape_dock:
+                    self.shape_dock.titleBarWidget().titleLabel.setText(polyT % len(self.labelList))
 
-            self.setDirty()
-            if self.noShapes():
-                for action in self.actions.onShapesPresent:
-                    action.setEnabled(False)
+                self.setDirty()
+                if self.noShapes():
+                    for action in self.actions.onShapesPresent:
+                        action.setEnabled(False)
+        except Exception as e:
+            LogPrint("Error in removeSelectedPoint %s" % e)
+            pass
 
 
 
     def deleteSelectedShape(self):
-        yes, no = QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No
-        msg = self.tr(
-            "You are about to permanently delete {} polygons, "
-            "proceed anyway?"
-        ).format(len(self.canvas.selectedShapes))
-        if yes == QtWidgets.QMessageBox.warning(
-                self, self.tr("Attention"), msg, yes | no, yes
-        ):
-            #self.remLabels(self.canvas.deleteSelected())
+        try:
+            yes, no = QtWidgets.QMessageBox.Yes, QtWidgets.QMessageBox.No
+            msg = self.tr(
+                "You are about to permanently delete {} polygons, "
+                "proceed anyway?"
+            ).format(len(self.canvas.selectedShapes))
+            if yes == QtWidgets.QMessageBox.warning(
+                    self, self.tr("Attention"), msg, yes | no, yes
+            ):
+                self.remLabels(self.canvas.deleteSelected())
 
-            # add 2022.10.12 {
-            delshapes = self.canvas.deleteSelected()
-            shapes = self.canvas.shapes
-            slen = len(shapes) / 100
-            self.labelList.clear()
-            self.labelList._itemList.clear()
-            self.labelList._initLoading = True
-            if slen > 3:
-                i = 0
-                for shape in shapes:
-                    self.addLabel(shape, False)
-                    if i < slen:
-                        i = i + 1
-                    else:
-                        time.sleep(0.007)
-                        i = 0
-            else:
-                for shape in shapes:
-                    self.addLabel(shape, False)
+                polyT = "Polygon Labels (Total %s)"
+                if self._config["local_lang"] == "ko_KR":
+                    polyT = "다각형 레이블 (총 %s)"
+                if self.shape_dock:
+                    self.shape_dock.titleBarWidget().titleLabel.setText(polyT % len(self.labelList))
 
-            self.labelList.clearSelection()
-            self.labelList._initLoading = False
-            # add 2022.10.12 }
-            """
-            polyT = "Polygon Labels (Total %s)"
-            if self._config["local_lang"] == "ko_KR":
-                polyT = "다각형 레이블 (총 %s)"
-            if self.shape_dock:
-                self.shape_dock.titleBarWidget().titleLabel.setText(polyT % len(self.labelList))
-            """
-            self.setDirty()
-            if self.noShapes():
-                for action in self.actions.onShapesPresent:
-                    action.setEnabled(False)
-
+                self.setDirty()
+                if self.noShapes():
+                    for action in self.actions.onShapesPresent:
+                        action.setEnabled(False)
+        except Exception as e:
+            LogPrint("Error in deleteSelectedShape %s" % e)
+            pass
 
 
     def copyShape(self):
-        self.canvas.endMove(copy=True)
-        for shape in self.canvas.selectedShapes:
-            self.addLabel(shape, False)
-        self.labelList.clearSelection()
-        self.setDirty()
+        try:
+            self.canvas.endMove(copy=True)
+            for shape in self.canvas.selectedShapes:
+                self.addLabel(shape)
+            self.labelList.clearSelection()
+            self.setDirty()
+        except Exception as e:
+            LogPrint("Error in copyShape %s" % e)
+            pass
+
 
     def moveShape(self):
-        self.canvas.endMove(copy=False)
-        self.setDirty()
+        try:
+            self.canvas.endMove(copy=False)
+            self.setDirty()
+        except Exception as e:
+            LogPrint("Error in moveShape %s" % e)
+            pass
 
     def openDirDialog(self, _value=False, dirpath=None):
         if not self.mayContinue():
@@ -3138,41 +3029,44 @@ class MainWindow(QtWidgets.QMainWindow):
             lst.append(item.text())
         return lst
 
-    def importDroppedImageFiles(self, imageFiles):
-        extensions = [
-            ".%s" % fmt.data().decode().lower()
-            for fmt in QtGui.QImageReader.supportedImageFormats()
-        ]
+    def importDroppedImageFiles(self, imagefiles):
+        try:
+            extensions = [
+                ".%s" % fmt.data().decode().lower()
+                for fmt in QtGui.QImageReader.supportedImageFormats()
+            ]
 
-        self.filename = None
-        for file in imageFiles:
-            if file in self.imageList or not file.lower().endswith(
-                tuple(extensions)
-            ):
-                continue
-            #label_file = osp.splitext(file)[0] + ".json"
-            label_file = osp.splitext(file)[0]
-            if label_file.find("meta") < 0:
-                label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file) + ".json"
-            else:
-                label_file = osp.splitext(filename)[0] + ".json"
+            self.filename = None
+            for file in imagefiles:
+                if file in self.imageList or not file.lower().endswith(
+                    tuple(extensions)
+                ):
+                    continue
+                #label_file = osp.splitext(file)[0] + ".json"
+                label_file = osp.splitext(file)[0]
+                if label_file.find("meta") < 0:
+                    label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file) + ".json"
+                else:
+                    label_file = osp.splitext(filename)[0] + ".json"
 
-            if self.output_dir:
-                label_file_without_path = osp.basename(label_file)
-                label_file = osp.join(self.output_dir, label_file_without_path)
-            item = QtWidgets.QListWidgetItem(file)
-            item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-            if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
-                label_file
-            ):
-                item.setCheckState(Qt.Checked)
-            else:
-                item.setCheckState(Qt.Unchecked)
-            self.fileListWidget.addItem(item)
+                if self.output_dir:
+                    label_file_without_path = osp.basename(label_file)
+                    label_file = osp.join(self.output_dir, label_file_without_path)
+                item = QtWidgets.QListWidgetItem(file)
+                item.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
+                if QtCore.QFile.exists(label_file) and LabelFile.is_label_file(
+                    label_file
+                ):
+                    item.setCheckState(Qt.Checked)
+                else:
+                    item.setCheckState(Qt.Unchecked)
+                self.fileListWidget.addItem(item)
 
-        if len(self.imageList) > 1:
-            self.actions.openNextImg.setEnabled(True)
-            self.actions.openPrevImg.setEnabled(True)
+            if len(self.imageList) > 1:
+                self.actions.openNextImg.setEnabled(True)
+                self.actions.openPrevImg.setEnabled(True)
+        except Exception as e:
+            LogPrint("Error in importDroppedImageFiles %s" % e)
 
         self.openNextImg()
         flistname = "File List (Total {})".format(self.fileListWidget.count()) if self._config["local_lang"] != "ko_KR" else "파일 목록 (총 {})".format(self.fileListWidget.count())
@@ -3288,24 +3182,28 @@ class MainWindow(QtWidgets.QMainWindow):
             )
 
     def receiveProductsFromServerByGrade(self):
-        if self.selected_grade:
-            # print(self.selected_grade)
-            url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/products?grade=' + self.selected_grade
-            headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
-            jsstr = httpReq(url, "get", headers)
-            if jsstr['message'] == 'success':
-                items = jsstr['items']
-                # print("products is ", items)
-                if items and len(items) > 0:
-                    self.loadProducts(items)
-                else:
-                    temp = [{"product": "미정"}]
-                    self.loadProducts(temp)
+        try:
+            if self.selected_grade:
+                # print(self.selected_grade)
+                url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/products?grade=' + self.selected_grade
+                headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
+                jsstr = httpReq(url, "get", headers)
+                if jsstr['message'] == 'success':
+                    items = jsstr['items']
+                    # print("products is ", items)
+                    if items and len(items) > 0:
+                        self.loadProducts(items)
+                    else:
+                        temp = [{"product": "미정"}]
+                        self.loadProducts(temp)
 
-            else:
-                return QtWidgets.QMessageBox.critical(
-                    self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
-                )
+                else:
+                    return QtWidgets.QMessageBox.critical(
+                        self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
+                    )
+        except Exception as e:
+            LogPrint("Error in receiveProductsFromServerByGrade %s" % e)
+            pass
 
     def receiveLabelsFromServerByGrade(self):
         if self.selected_grade:
@@ -3338,7 +3236,8 @@ class MainWindow(QtWidgets.QMainWindow):
                         }]
                         self._polyonList = temp
 
-                except AttributeError:
+                except AttributeError as e:
+                    LogPrint("Error in receiveLabelsFromServerByGrade %s" % e)
                     pass
             else:
                 return QtWidgets.QMessageBox.critical(
@@ -3346,31 +3245,39 @@ class MainWindow(QtWidgets.QMainWindow):
                 )
 
     def receiveGradesFromServer(self):
-        url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/grades'
-        headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
-        jsstr = httpReq(url, "get", headers)
-        if jsstr['message'] == 'success':
-            self.grades_widget.set(jsstr['items'])
-            self.labelDialog.addGrades(jsstr['items'])
-        else:
-            return QtWidgets.QMessageBox.critical(
-                self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
-            )
+        try:
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/grades'
+            headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
+            jsstr = httpReq(url, "get", headers)
+            if jsstr['message'] == 'success':
+                self.grades_widget.set(jsstr['items'])
+                self.labelDialog.addGrades(jsstr['items'])
+            else:
+                return QtWidgets.QMessageBox.critical(
+                    self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
+                )
+        except Exception as e:
+            LogPrint("Error in receiveGradesFromServer %s" % e)
+            pass
 
     # This function be not used now
     def receiveProductsFromServer(self):
-        url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/products'
-        headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
-        jsstr = httpReq(url, "get", headers)
-        if jsstr['message'] == 'success':
-            items = jsstr['items']
-            # print("All products is ", items)
-            if items and len(items) > 0:
-                self.loadProducts(items)
+        try:
+            url = self._config["api_url"] + 'ords/lm/v1/labelme/codes/products'
+            headers = {'Authorization': 'Bearer 98EDFBC2D4A74E9AB806D4718EC503EE6DEDAAAD'}
+            jsstr = httpReq(url, "get", headers)
+            if jsstr['message'] == 'success':
+                items = jsstr['items']
+                # print("All products is ", items)
+                if items and len(items) > 0:
+                    self.loadProducts(items)
+                else:
+                    temp = [{"product": "미정"}]
+                    self.loadProducts(temp)
             else:
-                temp = [{"product": "미정"}]
-                self.loadProducts(temp)
-        else:
-            return QtWidgets.QMessageBox.critical(
-                self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
-            )
+                return QtWidgets.QMessageBox.critical(
+                    self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
+                )
+        except Exception as e:
+            LogPrint("Error in receiveProductsFromServer %s" % e)
+            pass

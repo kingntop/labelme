@@ -238,14 +238,6 @@ class DockCheckBoxTitleBar(QtWidgets.QWidget):
         self.closeButton.clicked.connect(self.closeParent)
 
         boxLayout.addSpacing(6)
-        # boxLayout.addWidget(self.titleLabel, 0, QtCore.Qt.AlignLeft)
-        # boxLayout.addWidget(self.hidnBtn, 0, QtCore.Qt.AlignLeft)
-        # boxLayout.addStretch()
-        # boxLayout.addWidget(self.checkbox, 0, QtCore.Qt.AlignRight)
-        # boxLayout.addSpacing(5)
-        # boxLayout.addWidget(self.dockButton, 0, QtCore.Qt.AlignRight)
-        # boxLayout.addSpacing(5)
-        # boxLayout.addWidget(self.closeButton, 0, QtCore.Qt.AlignRight)
 
         boxLayout.addWidget(self.checkbox, 0, QtCore.Qt.AlignLeft)
         boxLayout.addSpacing(10)
@@ -285,9 +277,9 @@ class DockCheckBoxTitleBar(QtWidgets.QWidget):
 
     def stateChangeHandle(self, state):
         if state == Qt.Checked:
-            self._app.labelList.checkStatus(True)
+            self._app.labelItemsChecked(True)
         else:
-            self._app.labelList.checkStatus(False)
+            self._app.labelItemsChecked(False)
 
     # receiver function signal
     def polygon_label_status(self, arg):

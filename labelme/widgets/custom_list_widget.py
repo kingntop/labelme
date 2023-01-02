@@ -3,6 +3,8 @@ import functools
 from qtpy import QtCore, QtWidgets, QtGui
 from qtpy.QtGui import QColor, QColorConstants
 from qtpy.QtCore import Qt
+from qtpy.QtGui import QPalette
+from qtpy.QtWidgets import QStyle
 
 from qtpy.QtWidgets import QLayout, QHBoxLayout, QVBoxLayout, \
     QLabel, QLineEdit, QToolButton, QScrollArea, QStyle, QListWidgetItem, QAction
@@ -181,245 +183,189 @@ class CustomListWidget(QtWidgets.QWidget):
             # remove the item from layout
             layout.removeItem(item)
 
-class MyCustomWidget(QtWidgets.QWidget):
-    _shape = None
-    _parent = None
-    _checked = True
+class CustomLabelListWidgetItem(QtGui.QStandardItem):
+    def __init__(self, text=None, shape=None):
+        super(CustomLabelListWidgetItem, self).__init__()
+        self.setText(text or "")
+        self.setShape(shape)
 
-    def __init__(self, shape, parent=None, num=None):
-        super(MyCustomWidget, self).__init__(parent)
-        self._parent = parent
+        self.setCheckable(True)
+        self.setCheckState(Qt.Checked)
+        self.setEditable(False)
+        self.setTextAlignment(Qt.AlignBottom)
 
-        if isinstance(shape, Shape):
-            self._shape = shape
-        else:
-            #sp = {"id": shape["id"], "label": shape["label"], "color": shape["color"]}
-            sp = Shape()
-            sp.label_display = shape["label_display"]
-            sp.label = shape["label"]
-            sp.grade = shape["grade"]
-            sp.color = shape["color"]
-            self._shape = sp
+    def clone(self):
+        return CustomLabelListWidgetItem(self.shape())
 
-        self.row = QtWidgets.QHBoxLayout()
-        self.row.setContentsMargins(0, 1, 0, 1)
+    def setShape(self, shape):
+        self.setData(shape, Qt.UserRole)
 
-        if num is not None:
-            if num < 10000:
-                idx = "%04d" % num
-            else:
-                idx = "%08d" % num
-        else:
-            idx = self._parent.count()
-            if idx < 10000:
-                idx = "%04d" % idx
-            else:
-                idx = "%08d" % idx
+    def shape(self):
+        return self.data(Qt.UserRole)
 
-        self._id = idx
-        self.label = QtWidgets.QLabel("#{}  {}".format(self._id, self._shape.label_display))
-        self.label.setFont(appFont())
+    def __hash__(self):
+        return id(self)
 
-        c_txt = self._shape.color
-        if not c_txt or "" == c_txt:
-            c_txt = "#808000"
-        Qc = QtGui.QColor(c_txt)
-        r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
-        tmpcolor = QtGui.QColor(r, g, b)
-        color_txt = tmpcolor.name(QtGui.QColor.HexRgb)
-
-        self.clrlabel = QtWidgets.QLabel()
-        self.clrlabel.setStyleSheet(
-            "QLabel{border: 1px soild #aaa; background: %s;}" % color_txt)
-        self.clrlabel.setFixedWidth(10)
-
-        self.checkbox = QtWidgets.QCheckBox("")
-        self.checkbox.setCheckState(Qt.Checked)  # Qt.Checked
-        self.checkbox.stateChanged.connect(self.checkBoxStateChangeHandle)
-
-        # self.row.addWidget(self.label)
-        # self.row.addStretch()
-        # self.row.addWidget(self.clrlabel)
-        # self.row.addSpacing(6)
-        # self.row.addWidget(self.checkbox)
-        # self.row.addSpacing(33)
-
-        self.row.addWidget(self.checkbox)
-        self.row.addSpacing(10)
-        self.row.addWidget(self.clrlabel)
-        self.row.addSpacing(3)
-        self.row.addWidget(self.label)
-        self.row.addStretch()
-        self.setLayout(self.row)
-        self.setContentsMargins(6, 3, 6, 3)
-
-    def checkBoxStateChangeHandle(self, state):
-        if state == Qt.Checked:
-            self._checked = True
-        else:
-            self._checked = False
-        self._parent._app.labelItemChanged(self)
-
-    def reDraw(self, idn):
-        if idn < 10000:
-            idx = "%04d" % idn
-        else:
-            idx = "%08d" % idn
-        self._id = idx
-        self.label.setText("#{}  {}".format(self._id, self._shape.label_display))
+    def __repr__(self):
+        return '{}("{}")'.format(self.__class__.__name__, self.text())
 
 # polygon list
-class CustomLabelListWidget(QtWidgets.QListWidget):
+# https://stackoverflow.com/a/2039745/4158863
+class StandardItemModel(QtGui.QStandardItemModel):
+
+    itemDropped = QtCore.Signal()
+
+    def removeRows(self, *args, **kwargs):
+        ret = super().removeRows(*args, **kwargs)
+        self.itemDropped.emit()
+        return ret
+
+
+class HTMLDelegate(QtWidgets.QStyledItemDelegate):
+    def __init__(self, parent=None):
+        super(HTMLDelegate, self).__init__()
+        self.doc = QtGui.QTextDocument(self)
+
+        font = appFont()
+        font.setPixelSize(13)
+        self.doc.setDefaultFont(font)
+
+    def paint(self, painter, option, index):
+        painter.save()
+
+        options = QtWidgets.QStyleOptionViewItem(option)
+
+        self.initStyleOption(options, index)
+        self.doc.setHtml(options.text)
+        options.text = ""
+
+        style = (
+            QtWidgets.QApplication.style()
+            if options.widget is None
+            else options.widget.style()
+        )
+        style.drawControl(QStyle.CE_ItemViewItem, options, painter)
+
+        ctx = QtGui.QAbstractTextDocumentLayout.PaintContext()
+
+        if option.state & QStyle.State_Selected:
+            ctx.palette.setColor(
+                QPalette.Text,
+                option.palette.color(
+                    QPalette.Active, QPalette.HighlightedText
+                ),
+            )
+        else:
+            ctx.palette.setColor(
+                QPalette.Text,
+                option.palette.color(QPalette.Active, QPalette.Text),
+            )
+
+        textRect = style.subElementRect(QStyle.SE_ItemViewItemText, options)
+
+        if index.column() != 0:
+            textRect.adjust(5, 0, 0, 0)
+        '''
+        thefuckyourshitup_constant = 4
+        margin = (option.rect.height() - options.fontMetrics.height()) // 2
+        margin = margin - thefuckyourshitup_constant
+        textRect.setTop(textRect.top() - margin)
+        '''
+        textRect.setTop(textRect.top() - 1)
+
+        painter.translate(textRect.topLeft())
+        painter.setClipRect(textRect.translated(-textRect.topLeft()))
+        self.doc.documentLayout().draw(painter, ctx)
+
+        painter.restore()
+
+    def sizeHint(self, option, index):
+        thefuckyourshitup_constant = 4
+        return QtCore.QSize(
+            self.doc.idealWidth(),
+            self.doc.size().height() - thefuckyourshitup_constant,
+        )
+
+class CustomLabelListWidget(QtWidgets.QListView):
+    itemDoubleClicked = QtCore.Signal(CustomLabelListWidgetItem)
     itemSelectionChanged = QtCore.Signal(list, list)
 
-    def __init__(self, app):
+    def __init__(self):
         super(CustomLabelListWidget, self).__init__()
         #self.signal = Signal()
-        self._app = app
-        self._selected_item = []
-        self._itemList = []
-        self._initLoading = False
+        self._selectedItems = []
 
+        self.setWindowFlags(Qt.Window)
+        self.setModel(StandardItemModel())
+        self.model().setItemPrototype(CustomLabelListWidgetItem())
+        self.setItemDelegate(HTMLDelegate())
         self.setSelectionMode(QtWidgets.QAbstractItemView.ExtendedSelection)
         self.setDragDropMode(QtWidgets.QAbstractItemView.InternalMove)
         self.setDefaultDropAction(Qt.MoveAction)
+
+        self.doubleClicked.connect(self.itemDoubleClickedEvent)
+
         self.selectionModel().selectionChanged.connect(
             self.itemSelectionChangedEvent
         )
 
+    def __len__(self):
+        return self.model().rowCount()
+
+    def __getitem__(self, i):
+        return self.model().item(i)
+
+    def __iter__(self):
+        for i in range(len(self)):
+            yield self[i]
+
+    @property
+    def itemDropped(self):
+        return self.model().itemDropped
+
+    @property
+    def itemChanged(self):
+        return self.model().itemChanged
+
     def itemSelectionChangedEvent(self, selected, deselected):
-        selected = [self.itemFromIndex(i) for i in selected.indexes()]
-        deselected = [self.itemFromIndex(i) for i in deselected.indexes()]
+        selected = [self.model().itemFromIndex(i) for i in selected.indexes()]
+        deselected = [
+            self.model().itemFromIndex(i) for i in deselected.indexes()
+        ]
         self.itemSelectionChanged.emit(selected, deselected)
 
-
-    def addShape(self, shape):
-        try:
-            if shape:
-                listitem = QListWidgetItem(self)
-                self.addItem(listitem)
-                row = MyCustomWidget(shape, self)
-                listitem.setSizeHint(row.minimumSizeHint())
-                self.setItemWidget(listitem, row)
-                if self._initLoading is False:
-                    fnd = False
-                    for i in range(len(self._itemList)):
-                        itm = self._itemList[i]
-                        if isinstance(itm, MyCustomWidget):
-                            if row._shape == itm._shape:
-                                fnd = True
-                                break
-
-                    if fnd is False:
-                        self._itemList.append(row)
-                else:
-                    self._itemList.append(row)
-        except Exception as e:
-            pass
-
-    def findItemByShape(self, shape):
-        for i in range(self.count()):
-            widgetitem = self.item(i)
-            if isinstance(widgetitem, QListWidgetItem):
-                item = self.itemWidget(widgetitem)
-                if item and item._shape == shape:
-                    return item
-
-        return None
-
-    def findWidgetItemByItem(self, pitem):
-        for i in range(self.count()):
-            widgetitem = self.item(i)
-            if isinstance(widgetitem, QListWidgetItem):
-                item = self.itemWidget(widgetitem)
-                if item and item._shape == pitem._shape:
-                    return widgetitem, i
-
-        return None, 0
+    def itemDoubleClickedEvent(self, index):
+        self.itemDoubleClicked.emit(self.model().itemFromIndex(index))
 
     def selectedItems(self):
-        return [self.itemFromIndex(i) for i in self.selectedIndexes()]
+        return [self.model().itemFromIndex(i) for i in self.selectedIndexes()]
 
-    def selectItem(self, pitem):
-        wdgitem, x = self.findWidgetItemByItem(pitem)
-        if wdgitem is not None:
-            self.setCurrentItem(wdgitem, QtCore.QItemSelectionModel.Select)
+    def scrollToItem(self, item):
+        self.scrollTo(self.model().indexFromItem(item))
 
-    def scrollTooItem(self, item):
-        wdgitem, x = self.findWidgetItemByItem(item)
-        self.scrollToItem(wdgitem)
-
-    def checkStatus(self, flag):
-        if flag == 1:
-            for i in range(self.count()):
-                widgetitem = self.item(i)
-                if isinstance(widgetitem, QListWidgetItem):
-                    item = self.itemWidget(widgetitem)
-                    if item and item.checkbox:
-                        item.checkbox.setCheckState(Qt.Checked)
-        else:
-            for i in range(self.count()):
-                widgetitem = self.item(i)
-                if isinstance(widgetitem, QListWidgetItem):
-                    item = self.itemWidget(widgetitem)
-                    if item and item.checkbox:
-                        item.checkbox.setCheckState(Qt.Unchecked)
+    def addItem(self, item):
+        if not isinstance(item, CustomLabelListWidgetItem):
+            raise TypeError("item must be CustomLabelListWidgetItem")
+        self.model().setItem(self.model().rowCount(), 0, item)
+        item.setSizeHint(self.itemDelegate().sizeHint(None, None))
 
     def removeItem(self, item):
-        wg, index = self.findWidgetItemByItem(item)
-        # index = self.indexFromItem(item)
-        self.takeItem(index)
-        for i in range(len(self._itemList)):
-            itm = self._itemList[i]
-            if isinstance(itm, MyCustomWidget):
-                if item._shape == itm._shape:
-                    del self._itemList[i]
-                    break
+        index = self.model().indexFromItem(item)
+        self.model().removeRows(index.row(), 1)
 
-    def reSort(self):
-        for i in range(self.count()):
-            widgetitem = self.item(i)
-            if isinstance(widgetitem, QListWidgetItem):
-                item = self.itemWidget(widgetitem)
-                if item and item.label:
-                    if isinstance(item, MyCustomWidget):
-                        item.reDraw(i + 1)
+    def selectItem(self, item):
+        index = self.model().indexFromItem(item)
+        self.selectionModel().select(index, QtCore.QItemSelectionModel.Select)
 
-    def getShapeItems(self):
-        s_items = []
-        for i in range(len(self._itemList)):
-            itm = self._itemList[i]
-            if isinstance(itm, MyCustomWidget):
-                if itm._shape:
-                    s_items.append(itm)
-        return s_items
+    def findItemByShape(self, shape):
+        for row in range(self.model().rowCount()):
+            item = self.model().item(row, 0)
+            if item.shape() == shape:
+                return item
+        raise ValueError("cannot find shape: {}".format(shape))
 
-    def getShapes(self):
-        s_items = []
-        for i in range(len(self._itemList)):
-            itm = self._itemList[i]
-            if isinstance(itm, MyCustomWidget):
-                if itm._shape:
-                    s_items.append(itm._shape)
-        return s_items
-
-    def getShapeItems_org(self):
-        s_items = []
-        for i in range(self.count()):
-            widgetitem = self.item(i)
-            if isinstance(widgetitem, QListWidgetItem):
-                item = self.itemWidget(widgetitem)
-                if item and item._shape:
-                    s_items.append(item)
-        return s_items
-
-    def getListWidgetItems(self):
-        s_items = []
-        for i in range(self.count()):
-            widgetitem = self.item(i)
-            if isinstance(widgetitem, QListWidgetItem):
-                s_items.append(widgetitem)
-        return s_items
+    def clear(self):
+        self.model().clear()
 
 
 class topToolWidget(QtWidgets.QWidget):
@@ -664,7 +610,7 @@ class topToolWidget(QtWidgets.QWidget):
         self.arrow.setEnabled(value)
         self.trans.setEnabled(value)
 
-    def appActionControll(self, edit=False, createMode="polygon"):
+    def appActionControll(self, edit=False, createmode="polygon"):
         self._app.canvas.setEditing(edit)
         self._app.canvas.createMode = createMode
 
@@ -672,28 +618,28 @@ class topToolWidget(QtWidgets.QWidget):
             self.editOrDraw.setText("그리기 모드")
             self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
 
-        if createMode == "polygon":
+        if createmode == "polygon":
             self._app.actions.createMode.setEnabled(False)
             self._app.actions.createRectangleMode.setEnabled(True)
             self._app.actions.createCircleMode.setEnabled(True)
             #self._app.actions.createLineMode.setEnabled(True)
             #self._app.actions.createPointMode.setEnabled(True)
             # self.actions.createLineStripMode.setEnabled(True)
-        elif createMode == "rectangle":
+        elif createmode == "rectangle":
             self._app.actions.createMode.setEnabled(True)
             self._app.actions.createRectangleMode.setEnabled(False)
             self._app.actions.createCircleMode.setEnabled(True)
             #self._app.actions.createLineMode.setEnabled(True)
             #self._app.actions.createPointMode.setEnabled(True)
             # self.actions.createLineStripMode.setEnabled(True)
-        elif createMode == "line":
+        elif createmode == "line":
             self._app.actions.createMode.setEnabled(True)
             self._app.actions.createRectangleMode.setEnabled(True)
             self._app.actions.createCircleMode.setEnabled(True)
             #self._app.actions.createLineMode.setEnabled(False)
             #self._app.actions.createPointMode.setEnabled(True)
             # self.actions.createLineStripMode.setEnabled(True)
-        elif createMode == "circle":
+        elif createmode == "circle":
             self._app.actions.createMode.setEnabled(True)
             self._app.actions.createRectangleMode.setEnabled(True)
             self._app.actions.createCircleMode.setEnabled(False)

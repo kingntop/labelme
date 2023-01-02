@@ -79,13 +79,13 @@ class ProcessINI(object):
                     try:
                         val = int(configFile[self.SECTION][key])
                         self.configDef[key] = val
-                    except:
+                    except Exception as e:
                         pass
                 elif type(configFile[self.SECTION][key]) == float:
                     try:
                         val = float(configFile[self.SECTION][key])
                         self.configDef[key] = val
-                    except:
+                    except Exception as e:
                         pass
                 elif type(configFile[self.SECTION][key]) == bool:
                     if configFile[self.SECTION][key] == 'True':
