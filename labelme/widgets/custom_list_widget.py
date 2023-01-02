@@ -14,6 +14,7 @@ from labelme.widgets.custom_qlabel import CQLabel
 from labelme.widgets.signal import Signal
 from labelme.shape import Shape
 from labelme.utils import appFont
+from labelme.utils.qt import LogPrint
 
 # grade list
 class CustomListWidget(QtWidgets.QWidget):
@@ -381,70 +382,6 @@ class topToolWidget(QtWidgets.QWidget):
         # setting UI
         self.initUI()
 
-    def initUI_(self):
-        shortcuts = self._app._config["shortcuts"]
-
-        hbox_layout = QHBoxLayout()
-        hbox_layout.setSpacing(0)
-        hbox_layout.setContentsMargins(5, 5, 0, 0)
-
-        self.polygon = QToolButton()
-        self.polygon.setIcon(utils.newIcon("poly"))
-        self.polygon.setIconSize(QtCore.QSize(20, 20))
-        self.polygon.clicked.connect(self.polygonClick)
-        self.polygon.setEnabled(False)
-        #self.polygon.setFixedSize(150, 150)
-        self.polygon.setShortcut(shortcuts['create_polygon'])
-
-
-        self.rect = QToolButton()
-        self.rect.setIcon(utils.newIcon("rect"))
-        self.rect.setIconSize(QtCore.QSize(20, 20))
-        self.rect.clicked.connect(self.rectClick)
-        self.rect.setEnabled(False)
-        self.rect.setShortcut(shortcuts['create_rectangle'])
-
-        self.circle = QToolButton()
-        self.circle.setIcon(utils.newIcon("circle"))
-        self.circle.setIconSize(QtCore.QSize(20, 20))
-        self.circle.clicked.connect(self.circleClick)
-        self.circle.setEnabled(False)
-
-        self.line = QToolButton()
-        self.line.setIcon(utils.newIcon("line"))
-        self.line.setIconSize(QtCore.QSize(20, 20))
-        self.line.clicked.connect(self.lineClick)
-        self.line.setEnabled(False)
-
-        self.arrow = QToolButton()
-        self.arrow.setIcon(utils.newIcon("CursorArrow"))
-        self.arrow.setIconSize(QtCore.QSize(20, 20))
-        self.arrow.clicked.connect(self.arrowClick)
-        self.arrow.setEnabled(False)
-
-        self.trans = QToolButton()
-        self.trans.setIcon(utils.newIcon("ftrans"))
-        self.trans.setIconSize(QtCore.QSize(20, 20))
-        self.trans.clicked.connect(self.transClick)
-        self.trans.setEnabled(False)
-
-        hbox_layout.addSpacing(20)
-        hbox_layout.addWidget(self.polygon, 0, QtCore.Qt.AlignLeft)
-        hbox_layout.addSpacing(20)
-        hbox_layout.addWidget(self.rect, 0, QtCore.Qt.AlignLeft)
-        hbox_layout.addSpacing(20)
-        hbox_layout.addWidget(self.circle, 0, QtCore.Qt.AlignLeft)
-        hbox_layout.addSpacing(20)
-        hbox_layout.addWidget(self.line, 0, QtCore.Qt.AlignLeft)
-        hbox_layout.addSpacing(20)
-        hbox_layout.addWidget(self.arrow, 0, QtCore.Qt.AlignLeft)
-        hbox_layout.addSpacing(20)
-        hbox_layout.addWidget(self.trans, 0, QtCore.Qt.AlignLeft)
-
-        hbox_layout.addStretch()
-
-        self.setLayout(hbox_layout)
-
     def initUI(self):
         shortcuts = self._app._config["shortcuts"]
         # top_create_polygon = action(
@@ -555,28 +492,28 @@ class topToolWidget(QtWidgets.QWidget):
         self.rect.setEnabled(True)
         self.circle.setEnabled(True)
         #self.line.setEnabled(True)
-        self.appActionControll(False, createMode="polygon")
+        self.appActionControll(False, createmode="polygon")
 
     def rectClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(False)
         self.circle.setEnabled(True)
         #self.line.setEnabled(True)
-        self.appActionControll(False, createMode="rectangle")
+        self.appActionControll(False, createmode="rectangle")
 
     def circleClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(True)
         self.circle.setEnabled(False)
         #self.line.setEnabled(True)
-        self.appActionControll(False, createMode="circle")
+        self.appActionControll(False, createmode="circle")
 
     def lineClick(self):
         self.polygon.setEnabled(True)
         self.rect.setEnabled(True)
         self.circle.setEnabled(True)
         #self.line.setEnabled(False)
-        self.appActionControll(False, createMode="line")
+        self.appActionControll(False, createmode="line")
 
     def arrowClick(self):
         # if self._app.canvas.current:
@@ -611,89 +548,97 @@ class topToolWidget(QtWidgets.QWidget):
         self.trans.setEnabled(value)
 
     def appActionControll(self, edit=False, createmode="polygon"):
-        self._app.canvas.setEditing(edit)
-        self._app.canvas.createMode = createMode
+        try:
+            self._app.canvas.setEditing(edit)
+            self._app.canvas.createMode = createmode
 
-        if self._app.canvas.editing() is False:
-            self.editOrDraw.setText("그리기 모드")
-            self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
+            if self._app.canvas.editing() is False:
+                self.editOrDraw.setText("그리기 모드")
+                self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
 
-        if createmode == "polygon":
-            self._app.actions.createMode.setEnabled(False)
-            self._app.actions.createRectangleMode.setEnabled(True)
-            self._app.actions.createCircleMode.setEnabled(True)
-            #self._app.actions.createLineMode.setEnabled(True)
-            #self._app.actions.createPointMode.setEnabled(True)
-            # self.actions.createLineStripMode.setEnabled(True)
-        elif createmode == "rectangle":
-            self._app.actions.createMode.setEnabled(True)
-            self._app.actions.createRectangleMode.setEnabled(False)
-            self._app.actions.createCircleMode.setEnabled(True)
-            #self._app.actions.createLineMode.setEnabled(True)
-            #self._app.actions.createPointMode.setEnabled(True)
-            # self.actions.createLineStripMode.setEnabled(True)
-        elif createmode == "line":
-            self._app.actions.createMode.setEnabled(True)
-            self._app.actions.createRectangleMode.setEnabled(True)
-            self._app.actions.createCircleMode.setEnabled(True)
-            #self._app.actions.createLineMode.setEnabled(False)
-            #self._app.actions.createPointMode.setEnabled(True)
-            # self.actions.createLineStripMode.setEnabled(True)
-        elif createmode == "circle":
-            self._app.actions.createMode.setEnabled(True)
-            self._app.actions.createRectangleMode.setEnabled(True)
-            self._app.actions.createCircleMode.setEnabled(False)
-            #self._app.actions.createLineMode.setEnabled(True)
-            #self._app.actions.createPointMode.setEnabled(True)
-            # self.actions.createLineStripMode.setEnabled(True)
-        self._app.actions.editMode.setEnabled(not edit)
+            if createmode == "polygon":
+                self._app.actions.createMode.setEnabled(False)
+                self._app.actions.createRectangleMode.setEnabled(True)
+                self._app.actions.createCircleMode.setEnabled(True)
+                #self._app.actions.createLineMode.setEnabled(True)
+                #self._app.actions.createPointMode.setEnabled(True)
+                # self.actions.createLineStripMode.setEnabled(True)
+            elif createmode == "rectangle":
+                self._app.actions.createMode.setEnabled(True)
+                self._app.actions.createRectangleMode.setEnabled(False)
+                self._app.actions.createCircleMode.setEnabled(True)
+                #self._app.actions.createLineMode.setEnabled(True)
+                #self._app.actions.createPointMode.setEnabled(True)
+                # self.actions.createLineStripMode.setEnabled(True)
+            elif createmode == "line":
+                self._app.actions.createMode.setEnabled(True)
+                self._app.actions.createRectangleMode.setEnabled(True)
+                self._app.actions.createCircleMode.setEnabled(True)
+                #self._app.actions.createLineMode.setEnabled(False)
+                #self._app.actions.createPointMode.setEnabled(True)
+                # self.actions.createLineStripMode.setEnabled(True)
+            elif createmode == "circle":
+                self._app.actions.createMode.setEnabled(True)
+                self._app.actions.createRectangleMode.setEnabled(True)
+                self._app.actions.createCircleMode.setEnabled(False)
+                #self._app.actions.createLineMode.setEnabled(True)
+                #self._app.actions.createPointMode.setEnabled(True)
+                # self.actions.createLineStripMode.setEnabled(True)
+            self._app.actions.editMode.setEnabled(not edit)
+        except Exception as e:
+            LogPrint("Error in appActionControll %s" % e)
+            pass
 
 
     def eventFromMenu(self, mode):
-        if self.isEnabled() is False:
-            self.setEnabled(True)
+        try:
+            if self.isEnabled() is False:
+                self.setEnabled(True)
 
-        if self._app.canvas.editing() is False:
-            self.editOrDraw.setText("그리기 모드")
-            self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
+            if self._app.canvas.editing() is False:
+                self.editOrDraw.setText("그리기 모드")
+                self.editOrDraw.setStyleSheet("QLabel { color : white;background-color: %s; font-size: 15px; font-weight: bold;padding:3px 7px;border-radius:3px}" % "#4472c4")  # 해제 #ed7d31
 
-        if mode == "polygon":
-            self.polygon.setEnabled(False)
-            self.rect.setEnabled(True)
-            self.circle.setEnabled(True)
-            #self.line.setEnabled(True)
-            if self.arrow.isEnabled() is False:
-                self.arrow.setEnabled(True)
-                self.trans.setEnabled(True)
-        elif mode == "rectangle":
-            self.polygon.setEnabled(True)
-            self.rect.setEnabled(False)
-            self.circle.setEnabled(True)
-            #self.line.setEnabled(True)
-            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
-                self.arrow.setEnabled(True)
-                self.trans.setEnabled(True)
-        elif mode == "circle":
-            self.polygon.setEnabled(True)
-            self.rect.setEnabled(True)
-            self.circle.setEnabled(False)
-            #self.line.setEnabled(True)
-            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
-                self.arrow.setEnabled(True)
-                self.trans.setEnabled(True)
-        elif mode == "line":
-            self.polygon.setEnabled(True)
-            self.rect.setEnabled(True)
-            self.circle.setEnabled(True)
-            #self.line.setEnabled(False)
-            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
-                self.arrow.setEnabled(True)
-                self.trans.setEnabled(True)
-        else:
-            self.polygon.setEnabled(True)
-            self.rect.setEnabled(True)
-            self.circle.setEnabled(True)
-            #self.line.setEnabled(True)
-            if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
-                self.arrow.setEnabled(True)
-                self.trans.setEnabled(True)
+            if mode == "polygon":
+                self.polygon.setEnabled(False)
+                self.rect.setEnabled(True)
+                self.circle.setEnabled(True)
+                #self.line.setEnabled(True)
+                if self.arrow.isEnabled() is False:
+                    self.arrow.setEnabled(True)
+                    self.trans.setEnabled(True)
+            elif mode == "rectangle":
+                self.polygon.setEnabled(True)
+                self.rect.setEnabled(False)
+                self.circle.setEnabled(True)
+                #self.line.setEnabled(True)
+                if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                    self.arrow.setEnabled(True)
+                    self.trans.setEnabled(True)
+            elif mode == "circle":
+                self.polygon.setEnabled(True)
+                self.rect.setEnabled(True)
+                self.circle.setEnabled(False)
+                #self.line.setEnabled(True)
+                if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                    self.arrow.setEnabled(True)
+                    self.trans.setEnabled(True)
+            elif mode == "line":
+                self.polygon.setEnabled(True)
+                self.rect.setEnabled(True)
+                self.circle.setEnabled(True)
+                #self.line.setEnabled(False)
+                if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                    self.arrow.setEnabled(True)
+                    self.trans.setEnabled(True)
+            else:
+                self.polygon.setEnabled(True)
+                self.rect.setEnabled(True)
+                self.circle.setEnabled(True)
+                #self.line.setEnabled(True)
+                if self.arrow.isEnabled() is False or self.trans.isEnabled() is False:
+                    self.arrow.setEnabled(True)
+                    self.trans.setEnabled(True)
+        except Exception as e:
+            LogPrint("Error in eventFromMenu %s" % e)
+            pass

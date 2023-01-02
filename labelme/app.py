@@ -1074,6 +1074,15 @@ class MainWindow(QtWidgets.QMainWindow):
                 label_file = osp.dirname(label_file) + "/meta/" + osp.basename(label_file)
             # run coco format
             threading.Timer(0.005, self.putDownCocoFormat, [label_file]).start()
+
+            # add ckd 보관후에 되돌이막기
+            saveShapes = self.canvas.shapes
+            self.canvas.shapes = []
+            self.canvas.shapesBackups = []
+            self.canvas.loadShapes(saveShapes, True)
+            self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+            # add ckd
+
             return
 
         self.dirty = True
@@ -1134,26 +1143,6 @@ class MainWindow(QtWidgets.QMainWindow):
         self.otherData = None
         self.canvas.resetState()
 
-    # delete simply
-    def resetSimplyState(self):
-        self.labelList.clear()  # this block now when polygon list is deleted
-        # update polygon count ckd
-        prodT = "Polygon Labels (Total %s)"
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 %s)"
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT % len(self.labelList))
-        self.labelFile = None
-        self.otherData = None
-        self.canvas.shapes = []
-        self.canvas.shapesBackups = []
-        self.canvas.restoreCursor()
-        self.canvas.update()
-        self.actions.deleteFile.setEnabled(False)
-        self.setDirty()
-        if self.noShapes():
-            for action in self.actions.onShapesPresent:
-                action.setEnabled(False)
-
     def currentItem(self):
         try:
             items = self.labelList.selectedItems()
@@ -1182,6 +1171,7 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             self.canvas.restoreShape()
             self.labelList.clear()
+            self._itemList.clear()
             self.loadShapes(self.canvas.shapes)
             self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
             #self.setDirty()  # add 11.02.2022
@@ -1439,6 +1429,7 @@ class MainWindow(QtWidgets.QMainWindow):
             pattern = self.polygonSearch.text()
             temp_items = self._itemList
             self.labelList.clear()
+            saveShapes = []  #add 01/02/2023
             for shape in temp_items:
                 grade = shape.grade
                 label = shape.label
@@ -1457,7 +1448,14 @@ class MainWindow(QtWidgets.QMainWindow):
                         *shape.color.getRgb()[:3], html.escape(text)
                     )
                 )
+                saveShapes.append(shape)  #add 01/02/2023
 
+            # add 01/02/2023 {
+            self.canvas.shapes = []
+            self.canvas.shapesBackups = []
+            self.canvas.loadShapes(saveShapes, True)
+            self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+            # add 01/02/2023 }
             prodT = "Polygon Labels (Total {})".format(self.labelList.__len__())
             if self._config["local_lang"] == "ko_KR":
                 prodT = "다각형 레이블 (총 {})".format(self.labelList.__len__())
@@ -1468,34 +1466,48 @@ class MainWindow(QtWidgets.QMainWindow):
 
 
     def polygonSearchChanged_No(self):
-        pattern = self.polygonSearch.text()
-        pattern = pattern.strip()
-        if len(pattern) > 0:
-            return
+        try:
+            pattern = self.polygonSearch.text()
+            pattern = pattern.strip()
+            if len(pattern) > 0:
+                return
 
-        grade = None
-        label = None
-        self.labelList.clear()
-        for item in self._itemList:
-            if isinstance(item, CustomLabelListWidgetItem):
-                shape = item.shape()
-                if shape:
-                    grade = shape.grade
-                    label = shape.label
-            if pattern and pattern not in grade and pattern not in label:
-                continue
+            temp_items = self._itemList
+            self.labelList.clear()
+            saveShapes = []  # add 01/02/2023
+            for shape in temp_items:
+                grade = shape.grade
+                label = shape.label
+                if pattern and pattern not in grade and pattern not in label:
+                    continue
 
-            self.labelList.addItem(item)
-            item.setText(
-                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
-                    *shape.color.getRgb()[:3], html.escape(text)
+                if shape.label_display is None:
+                    text = shape.label
+                else:
+                    text = shape.label_display
+
+                list_item = CustomLabelListWidgetItem(text, shape)
+                saveShapes.append(shape)  # add 01/02/2023
+                self.labelList.addItem(list_item)
+                list_item.setText(
+                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
+                        *shape.color.getRgb()[:3], html.escape(text)
+                    )
                 )
-            )
+            # add 01/02/2023 {
+            self.canvas.shapes = []
+            self.canvas.shapesBackups = []
+            self.canvas.loadShapes(saveShapes, True)
+            self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+            # add 01/02/2023 }
 
-        prodT = "Polygon Labels (Total {})".format(self.labelList.__len__())
-        if self._config["local_lang"] == "ko_KR":
-            prodT = "다각형 레이블 (총 {})".format(self.labelList.__len__())
-        self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
+            prodT = "Polygon Labels (Total {})".format(self.labelList.__len__())
+            if self._config["local_lang"] == "ko_KR":
+                prodT = "다각형 레이블 (총 {})".format(self.labelList.__len__())
+            self.shape_dock.titleBarWidget().titleLabel.setText(prodT)
+        except Exception as e:
+            LogPrint("라벨검색1 중 %s" % e)
+            pass
 
     # no using
     def productsSelectionChanged(self):
@@ -1664,10 +1676,8 @@ class MainWindow(QtWidgets.QMainWindow):
     def loadShapes(self, shapes, replace=True):
         try:
             self._noSelectionSlot = True
-
             for shape in shapes:
                 self.addLabel(shape)
-
             self.labelList.clearSelection()
             self._noSelectionSlot = False
             self.canvas.loadShapes(shapes, replace=replace)
@@ -1995,7 +2005,18 @@ class MainWindow(QtWidgets.QMainWindow):
                     a = self.polygonTrans_deta_value - self.polygonTrans_value
                 else:
                     a = self.polygonTrans_deta_value
+
                 shape.color = QtGui.QColor(r, g, b, a)
+                #add 01/02/2023 {
+                la = int(a * 255 / 128)
+                shape.line_color = QtGui.QColor(r, g, b, la)
+                shape.vertex_fill_color = QtGui.QColor(r, g, b, a)
+                shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
+                shape.fill_color = QtGui.QColor(r, g, b, a)
+                shape.select_line_color = QtGui.QColor(255, 255, 255, a + 80)
+                shape.select_fill_color = QtGui.QColor(r, g, b, a + 27)
+                #add 01/02/2023 }
+
                 shape.lineweight = self.lineweight_value
                 # print("new shape", str(a))
                 self.addLabel(shape)
@@ -2724,6 +2745,14 @@ class MainWindow(QtWidgets.QMainWindow):
                 if filename.find("meta/") > -1:
                     filename = filename.replace("meta/", "")  # add ckd
                 self._saveFile(filename)
+
+            # add ckd 보관후에 되돌이막기
+            saveShapes = self.canvas.shapes  
+            self.canvas.shapes = []
+            self.canvas.shapesBackups = []
+            self.canvas.loadShapes(saveShapes, True)
+            self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
+            # add ckd
         except Exception as e:
             LogPrint("Error in saveFile %s" % e)
             pass
@@ -2872,7 +2901,6 @@ class MainWindow(QtWidgets.QMainWindow):
                     item.setCheckState(Qt.Unchecked)
                 self.resetState()
                 self._itemList.clear()
-                #self.resetSimplyState()  # add ckd
         except Exception as e:
             LogPrint("Error in deleteFile %s" % e)
             pass
