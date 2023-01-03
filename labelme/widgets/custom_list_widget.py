@@ -189,6 +189,7 @@ class CustomLabelListWidgetItem(QtGui.QStandardItem):
         super(CustomLabelListWidgetItem, self).__init__()
         self.setText(text or "")
         self.setShape(shape)
+        self.number = 0
 
         self.setCheckable(True)
         self.setCheckState(Qt.Checked)
@@ -206,6 +207,12 @@ class CustomLabelListWidgetItem(QtGui.QStandardItem):
 
     def __hash__(self):
         return id(self)
+
+    def getNumber(self):
+        return self.number
+
+    def setNumber(self, num):
+        self.number = num
 
     def __repr__(self):
         return '{}("{}")'.format(self.__class__.__name__, self.text())

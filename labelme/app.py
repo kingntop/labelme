@@ -1346,9 +1346,16 @@ class MainWindow(QtWidgets.QMainWindow):
                 r, g, b, a = Qc.red(), Qc.green(), Qc.blue(), Qc.alpha()
                 shape.color = QtGui.QColor(r, g, b, old_a)
                 self._update_shape_color(shape)
+
+                item_len = item.getNumber()
+                if item_len < 10000:
+                    item_len = "%04d" % item_len
+                else:
+                    item_len = "%08d" % item_len
+
                 item.setText(
-                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
-                        *shape.color.getRgb()[:3], html.escape(shape.label_display)
+                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;   #{}  &nbsp;  {}'.format(
+                        *shape.color.getRgb()[:3], item_len, html.escape(shape.label_display)
                     )
                 )
 
@@ -1405,10 +1412,16 @@ class MainWindow(QtWidgets.QMainWindow):
             shape.color = QtGui.QColor(r, g, b, old_a)
             self._update_shape_color(shape)
 
+            item_len = item.getNumber()
+            if item_len < 10000:
+                item_len = "%04d" % item_len
+            else:
+                item_len = "%08d" % item_len
+
             # update label
             item.setText(
-                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
-                    *shape.color.getRgb()[:3], html.escape(shape.label_display)
+                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;   #{}  &nbsp;  {}'.format(
+                    *shape.color.getRgb()[:3], item_len, html.escape(shape.label_display)
                 )
             )
 
@@ -1443,9 +1456,17 @@ class MainWindow(QtWidgets.QMainWindow):
 
                 list_item = CustomLabelListWidgetItem(text, shape)
                 self.labelList.addItem(list_item)
+
+                item_len = self.labelList.__len__()
+                list_item.setNumber(item_len)
+
+                if item_len < 10000:
+                    item_len = "%04d" % item_len
+                else:
+                    item_len = "%08d" % item_len
                 list_item.setText(
-                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
-                        *shape.color.getRgb()[:3], html.escape(text)
+                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;   #{}  &nbsp;  {}'.format(
+                        *shape.color.getRgb()[:3], item_len, html.escape(text)
                     )
                 )
                 saveShapes.append(shape)  #add 01/02/2023
@@ -1487,13 +1508,21 @@ class MainWindow(QtWidgets.QMainWindow):
                     text = shape.label_display
 
                 list_item = CustomLabelListWidgetItem(text, shape)
-                saveShapes.append(shape)  # add 01/02/2023
                 self.labelList.addItem(list_item)
+
+                item_len = self.labelList.__len__()
+                list_item.setNumber(item_len)
+
+                if item_len < 10000:
+                    item_len = "%04d" % item_len
+                else:
+                    item_len = "%08d" % item_len
                 list_item.setText(
-                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
-                        *shape.color.getRgb()[:3], html.escape(text)
+                    '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;   #{}  &nbsp;  {}'.format(
+                        *shape.color.getRgb()[:3], item_len, html.escape(text)
                     )
                 )
+                saveShapes.append(shape)  # add 01/02/2023
             # add 01/02/2023 {
             self.canvas.shapes = []
             self.canvas.shapesBackups = []
@@ -1582,9 +1611,21 @@ class MainWindow(QtWidgets.QMainWindow):
             for action in self.actions.onShapesPresent:
                 action.setEnabled(True)
 
+            item_len = self.labelList.__len__()
+            list_item.setNumber(item_len)
+
+            if item_len < 10000:
+                item_len = "%04d" % item_len
+            else:
+                item_len = "%08d" % item_len
+
+            if not isinstance(shape.color, QtGui.QColor):
+                self._update_shape_color(shape)
+                self.canvas.update()
+
             list_item.setText(
-                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;  {}'.format(
-                    *shape.color.getRgb()[:3], html.escape(text)
+                '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;   #{}  &nbsp;  {}'.format(
+                    *shape.color.getRgb()[:3], item_len, html.escape(text)
                 )
             )
 
@@ -1615,7 +1656,7 @@ class MainWindow(QtWidgets.QMainWindow):
             shape.line_color = QtGui.QColor(r, g, b, la)
             shape.vertex_fill_color = QtGui.QColor(r, g, b, a)
             shape.hvertex_fill_color = QtGui.QColor(255, 255, 255)
-            shape.fill_color = QtGui.QColor(r, g, b, a)  # a=128
+            shape.fill_color = QtGui.QColor(r, g, b, a if a < 255 else 128)  # a=128
             shape.select_line_color = QtGui.QColor(255, 255, 255, a + 80)
             shape.select_fill_color = QtGui.QColor(r, g, b, a + 27)  # a = 155
             shape.lineweight = self.lineweight_value
@@ -1649,13 +1690,24 @@ class MainWindow(QtWidgets.QMainWindow):
                 item = self.labelList.findItemByShape(shape)
                 if item:
                     self.labelList.removeItem(item)
-                    """
-                    for i in range(len(self._itemList)):
-                        itm_shape = self._itemList[i]
-                        if itm_shape == shape:
-                            del self._itemList[i]
-                            break
-                    """
+            idx = 1
+            for item in self.labelList:
+                if item:
+                    shape = item.shape()
+                    item.setNumber(idx)
+                    if idx < 10000:
+                        item_len = "%04d" % idx
+                    else:
+                        item_len = "%08d" % idx
+                    if shape:
+                        item.setText(
+                            '&nbsp; <font size=3 color="#{:02x}{:02x}{:02x}">█</font>&nbsp;   #{}  &nbsp;  {}'.format(
+                                *shape.color.getRgb()[:3], item_len, html.escape(shape.label_display)
+                            )
+                        )
+                    idx = idx+1
+
+
             threading.Timer(0.005, self.removeitemListShapesWithThread, [shapes]).start()
         except Exception as e:
             LogPrint("라벨리스트에서 삭제중 %s" % e)

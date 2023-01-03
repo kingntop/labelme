@@ -1,0 +1,5 @@
+[2023.01.03/11:42:58] - 라벨추가중 'str' object has no attribute 'getRgb'
+[2023.01.03/11:59:18] - 라벨추가중 'str' object has no attribute 'getRgb'
+[2023.01.03/12:04:35] - 라벨추가중 'str' object has no attribute 'getRgb'
+[2023.01.03/12:11:53] - 라벨추가중 'str' object has no attribute 'getRgb'
+[2023.01.03/12:27:44] - 라벨추가중 'str' object has no attribute 'getRgb'
