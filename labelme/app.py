@@ -2589,6 +2589,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.isSaving:
                 event.ignore()
                 self.errorMessage("알림", "파일보관중입니다.")
+                return
 
             self.settings.setValue(
                 "filename", self.filename if self.filename else ""
