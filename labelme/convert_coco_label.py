@@ -177,7 +177,7 @@ class ConvertCoCOLabel(object):
                     """
 
         except Exception as e:
-            LogPrint("coco 파일이 정확하지 않습니다, " + e)
+            LogPrint("coco 파일이 정확하지 않습니다 : %s" % e)
             pass
             #raise CoCoFileError(e)
 
@@ -219,8 +219,10 @@ class ConvertCoCOLabel(object):
             self.labelfilename = None
             return lfname
         except Exception as e:
-            LogPrint(e)
-            raise CoCoFileError(e)
+            LogPrint("코코파일을 라벨파일로 변환중 오류 %s" % e)
+            pass
+            # raise CoCoFileError(e)
+        return ""
 
     @staticmethod
     def is_coco_file(filename):

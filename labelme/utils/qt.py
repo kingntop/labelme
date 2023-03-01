@@ -128,9 +128,12 @@ def fmtShortcut(text):
 
 
 def LogPrint(error: str):
-    current_time = time.strftime("%Y.%m.%d/%H:%M:%S", time.localtime(time.time()))
-    with open("Log.txt", "a", encoding='utf8') as f:
-        f.write(f"[{current_time}] - {error}\n")
+    try:
+        current_time = time.strftime("%Y.%m.%d/%H:%M:%S", time.localtime(time.time()))
+        with open("Log.txt", "a", encoding='utf8') as f:
+            f.write(f"[{current_time}] - {error}\n")
+    except Exception as e:
+        pass
 
 
 def httpReq(url, method, headers=None, data=None, param=None):
@@ -159,5 +162,6 @@ def httpReq(url, method, headers=None, data=None, param=None):
     #     jsstr = 'ProxyError when try to get %s' % e.args
     except Exception as e:
         jsstr = 'Exception when try to get %s' % e.args
+        LogPrint("httpReq 에서 오류가 발생하였습니다." + e)
 
     return {"message": jsstr}

@@ -79,6 +79,7 @@ class MainWindow(QtWidgets.QMainWindow):
     FIT_WINDOW, FIT_WIDTH, MANUAL_ZOOM = 0, 1, 2
     selected_grade = None
     userInfo = {}
+    isSaving = False
 
     def __init__(
         self,
@@ -1635,7 +1636,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.shape_dock.titleBarWidget().titleLabel.setText(prodT % self.labelList.__len__())
             #self._update_shape_color(shape) 이부분에선 불필요
         except Exception as e:
-            LogPrint("라벨추가중 %s" % e)
+            LogPrint("라벨추가중 오류 :: %s" % e)
             pass
 
 
@@ -1766,15 +1767,17 @@ class MainWindow(QtWidgets.QMainWindow):
         for shape in shapes:
             try:
                 grade = shape["grade"]
-            except AttributeError:
+            except AttributeError as e:
                 grade = shape["label"]
-                LogPrint("shape 에 grade 속성이 없습니다")
+                LogPrint("shape 에 grade 속성이 없습니다 : %s" % e)
+                pass
 
             try:
                 label_display = shape["label_display"]
-            except AttributeError:
+            except AttributeError as e:
                 label_display = shape["label"]
-                LogPrint("shape 에 label 속성이 없습니다")
+                LogPrint("shape 에 label 속성이 없습니다 : %s" % e)
+                pass
 
             label = shape["label"]
             color = shape["color"]
@@ -1818,6 +1821,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 shape.other_data = other_data
             except Exception as e:
                 LogPrint("shape 생성중 %s" % e)
+                pass
 
             s.append(shape)
         self.loadShapes(s)
@@ -2582,6 +2586,10 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             if not self.mayContinue():
                 event.ignore()
+            if self.isSaving:
+                event.ignore()
+                self.errorMessage("알림", "파일보관중입니다.")
+
             self.settings.setValue(
                 "filename", self.filename if self.filename else ""
             )
@@ -2806,7 +2814,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.actions.undo.setEnabled(self.canvas.isShapeRestorable)
             # add ckd
         except Exception as e:
-            LogPrint("Error in saveFile %s" % e)
+            LogPrint("Error in saveFile :: %s" % e)
             pass
 
 
@@ -2815,7 +2823,7 @@ class MainWindow(QtWidgets.QMainWindow):
             assert not self.image.isNull(), "cannot save empty image"
             self._saveFile(self.saveFileDialog())
         except Exception as e:
-            LogPrint("Error in saveFileAs %s" % e)
+            LogPrint("Error in saveFileAs :: %s" % e)
             pass
 
     def saveFileDialog(self):
@@ -2854,6 +2862,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def _saveFile(self, filename):
         try:
+            self.isSaving = True
             if filename and self.saveLabels(filename):
                 if filename.find("meta") < 0:
                     meta_dir = osp.dirname(filename) + "/meta"
@@ -2863,11 +2872,13 @@ class MainWindow(QtWidgets.QMainWindow):
                 # run coco format
                 threading.Timer(0.1, self.putDownCocoFormat, [filename]).start()
         except Exception as e:
-            LogPrint("Error in _saveFile %s" % e)
+            self.isSaving = False
+            LogPrint("Error in _saveFile :: %s" % e)
             pass
 
     def putDownCocoFormat(self, arg):
         if arg is None:
+            self.isSaving = False
             return
         # put to coco format
         cf = ""
@@ -2882,9 +2893,11 @@ class MainWindow(QtWidgets.QMainWindow):
                 os.makedirs(osp.dirname(cocofp))
 
             labelme2coco(labelmefiles, cocofp)
+            self.isSaving = False
             #print("Success save coco json")
         except LabelFileError as e:
-            LogPrint("라벨미파일을 코코파일로 보관중 에러:: %s" % e)
+            self.isSaving = False
+            LogPrint("라벨미파일을 코코파일로 보관중 에러 :: %s" % e)
             self.errorMessage(
                 self.tr("Error creating coco file"),
                 self.tr(
@@ -2914,7 +2927,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.polygonAlphaDlg.label_line.setText("2.0")
             self.polygonAlphaDlg = None
         except AttributeError as e:
-            LogPrint("Error in closeFile %s" % e)
+            LogPrint("Error in closeFile :: %s" % e)
             pass
 
 
@@ -2954,7 +2967,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.resetState()
                 self._itemList.clear()
         except Exception as e:
-            LogPrint("Error in deleteFile %s" % e)
+            LogPrint("Error in deleteFile :: %s" % e)
             pass
 
     # Message Dialogs.
@@ -2975,27 +2988,32 @@ class MainWindow(QtWidgets.QMainWindow):
         return osp.exists(label_file)
 
     def mayContinue(self):
-        if not self.dirty:
-            return True
-        mb = QtWidgets.QMessageBox
-        msgstr = 'Save annotations to "{}" before closing?' if self._config['local_lang'] != 'ko_KR' else '닫기전에 "{}" 을 보관하시겠습니까?'
-        msg = msgstr.format(
-            self.filename
-        )
-        answer = mb.question(
-            self,
-            "Save annotations?" if self._config['local_lang'] != 'ko_KR' else '주석 저장?',
-            msg,
-            mb.Save | mb.Discard | mb.Cancel,
-            mb.Save,
-        )
-        if answer == mb.Discard:
-            return True
-        elif answer == mb.Save:
-            self.saveFile()
-            return True
-        else:  # answer == mb.Cancel
-            return False
+        try:
+            if not self.dirty:
+                return True
+            mb = QtWidgets.QMessageBox
+            msgstr = 'Save annotations to "{}" before closing?' if self._config['local_lang'] != 'ko_KR' else '닫기전에 "{}" 을 보관하시겠습니까?'
+            msg = msgstr.format(
+                self.filename
+            )
+            answer = mb.question(
+                self,
+                "Save annotations?" if self._config['local_lang'] != 'ko_KR' else '주석 저장?',
+                msg,
+                mb.Save | mb.Discard | mb.Cancel,
+                mb.Save,
+            )
+            if answer == mb.Discard:
+                return True
+            elif answer == mb.Save:
+                self.saveFile()
+                return True
+            else:  # answer == mb.Cancel
+                return False
+        except Exception as e:
+            LogPrint("Err in mayContinue :: %s" % e)
+            pass
+        return False
 
     def errorMessage(self, title, message):
         return QtWidgets.QMessageBox.critical(
@@ -3026,7 +3044,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     for action in self.actions.onShapesPresent:
                         action.setEnabled(False)
         except Exception as e:
-            LogPrint("Error in removeSelectedPoint %s" % e)
+            LogPrint("Error in removeSelectedPoint :: %s" % e)
             pass
 
 
@@ -3054,7 +3072,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     for action in self.actions.onShapesPresent:
                         action.setEnabled(False)
         except Exception as e:
-            LogPrint("Error in deleteSelectedShape %s" % e)
+            LogPrint("Error in deleteSelectedShape :: %s" % e)
             pass
 
 
@@ -3066,7 +3084,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.labelList.clearSelection()
             self.setDirty()
         except Exception as e:
-            LogPrint("Error in copyShape %s" % e)
+            LogPrint("Error in copyShape :: %s" % e)
             pass
 
 
@@ -3075,7 +3093,7 @@ class MainWindow(QtWidgets.QMainWindow):
             self.canvas.endMove(copy=False)
             self.setDirty()
         except Exception as e:
-            LogPrint("Error in moveShape %s" % e)
+            LogPrint("Error in moveShape :: %s" % e)
             pass
 
     def openDirDialog(self, _value=False, dirpath=None):
@@ -3146,7 +3164,7 @@ class MainWindow(QtWidgets.QMainWindow):
                 self.actions.openNextImg.setEnabled(True)
                 self.actions.openPrevImg.setEnabled(True)
         except Exception as e:
-            LogPrint("Error in importDroppedImageFiles %s" % e)
+            LogPrint("Error in importDroppedImageFiles :: %s" % e)
 
         self.openNextImg()
         flistname = "File List (Total {})".format(self.fileListWidget.count()) if self._config["local_lang"] != "ko_KR" else "파일 목록 (총 {})".format(self.fileListWidget.count())
@@ -3282,7 +3300,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
                     )
         except Exception as e:
-            LogPrint("Error in receiveProductsFromServerByGrade %s" % e)
+            LogPrint("Error in receiveProductsFromServerByGrade :: %s" % e)
             pass
 
     def receiveLabelsFromServerByGrade(self):
@@ -3317,7 +3335,7 @@ class MainWindow(QtWidgets.QMainWindow):
                         self._polyonList = temp
 
                 except AttributeError as e:
-                    LogPrint("Error in receiveLabelsFromServerByGrade %s" % e)
+                    LogPrint("Error in receiveLabelsFromServerByGrade :: %s" % e)
                     pass
             else:
                 return QtWidgets.QMessageBox.critical(
@@ -3337,7 +3355,7 @@ class MainWindow(QtWidgets.QMainWindow):
                     self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
                 )
         except Exception as e:
-            LogPrint("Error in receiveGradesFromServer %s" % e)
+            LogPrint("Error in receiveGradesFromServer :: %s" % e)
             pass
 
     # This function be not used now
@@ -3359,5 +3377,5 @@ class MainWindow(QtWidgets.QMainWindow):
                     self, "Error", "<p><b>%s</b></p>%s" % ("Error", jsstr['message'])
                 )
         except Exception as e:
-            LogPrint("Error in receiveProductsFromServer %s" % e)
+            LogPrint("Error in receiveProductsFromServer :: %s" % e)
             pass

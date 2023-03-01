@@ -1,4 +1,5 @@
 import os
+import os.path as osp
 import argparse
 import json
 
@@ -6,6 +7,7 @@ from labelme import utils
 import numpy as np
 import glob
 import PIL.Image
+from labelme.utils.qt import LogPrint
 
 
 class labelme2coco(object):
@@ -27,30 +29,34 @@ class labelme2coco(object):
         self.save_json()
 
     def data_transfer(self):
-        for num, json_file in enumerate(self.labelme_json):
-            with open(json_file, "r", encoding="utf-8") as fp:
-                data = json.load(fp)
-                self.images.append(self.image(data, num))
-                for shapes in data["shapes"]:
-                    label = shapes["label"]
-                    grade = shapes["grade"]
-                    #if label not in self.label: ckd  This delete equal labels
-                    #    self.label.append(label)
-                    self.label.append(label)
-                    color = shapes["color"]
-                    lineweight = shapes["lineweight"]
-                    shape_type = shapes["shape_type"]
-                    self.categories.append(self.category(grade, label, color, lineweight, shape_type))
-                    points = shapes["points"]
-                    self.annotations.append(self.annotation(points, label, num))
-                    self.annID += 1
+        try:
+            for num, json_file in enumerate(self.labelme_json):
+                with open(json_file, "r", encoding="utf-8") as fp:
+                    data = json.load(fp)
+                    self.images.append(self.image(data, num))
+                    for shapes in data["shapes"]:
+                        label = shapes["label"]
+                        grade = shapes["grade"]
+                        #if label not in self.label: ckd  This delete equal labels
+                        #    self.label.append(label)
+                        self.label.append(label)
+                        color = shapes["color"]
+                        lineweight = shapes["lineweight"]
+                        shape_type = shapes["shape_type"]
+                        self.categories.append(self.category(grade, label, color, lineweight, shape_type))
+                        points = shapes["points"]
+                        self.annotations.append(self.annotation(points, label, num))
+                        self.annID += 1
 
-        # Sort all text labels so they are in the same order across data splits.
-        #self.label.sort()
-        #for label in self.label:
-        #    self.categories.append(self.category(label))
-        for annotation in self.annotations:
-            annotation["category_id"] = self.getcatid(annotation["category_id"])
+            # Sort all text labels so they are in the same order across data splits.
+            #self.label.sort()
+            #for label in self.label:
+            #    self.categories.append(self.category(label))
+            for annotation in self.annotations:
+                annotation["category_id"] = self.getcatid(annotation["category_id"])
+        except Exception as e:
+            LogPrint("data_transfer of labelme2coco :: %s" % e)
+            pass
 
     def data_transfer_org(self):
         for num, json_file in enumerate(self.labelme_json):
@@ -84,12 +90,14 @@ class labelme2coco(object):
             else:
                 height = data["imageHeight"]
                 width = data["imageWidth"]
-        except AttributeError as e:
+
+            image["height"] = height
+            image["width"] = width
+            image["id"] = num
+            image["file_name"] = data["imagePath"].split("/")[-1]
+        except Exception as e:
+            LogPrint("image of labelme2coco  : %s" % e)
             pass
-        image["height"] = height
-        image["width"] = width
-        image["id"] = num
-        image["file_name"] = data["imagePath"].split("/")[-1]
 
         self.height = height
         self.width = width
@@ -114,28 +122,36 @@ class labelme2coco(object):
         return category
 
     def annotation(self, points, label, num):
-        annotation = {}
-        contour = np.array(points)
-        x = contour[:, 0]
-        y = contour[:, 1]
-        area = 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
-        annotation["segmentation"] = [list(np.asarray(points).flatten())]
-        annotation["iscrowd"] = 0
-        annotation["area"] = area
-        annotation["image_id"] = num
+        try:
+            annotation = {}
+            contour = np.array(points)
+            x = contour[:, 0]
+            y = contour[:, 1]
+            area = 0.5 * np.abs(np.dot(x, np.roll(y, 1)) - np.dot(y, np.roll(x, 1)))
+            annotation["segmentation"] = [list(np.asarray(points).flatten())]
+            annotation["iscrowd"] = 0
+            annotation["area"] = area
+            annotation["image_id"] = num
 
-        annotation["bbox"] = list(map(float, self.getbbox(points)))
+            annotation["bbox"] = list(map(float, self.getbbox(points)))
 
-        annotation["category_id"] = label  # self.getcatid(label)
-        annotation["id"] = self.annID
-        return annotation
+            annotation["category_id"] = label  # self.getcatid(label)
+            annotation["id"] = self.annID
+            return annotation
+        except Exception as e:
+            LogPrint("annotation of labelme2coco  : %s" % e)
+            pass
 
     def getcatid(self, label):
-        for category in self.categories:
-            if label == category["name"]:
-                return category["id"]
-        print("label: {} not in categories: {}.".format(label, self.categories))
-        exit()
+        try:
+            for category in self.categories:
+                if label == category["name"]:
+                    return category["id"]
+            #print("label: {} not in categories: {}.".format(label, self.categories))
+            #exit()
+        except Exception as e:
+            LogPrint("getcatid of labelme2coco  : %s" % e)
+            pass
         return -1
 
     def getbbox(self, points):
@@ -163,15 +179,19 @@ class labelme2coco(object):
         ]
 
     def polygons_to_mask(self, img_shape, polygons):
-        mask = np.zeros(img_shape, dtype=np.uint8)
-        mask = PIL.Image.fromarray(mask)
-        xy = list(map(tuple, polygons))
-        if len(polygons) == 1:  # add ckd
-            PIL.ImageDraw.Draw(mask).point(xy=xy, fill=1)
-        else:
-            PIL.ImageDraw.Draw(mask).polygon(xy=xy, outline=1, fill=1)
-        mask = np.array(mask, dtype=bool)
-        return mask
+        try:
+            mask = np.zeros(img_shape, dtype=np.uint8)
+            mask = PIL.Image.fromarray(mask)
+            xy = list(map(tuple, polygons))
+            if len(polygons) == 1:  # add ckd
+                PIL.ImageDraw.Draw(mask).point(xy=xy, fill=1)
+            else:
+                PIL.ImageDraw.Draw(mask).polygon(xy=xy, outline=1, fill=1)
+            mask = np.array(mask, dtype=bool)
+            return mask
+        except Exception as e:
+            LogPrint("polygons_to_mask of labelme2coco  : %s" % e)
+            pass
 
     def data2coco(self):
         data_coco = {}
@@ -181,15 +201,18 @@ class labelme2coco(object):
         return data_coco
 
     def save_json(self):
-        #print("saving coco json")
-        self.data_transfer()
-        self.data_coco = self.data2coco()
-        #print(self.save_json_path)
-        os.makedirs(
-            os.path.dirname(os.path.abspath(self.save_json_path)), exist_ok=True
-        )
-        #json.dump(self.data_coco, open(self.save_json_path, "w"), indent=4)
-        json.dump(self.data_coco, open(self.save_json_path, "w", encoding="utf-8"), ensure_ascii=False, indent=4)
+        try:
+            self.data_transfer()
+            self.data_coco = self.data2coco()
+            if not osp.exists(self.save_json_path):
+                os.makedirs(
+                    os.path.dirname(os.path.abspath(self.save_json_path)), exist_ok=True
+                )
+            ##json.dump(self.data_coco, open(self.save_json_path, "w"), indent=4)
+            json.dump(self.data_coco, open(self.save_json_path, "w", encoding="utf-8"), ensure_ascii=False, indent=4)
+        except Exception as e:
+            LogPrint("코코스 파일 덤프중 오류  : %s" % e)
+            pass
 
 
 if __name__ == "__main__":
