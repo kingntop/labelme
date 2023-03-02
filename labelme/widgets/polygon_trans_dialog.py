@@ -179,3 +179,35 @@ class LoadingLabelProgress(QtWidgets.QWidget):
     def closeEvent(self, event):
         if self._isEnd is False:
             event.ignore()
+            
+            
+         
+class FileSaveDelayProgress(QtWidgets.QDialog):
+    def __init__(self,  parent=None):
+        super(FileSaveDelayProgress, self).__init__(parent)
+        self.setModal(True)
+        self.setWindowFlags(self.windowFlags() & ~Qt.WindowContextHelpButtonHint)
+        self.setFont(appFont())
+        self.setWindowTitle("알림")
+        self._parent = parent
+        self._isEnd = False
+        
+        self.setMinimumWidth(180)
+        self.setMinimumHeight(30)
+        qr = self.frameGeometry()
+        cp = QtWidgets.QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
+
+        hvox_layout = QtWidgets.QHBoxLayout()
+        self.label = QtWidgets.QLabel()
+        self.label.setMidLineWidth(35)
+        self.label.setText(" 파일 저장 중입니다... ")
+        hvox_layout.addWidget(self.label)
+        hvox_layout.setContentsMargins(20, 15, 20, 15)
+        self.setLayout(hvox_layout)
+
+
+    def closeEvent(self, event):
+        if self._isEnd is False:
+            event.ignore()

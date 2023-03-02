@@ -41,6 +41,7 @@ from labelme.shape import Shape
 from labelme.widgets import BrightnessContrastDialog
 from labelme.widgets import PolygonTransDialog
 from labelme.widgets import LoadingLabelProgress
+from labelme.widgets import FileSaveDelayProgress
 from labelme.widgets import AppVersionDialog
 from labelme.widgets import Canvas
 from labelme.widgets import FileDialogPreview
@@ -80,6 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
     selected_grade = None
     userInfo = {}
     isSaving = False
+    showErrMessageBox = None
 
     def __init__(
         self,
@@ -2582,13 +2584,26 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.save.setEnabled(not enabled)  # add 11/02/2022
         self.actions.saveAuto.setChecked(enabled)
 
+    def EndSavaingFile(self):
+        saveTimer = threading.Timer(1, self.EndSavaingFile)
+        #self.showErrMessageBox = self.errorMessage("알림", "파일 저장 중입니다.")
+        saveTimer.start()
+        if self.isSaving is False:
+            saveTimer.cancel()
+            self.showErrMessageBox.label.setText(" 저장 완료되었습니다! ")
+            self.showErrMessageBox._isEnd = True
+
+
     def closeEvent(self, event):
         try:
             if not self.mayContinue():
                 event.ignore()
             if self.isSaving:
                 event.ignore()
-                self.errorMessage("알림", "파일보관중입니다.")
+                #self.endSavaingFile()
+                self.showErrMessageBox = FileSaveDelayProgress(parent=self)
+                self.showErrMessageBox.show()
+                self.EndSavaingFile()
                 return
 
             self.settings.setValue(

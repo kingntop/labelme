@@ -6,6 +6,8 @@ from .polygon_trans_dialog import PolygonTransDialog
 
 from .polygon_trans_dialog import LoadingLabelProgress
 
+from .polygon_trans_dialog import FileSaveDelayProgress
+
 from .polygon_trans_dialog import AppVersionDialog
 
 from .canvas import Canvas
