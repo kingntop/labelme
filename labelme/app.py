@@ -83,6 +83,7 @@ class MainWindow(QtWidgets.QMainWindow):
     isSaving = False
     forceExit = False
     showErrMessageBox = None
+    saveTimer = None
 
     def __init__(
         self,
@@ -2586,12 +2587,12 @@ class MainWindow(QtWidgets.QMainWindow):
         self.actions.saveAuto.setChecked(enabled)
 
     def EndSavaingFile(self):
-        saveTimer = threading.Timer(1, self.EndSavaingFile)
+        self.saveTimer = threading.Timer(1, self.EndSavaingFile)
         #self.showErrMessageBox = self.errorMessage("알림", "파일 저장 중입니다.")
-        saveTimer.start()
+        self.saveTimer.start()
         if self.isSaving is False:
-            saveTimer.cancel()
-            LogPrint("저장 완료되었습니다!")
+            self.saveTimer.cancel()
+            LogPrint("%s 파일 저장 완료되었습니다!" % self.labelFile.filename if self.labelFile.filename is not None else self.filename)
             self.showErrMessageBox.label.setText(" 저장 완료되었습니다! ")
             self.showErrMessageBox._isEnd = True
 
@@ -2603,13 +2604,17 @@ class MainWindow(QtWidgets.QMainWindow):
             if self.isSaving is True and self.forceExit is False:
                 event.ignore()
                 #self.endSavaingFile()
-                LogPrint("저장 중입니다!")
+                LogPrint("%s 파일 저장 중입니다!" % self.labelFile.filename if self.labelFile.filename is not None else self.filename)
                 self.showErrMessageBox = FileSaveDelayProgress(parent=self)
                 self.showErrMessageBox.show()
                 self.EndSavaingFile()
                 return
             if self.isSaving is True and self.forceExit is True:
-                LogPrint("저장 중 강제 종료되였습니다!")
+                if(self.saveTimer.is_alive()):
+                    self.saveTimer.cancel()
+                LogPrint("%s 파일 저장 중 강제 종료되였습니다!" % self.labelFile.filename if self.labelFile.filename is not None else self.filename)
+
+
 
             self.settings.setValue(
                 "filename", self.filename if self.filename else ""
