@@ -81,6 +81,7 @@ class MainWindow(QtWidgets.QMainWindow):
     selected_grade = None
     userInfo = {}
     isSaving = False
+    forceExit = False
     showErrMessageBox = None
 
     def __init__(
@@ -2590,6 +2591,7 @@ class MainWindow(QtWidgets.QMainWindow):
         saveTimer.start()
         if self.isSaving is False:
             saveTimer.cancel()
+            LogPrint("저장 완료되었습니다!")
             self.showErrMessageBox.label.setText(" 저장 완료되었습니다! ")
             self.showErrMessageBox._isEnd = True
 
@@ -2598,13 +2600,16 @@ class MainWindow(QtWidgets.QMainWindow):
         try:
             if not self.mayContinue():
                 event.ignore()
-            if self.isSaving:
+            if self.isSaving is True and self.forceExit is False:
                 event.ignore()
                 #self.endSavaingFile()
+                LogPrint("저장 중입니다!")
                 self.showErrMessageBox = FileSaveDelayProgress(parent=self)
                 self.showErrMessageBox.show()
                 self.EndSavaingFile()
                 return
+            if self.isSaving is True and self.forceExit is True:
+                LogPrint("저장 중 강제 종료되였습니다!")
 
             self.settings.setValue(
                 "filename", self.filename if self.filename else ""

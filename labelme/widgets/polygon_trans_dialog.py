@@ -191,6 +191,7 @@ class FileSaveDelayProgress(QtWidgets.QDialog):
         self.setWindowTitle("알림")
         self._parent = parent
         self._isEnd = False
+        self._parent.forceExit = False
         
         self.setMinimumWidth(180)
         self.setMinimumHeight(30)
@@ -209,5 +210,6 @@ class FileSaveDelayProgress(QtWidgets.QDialog):
 
 
     def closeEvent(self, event):
-        if self._isEnd is False:
-            event.ignore()
+        self._parent.forceExit = True
+        #if self._isEnd is False:
+        #    event.ignore()
