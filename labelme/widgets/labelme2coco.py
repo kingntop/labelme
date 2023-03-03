@@ -11,13 +11,14 @@ from labelme.utils.qt import LogPrint
 
 
 class labelme2coco(object):
-    def __init__(self, labelme_json=[], save_json_path="./lbcoco.json"):
+    def __init__(self, labelme_json=[], save_json_path="./lbcoco.json", shape_item=[]):
         """
         :param labelme_json: the list of all labelme json file paths
         :param save_json_path: the path to save new json
         """
         self.labelme_json = labelme_json
         self.save_json_path = save_json_path
+        self.shape_list = shape_item
         self.images = []
         self.categories = []
         self.annotations = []
@@ -27,6 +28,52 @@ class labelme2coco(object):
         self.width = 0
 
         self.save_json()
+
+    def data_transfer_new_way(self):    #after i must this away
+        try:
+            if len(self.shape_list) == 0:
+                for num, json_file in enumerate(self.labelme_json):
+                    with open(json_file, "r", encoding="utf-8") as fp:
+                        data = json.load(fp)
+                        self.images.append(self.image(data, num))
+                        for shapes in data["shapes"]:
+                            label = shapes["label"]
+                            grade = shapes["grade"]
+                            self.label.append(label)
+                            color = shapes["color"]
+                            lineweight = shapes["lineweight"]
+                            shape_type = shapes["shape_type"]
+                            self.categories.append(self.category(grade, label, color, lineweight, shape_type))
+                            points = shapes["points"]
+                            self.annotations.append(self.annotation(points, label, num))
+                            self.annID += 1
+                for annotation in self.annotations:
+                    annotation["category_id"] = self.getcatid(annotation["category_id"])
+            else:
+                num = 0
+                #if self.imagePath.find("meta/") > -1:
+                #    self.imagePath = self.imagePath.replace("meta/", "")
+                #self.images.append(self.image(data, num)) #후에
+                for s in self.shape_list:
+                    label = s.label.encode("utf-8") if PY2 else s.label
+                    grade = s.grade.encode("utf-8") if PY2 else s.grade
+                    self.label.append(label)
+                    cColor = QtGui.QColor(s.color if s.color else "#808000")
+                    color = cColor.name(QtGui.QColor.HexArgb)
+                    lineweight = s.lineweight if s.lineweight else "2.0"
+                    plen = len(s.points)
+                    if plen == 1:
+                        s.shape_type = "point"
+                    shape_type = s.shape_type
+                    self.categories.append(self.category(grade, label, color, lineweight, shape_type))
+                    points = s.points
+                    self.annotations.append(self.annotation(points, label, num))
+                    self.annID += 1
+                for annotation in self.annotations:
+                    annotation["category_id"] = self.getcatid(annotation["category_id"])
+        except Exception as e:
+            LogPrint("data_transfer of labelme2coco :: %s" % e)
+            pass
 
     def data_transfer(self):
         try:

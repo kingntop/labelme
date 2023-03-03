@@ -1444,7 +1444,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def polygonReturnSearchChanged(self):
         try:
-            pattern = self.polygonSearch.text()
+            pattern = self.polygonSearch.text().strip()  #3/3/2023
             temp_items = self._itemList
             self.labelList.clear()
             saveShapes = []  #add 01/02/2023
@@ -1907,7 +1907,8 @@ class MainWindow(QtWidgets.QMainWindow):
             )
             return data
 
-        shapes = [format_shape(item.shape()) for item in self.labelList]
+        shapes = [format_shape(shape) for shape in self._itemList] #add 03/03/2023
+        #shapes = [format_shape(item.shape()) for item in self.labelList]
         try:
             if self.imagePath.find("meta/") > -1:
                 self.imagePath = self.imagePath.replace("meta/", "")
@@ -2889,6 +2890,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def _saveFile(self, filename):
         try:
             self.isSaving = True
+
             if filename and self.saveLabels(filename):
                 if filename.find("meta") < 0:
                     meta_dir = osp.dirname(filename) + "/meta"
@@ -2918,7 +2920,7 @@ class MainWindow(QtWidgets.QMainWindow):
             if osp.dirname(cocofp) and not osp.exists(osp.dirname(cocofp)):
                 os.makedirs(osp.dirname(cocofp))
 
-            labelme2coco(labelmefiles, cocofp)
+            labelme2coco(labelmefiles, cocofp, self._itemList)
             self.isSaving = False
             #print("Success save coco json")
         except LabelFileError as e:
